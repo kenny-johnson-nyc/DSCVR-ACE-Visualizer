@@ -1,0 +1,17 @@
+
+body{
+    background-color:grey;
+    margin:0;
+  }
+  svg{
+    overflow:visible;
+  }
+  #egg{
+    stroke-width:5px;
+    stroke:green;
+    fill:none;
+  }
+  .point{
+    stroke:none;
+  }
+  

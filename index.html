@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>bubbleChart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+
+    <!-- Load jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  
+    <!-- Load Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+
+    <!-- Load PapaParse to read csv files -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    
+  </head>
+  <div class="wrapper">
+      <div class="content--container" onresize="responsiveFont()">
+        <div class="chart--container"> 
+          <canvas id="bubbleChart" height="400px" width="400px" position="absolute"></canvas>
+        </div>
+      <div class ="footer--container">
+          <div class="upload--container"> 
+              <input type="file" id="uploadfile" accept=".csv">
+              <button id="uploadconfirm">Upload</button>
+          </div>
+          <hr>
+          <div class="update--button--container">
+              <button id="Update">Update Chart</button>
+          </div>
+      </div>
+      
+    </div>
+  </div>
+   <script src="script.js"></script>
+
+</html>

@@ -1,0 +1,196 @@
+/*@import "highcharts.css";*/
+
+.Row {
+  display: table;
+  width: 100%; /*Optional*/
+  table-layout: fixed; /*Optional*/
+  border-spacing: 0; /*Optional*/
+}
+
+.Column {
+  display: table-cell;
+}
+
+/* main chart */
+#container {
+  height: 550px;
+  min-width: 300px;
+  position: relative;
+  margin: 0 auto;
+}
+
+/* uncorrected plate curves */
+#auxiliary {
+  width: 400px;
+  height: 150px;
+  margin-right: 100px;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+/* which intervals are scanned */
+#intervals {
+  height: 30px;
+  /*margin-right: 100px; doesn't work*/
+  /*padding-right: 300px; doesn't work*/
+}
+
+/* total corrected current */
+#total_current {
+  width: 400px;
+  height: 150px;
+  position: relative;
+  top: 0;
+  right: 0;
+}
+
+/* flow angle bulls-eye */
+#flowAngle {
+  width: 150px;
+  height: 150px;
+  position: relative;
+  top: 0;
+  right: 0;
+  margin: 0 auto;
+}
+
+/* peak plate letter */
+#plate {
+  position: absolute;
+  right: 130px;
+  top: 70px;
+  font-size: 3em;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+}
+
+/* peak statistics */
+#stats {
+  position: absolute;
+  right: 5px;
+  top: 20px;
+  width: 100px;
+}
+
+.label {
+  font-size: 0.9em;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  color: #ffffff;
+}
+
+#button_container {
+  position: fixed;
+  z-index: 5;
+}
+
+#range_button {
+}
+
+#pause_button {
+  font-size: 1em;
+  font-weight: bold;
+  font-family: Impact, Arial, sans-serif;
+}
+
+#replay_speed {
+  font-family: Impact, Arial, sans-serif;
+  float: right;
+  margin: 5px 0 5px 6px;
+}
+
+/* the last good cycle is a wider line, this only controls the line on the cycle chart */
+#container .highcharts-series-0 > .highcharts-graph {
+  /* disabled, no longer applies */
+  stroke-width: 0px;
+}
+
+/* the latest cycle is a wider line, this only controls the line on the cycle chart */
+.highcharts-series-15 > .highcharts-graph {
+  stroke-width: 5px;
+}
+
+/* the typical/average line on the main chart is dashed */
+.highcharts-series-16 {
+  stroke-dasharray: 18 8;
+}
+
+.highcharts-series-16 > .highcharts-graph {
+  stroke-width: 2px;
+}
+
+/* the total current is a thin line */
+#total_current .highcharts-series-0 > .highcharts-graph {
+  stroke-width: 1px;
+}
+
+/*#total_current .highcharts-point {*/
+/*stroke-width: 1px;*/
+/*fill: #4244fa;*/
+/*}*/
+
+.highcharts-color-40 {
+  stroke-width: 1px;
+  fill: #4244fa;
+}
+
+/* total current peak box */
+#total_current .rect {
+  stroke-width: 2px;
+  fill: transparent;
+  z-index: 10;
+  /*data-z-index: '20';*/
+}
+
+/* flow angle chart plate outlines */
+.flow-line {
+  stroke-width: 1px;
+  fill: transparent;
+}
+
+/* flow angle data circles */
+.flow-circle {
+  fill: transparent;
+}
+
+/* last good line "bad since" label */
+.bad-since-label {
+  font-size: 12px;
+  text-align: right;
+}
+
+/* flow angle chart plate labels */
+.flow-label {
+  font-size: 48px;
+  text-align: center;
+}
+
+/* 3 plate madvalues */
+.highcharts-color-80 {
+  stroke: #ff0000;
+}
+
+/* the main chart series colors, index 50-65 */
+/* only define the colors/styles that are the same for both black and white backgrounds */
+/* last good */
+.highcharts-color-50 {
+  stroke: #00BB00;
+  /* this only controls the circle on the flow angle chart */
+  stroke-width: 5px;
+}
+
+/* previous */
+.highcharts-color-64 {
+  stroke: #00b2ff;
+}
+
+/* latest */
+.highcharts-color-65 {
+  stroke: #FF0000;
+  /* this only controls the circle on the flow angle chart */
+  stroke-width: 5px;
+}
+
+/**.highcharts-container {
+    width:100% !important;
+    height:100% !important;
+}**/

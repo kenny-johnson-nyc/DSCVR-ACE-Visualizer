@@ -1,0 +1,45 @@
+*{
+    background-color: white;
+}
+
+.wrapper {
+    display: flex;
+
+}
+.content--container{
+    width: 100vw; 
+    height: 100vh;
+    padding: 40px 40px 40px 40px;
+    background-color:whitesmoke;
+}
+
+.chart--container {
+    position:relative;
+
+
+    display:flexbox;
+    background:red
+
+}
+.footer--container {
+    margin-top: 20px;
+    height:80px;
+    position: relative;
+    border: 3px solid gray;
+    
+}
+
+.upload--container {
+    margin-top: 10px;
+
+    display: flex;
+    justify-content: center;
+     align-items: center;
+}
+
+.update--button--container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
