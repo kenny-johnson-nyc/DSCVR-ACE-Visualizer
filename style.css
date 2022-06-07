@@ -13,6 +13,26 @@
     background-color:whitesmoke;
 }
 
+/* .logos--container {
+    height: 200px;
+    width: 100px;
+    position: relative;
+}
+
+.dscovr--logo {
+    float:left;
+}
+
+.ace--logo{
+    float:right;
+}
+
+.logo {
+    height: 100%;
+    width: 100%;
+    
+} */
+
 .chart--container {
     position:relative;
 
