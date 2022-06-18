@@ -2,7 +2,7 @@
 <html lang="en">
 
   <head>
-    <title>bubbleChart</title>
+    <title>DSCOVR/ACE visualizer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
 
@@ -20,24 +20,32 @@
   <div class="wrapper">
       <div class="content--container" onresize="responsiveFont()">
         <div class="logos--container">
+          <div class="noaa--logo">
+            <img class="logo" src="imgs/noaa_logo.png">
+          </div>
           <div class="dscovr--logo">
-            <img class="logo1" src="imgs/DSCOVR-Logo.png">
-         </div>
-         <div class="ace--logo">
-          <img class="logo" src="imgs/ACE_mission_logo.png">
-         </div>
+            <img class="logo" src="imgs/DSCOVR-Logo.png">
+          </div>
+          <div class="ace--logo">
+            <img class="logo" src="imgs/ACE_mission_logo.png">
+          </div> 
+          <div class="nasa--logo">
+            <img class="logo" src="imgs/nasa_logo.png">
+          </div>
+
         </div>
         <div class="chart--container"> 
           <canvas id="bubbleChart" height="400px" width="400px" position="absolute"></canvas>
         </div>
+        <div class="footer--text">
+          <a href ='https://www.ngdc.noaa.gov/dscovr/portal/#/'>DSCOVR Space Weather Data Portal
+          </a>
+        </div>
       <div class ="footer--container">
-          <div class="upload--container"> 
+     
+        <div class="upload--container"> 
               <input type="file" id="uploadfile" accept=".csv">
               <button id="uploadconfirm">Upload</button>
-          </div>
-          <hr>
-          <div class="update--button--container">
-              <button id="Update">Update Chart</button>
           </div>
       </div>
       
