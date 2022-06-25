@@ -1,9 +1,8 @@
-/**
- * Performs final validation and constructs an XML DataRequest from the 
- * user's input.  The XML request is used to make a web service request 
- * to SSC to request the data.  The {@link displayData} function is 
- * registered to handle the results.
- */
+
+ let rate=168;
+ let sampleCount = 30;
+
+
  function requestData() {
 
     // disable rapid, repeated requests
@@ -52,11 +51,12 @@
     let startTime;
     function defineEndTime() {
      let end = endTime.getTime();
-     let offset = rate*60*60*1000;  //convert hours to milliseconds. hours back in time.
+     let offset = sampleCount*60*60*1000;  //convert hours to milliseconds. hours back in time.
+    //  console.log("sampleCount apiscript " + sampleCount);
      let start = end-offset;
      startTime = new Date(start);
+    //  console.log(end + " "+ offset + " " + start + " " + startTime)
     }
-    console.log("start "+startTime + " end "+endTime);
     
     
       
@@ -72,22 +72,24 @@
         defineEndTime();
          const start = convertTime(startTime);
          const end = convertTime(endTime);
-          console.log(start);
+          //console.log(start);
           $('#dataTableVisibility').click(function() {
               $('#data').toggle();
           });
-          document.body.style.cursor = 'wait';
           let sscUrl='https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/'+start+','+end+'/';
           $.get(sscUrl, displayObservatories, 'json');
-        console.log("start "+startTime + " end "+endTime + " " + sscUrl );
+        //console.log("start "+startTime + " end "+endTime + " " + sscUrl ); ///
       });
       
       function displayObservatories(params) {
-          console.log(params)
+            // console.log(params);
+            // for (const element of params.Result) {
+            //     console.log(JSON.stringify(element));
+            // }
       }
       
       function convertTime(time) {
-       return time.getUTCFullYear() + time.getUTCMonth() + time.getUTCDate() + "T" + time.getUTCHours() + time.getUTCMinutes() + time.getUTCSeconds() + "Z"; 
+       return time.getUTCFullYear() + zeroPad(time.getUTCMonth()+1) + zeroPad(time.getUTCDate()) + "T" + zeroPad(time.getUTCHours()) + zeroPad(time.getUTCMinutes()) + zeroPad(time.getUTCSeconds()) + "Z"; 
       }   
 
 

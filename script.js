@@ -12,6 +12,7 @@ const aceBackgroundColor = [];
 const E = 8;
 
 
+
 //bubbleChart Setup Block
 
 const data = {
@@ -19,14 +20,14 @@ const data = {
     datasets: [
       {
         label: ["DSCOVR"],
-        backgroundColor: "rgba(0,97,163,.98)",
+        backgroundColor: dscovrBackgroundColor,
         borderColor: "rgba(255,221,50,0)",
         data: [{
           
         }]
       }, {
         label: ["ACE"],
-        backgroundColor: "rgba(244,53,0,.98)",
+        backgroundColor: aceBackgroundColor,
         borderColor: "rgba(60,186,159,0)",
         data: [{
           
@@ -79,9 +80,6 @@ plugins: {
     scales: {
       yAxes: [{
         ticks: { 
-         // callback: function (value) {
-         //   return value + "km";
-        //  },
           beginAtZero: false,
           min: -300000,
           max:  300000
@@ -96,9 +94,6 @@ plugins: {
       }],
       xAxes: [{ 
         ticks: {
-          //callback: function (value) {
-        //    return value + "km";
-        //  },
           beginAtZero: false,
           min: -300000,
           max: 300000
@@ -124,26 +119,36 @@ const bubbleChart = new Chart(
 );
 
 function updateChart(){
+  // console.log("updateChart: dscovr data[1] " + JSON.stringify(data.datasets[0].data[1]));
+  // console.log("updateChart: dscovr backgroundColor[1] " + JSON.stringify(data.datasets[0].backgroundColors[1]));
+
   bubbleChart.update();
   //bubbleChart.data.datasets[0].data = x_gse
 }
 
 function responsiveFont(){
-  console.log(window.outerWidth)
+  //console.log(window.outerWidth)
 };
 
 //-----Papaparse
+//-----begins executing
 const uploadconfirm = document.getElementById('uploadconfirm').addEventListener('click', () => {
-  Papa.parse(document.getElementById('uploadfile').files[0], {
+  console.log("uploadconfirm " + document.getElementById('uploadfile').files);
+  uploadFile(document.getElementById('uploadfile').files[0]);
+});
+
+function uploadFile(params) {  
+  console.log("uploadFile: params " + JSON.stringify(params));
+  Papa.parse(params, {
       download: true,
       header: true, 
       skipEmptyLines: true,
-      complete: function(results){
+      complete: function(results) {
         let i;
         let dscovr=[];
         let ace=[];
         
-         // console.log(results);
+         //console.log("# of datapoints " + results.length);
    // split data by spacecraft (source)
         
         let splitData=splitBySpacecraft(results);
@@ -154,9 +159,9 @@ const uploadconfirm = document.getElementById('uploadconfirm').addEventListener(
         
     let tempAce=skipDuplicates(ace);
     let tempDscovr=skipDuplicates(dscovr);
-    let rate = 168; //rate=number of hours between samples (168=weekly)
-    
-    for (i = 0; i < rate*30; i+=rate) {
+    rate = 168; //rate=number of hours between samples (168=weekly)
+
+    for (i = 0; i < rate*sampleCount; i+=rate) { // length of sample
             dscovrData.push(tempDscovr[i]);
             time_tag.push(tempDscovr[i].time_tag);
             source.push(tempDscovr[i].source);
@@ -164,7 +169,7 @@ const uploadconfirm = document.getElementById('uploadconfirm').addEventListener(
             y_gse.push(tempDscovr[i].y_gse);
             z_gse.push(tempDscovr[i].z_gse);
     }
-    for (i = 0; i < rate*30; i+=rate) {
+    for (i = 0; i < rate*sampleCount; i+=rate) {
             aceData.push(tempAce[i]);
             time_tag.push(tempAce[i].time_tag);
             source.push(tempAce[i].source);
@@ -174,43 +179,45 @@ const uploadconfirm = document.getElementById('uploadconfirm').addEventListener(
 
            
     }
-      console.log(time_tag);
-      console.log(source);
-      console.log(x_gse);
-      console.log(y_gse);
-      console.log(z_gse);
+      // console.log(time_tag);
+      // console.log(source);
+      // console.log(x_gse);
+      // console.log(y_gse);
+      // console.log(z_gse);
     
       loadData();
       updateChart();
    }
   });
-});
+};
 
-  function abc (dataPoints, backgroundColors, colors, spaceCraft) {
-
+  function bubbleFader(dataPoints, backgroundColors, colors, spaceCraft) {
+    // console.log("dataPoints.length " + dataPoints.length);
     let i;
     for (i = 0; i < dataPoints.length; i++){
      let bubbleRadius = 0.1 + Math.abs((i-dataPoints.length))**E/(dataPoints.length)**E;
-     let d = {x:dataPoints[i].y_gse, y:dataPoints[i].z_gse, r:bubbleRadius*20};
+     let d = {x:dataPoints[i].y_gse, y:dataPoints[i].z_gse, r:10};
      data.datasets[spaceCraft].data.push(d);
                                                  
-       backgroundColors.push(colors+(dataPoints.length-i)/ dataPoints.length+")"); 
-       console.log(colors+(dataPoints.length-i)/ dataPoints.length+")");   
+       //console.log("alpha " + ((dataPoints.length-i)/ dataPoints.length));
+       backgroundColors.push(colors+((dataPoints.length-i)/ dataPoints.length)+")"); 
+        //console.log("color[" + i + "] " + backgroundColors[backgroundColors.length-1]);
      }
       data.datasets[spaceCraft].backgroundColors = backgroundColors;   
  }
    function loadData() {
-     abc(dscovrData,dscovrBackgroundColor,"rgba(0,195,255,", 0);
-     abc(aceData,aceBackgroundColor,"rgba(203,51,58,", 1); 
+    bubbleFader(dscovrData,dscovrBackgroundColor,"rgba(0,195,255,", 0);
+    bubbleFader(aceData,aceBackgroundColor,"rgba(203,51,58,", 1); 
  }
 
+   // split data by spacecraft (source)
 function splitBySpacecraft(results) {
   let splitData = {};
   let i;
   let dscovr=[];
   let ace=[];
   
-  // split data by spacecraft (source)
+
         for (i = 0; i < results.data.length; i++){
           if (results.data[i].source==="ACE"){
             ace.push(results.data[i]);
@@ -219,8 +226,8 @@ function splitBySpacecraft(results) {
           }
         }
   
-  splitData.ace=ace;
-  splitData.dscovr=dscovr;
+  splitData.ace = ace;
+  splitData.dscovr = dscovr;
   return splitData;
   
 }
@@ -239,3 +246,10 @@ function skipDuplicates(data) {
        }
   return temp;
 }
+
+
+
+
+
+
+

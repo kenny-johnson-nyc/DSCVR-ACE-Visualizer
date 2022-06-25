@@ -1,3 +1,7 @@
+<!-- https://api.nasa.gov/planetary/apod?api_key=MQATb4WWEga0ZXhAh3f0wBpmQLbEYpC22tGl4XUm
+
+/locations/{observatories}/{timeRange}/{coordinateSystems}/ -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,6 +21,7 @@
     <link rel="stylesheet" href="style.css">
     
   </head>
+  <body>
   <div class="wrapper">
       <div class="content--container" onresize="responsiveFont()">
         <div class="logos--container">
@@ -41,6 +46,10 @@
           <a href ='https://www.ngdc.noaa.gov/dscovr/portal/#/'>DSCOVR Space Weather Data Portal
           </a>
         </div>
+        <div class="footer--text">
+          <a href ='https://sscweb.gsfc.nasa.gov/WebServices/REST/#Get_Observatories'>SSC RESTful Web Services
+          </a>
+        </div>
       <div class ="footer--container">
      
         <div class="upload--container"> 
@@ -51,6 +60,8 @@
       
     </div>
   </div>
-   <script src="script.js"></script>
-
+  <script src="apiscript.js"></script>
+  <script src="script.js"></script>
+</body>
+  
 </html>
