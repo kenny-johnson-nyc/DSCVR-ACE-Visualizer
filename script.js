@@ -9,8 +9,9 @@ const dscovrData = [];
 const dscovrBackgroundColor = [];
 const aceBackgroundColor = [];
 const E = 8;
-const sampleRate=168;
-const sampleCount = 300;
+const sampleRate=168; // # of hours in a sample period, e.g., 168 = 1 week 
+const sampleCount = 26; // # of samples, e.g., 2000 weeks = 38.5 years
+//const sampleLength
 
 
 
@@ -202,6 +203,8 @@ function processData(results) {
       
       // sampleRate = 48;
 
+      console.log("dscovr data points " + tempDscovr.length);
+
       for (i = 0; i < sampleRate * sampleCount; i += sampleRate) { 
         dscovrData.push(tempDscovr[i]);
         time_tag.push(tempDscovr[i].time_tag);
@@ -344,11 +347,12 @@ function skipDuplicates(input) {
    let startTime;
    function defineEndTime() {
     let end = endTime.getTime();
-    let offset = sampleCount*60*60*1000;  //convert hours to milliseconds. hours back in time.
+    // 2000 sample periods * 168 hour/period * 60 minute/hour * 60 second/minute * 1000 millis/second
+    let offset = sampleCount*sampleRate*60*60*1000;  //convert hours to milliseconds. hours back in time.
    //  console.log("sampleCount apiscript " + sampleCount);
     let start = end-offset;
     startTime = new Date(start);
-   //  console.log(end + " "+ offset + " " + start + " " + startTime)
+    console.log(end + " "+ offset + "ms " + start + " " + startTime);
    }
    
    
@@ -367,10 +371,12 @@ function skipDuplicates(input) {
        defineEndTime();
         const start = convertTime(startTime);
         const end = convertTime(endTime);
+        console.log("start " + start + " end " + end);
          $('#dataTableVisibility').click(function() {
              $('#data').toggle();
          });
          let sscUrl='https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/'+start+','+end+'/';
+         console.log("sscurl " +sscUrl);
          $.get(sscUrl, displayObservatories, 'json');
      });
      
@@ -418,7 +424,7 @@ function skipDuplicates(input) {
             ace.x_gse =  params.Result.Data[1][0].Coordinates[1][0].X[1];
             ace.y_gse =  params.Result.Data[1][0].Coordinates[1][0].Y[1];
             ace.z_gse =  params.Result.Data[1][0].Coordinates[1][0].Z[1];
-            for (let i = 0; i < ace.x_gse.length; i++) {
+            for (let i = 0; i < ace.x_gse.length; i++) { //push every point
               aceData.push({source: 'ace', x_gse: ace.x_gse[i], z_gse: ace.z_gse[i], y_gse: ace.y_gse[i]});
             }
 
@@ -426,7 +432,7 @@ function skipDuplicates(input) {
             dscovr.x_gse =  params.Result.Data[1][1].Coordinates[1][0].X[1];
             dscovr.y_gse =  params.Result.Data[1][1].Coordinates[1][0].Y[1];
             dscovr.z_gse =  params.Result.Data[1][1].Coordinates[1][0].Z[1];
-            for (let i = 0; i < dscovr.x_gse.length; i++) {
+            for (let i = 0; i < dscovr.x_gse.length; i++) { //push every point 
               dscovrData.push({source: 'dscovr', x_gse: dscovr.x_gse[i], z_gse: dscovr.z_gse[i], y_gse: dscovr.y_gse[i]});
             }
 
@@ -443,7 +449,11 @@ function skipDuplicates(input) {
      }
      
      function convertTime(time) {
-      return time.getUTCFullYear() + zeroPad(time.getUTCMonth()+1) + zeroPad(time.getUTCDate()) + "T" + zeroPad(time.getUTCHours()) + zeroPad(time.getUTCMinutes()) + zeroPad(time.getUTCSeconds()) + "Z"; 
+      let d = '' + time.getUTCFullYear() + zeroPad(time.getUTCMonth()+1) + zeroPad(time.getUTCDate());
+      let t =  "T" + zeroPad(time.getUTCHours()) + zeroPad(time.getUTCMinutes()) + zeroPad(time.getUTCSeconds()) + "Z";
+      console.log("date " + d + " time " + t);
+
+      return '' + d + t; 
      }   
 
 
