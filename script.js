@@ -90,37 +90,30 @@ const config = {
       }
     },
     scales: {
-      yAxes: [{
-        
-        ticks: {
-          beginAtZero: false,
-          min: -300000,
-          max: 300000
-
-        },
+      y: {
+        color: "#666",
+        backgroundColor: "#222",
+        min: -300000,
+        max: 300000,
         scaleLabel: {
           display: true,
           labelString: "GSE Z-axis (km)",
-          fontSize: 16,
-
+          fontSize: 16
         },
-        
-      }],
-      xAxes: [{
-        ticks: {
-          beginAtZero: false,
-          min: -300000,
-          max: 300000
-        },
+      },
+      x: {
+        color: "#666",
+        backgroundColor: "#222",
+        min: -300000, 
+        max: 300000,
         scaleLabel: {
           display: true,
           labelString: "GSE Y-axis (km)",
-          fontSize: 16,
+          fontSize: 16
         }
-      }]
+      }
     }
   }
-
 };
 
 //bubbleChart init block
@@ -142,23 +135,29 @@ function updateChart() {
 // Dark/Light Mode Function
 
   function darkMode(checkbox){
+    console.log("darkMode " + checkbox.checked);     
+
     const x = bubbleChart.config.options.scales.xAxes;
     const y = bubbleChart.config.options.scales.yAxes;
-    if(checkbox.checked === true) {
-      console.log(checkbox.checked)
+    console.log("xAxes options " + JSON.stringify(bubbleChart.config.options));
+    console.log("xAxes options.scales " + JSON.stringify(bubbleChart.config.options.scales));
+    console.log("xAxes options.scales.x " + JSON.stringify(bubbleChart.config.options.scales.x));
+    console.log("xAxes options.scales.x.ticks " + JSON.stringify(bubbleChart.config.options.scales.x.ticks));
+
+
+    if (checkbox.checked === true) {
       // x.grid.borderColor = 'white';
       // y.grid.borderColor = 'white';
-      x.grid.color = 'rgba(255, 255, 255, 0.5)';
-      y.grid.color = 'rgba(255, 255, 255, 0.5)'
+      console.log("xAxes.grid " + JSON.stringify(x.grid));
+
+      x[0].grid.color = 'rgba(255, 255, 255, 0.5)';
+      y[0].grid.color = 'rgba(255, 255, 255, 0.5)';
     document.getElementById('checkboxText').classList.add('darkmode');
     }
   
-    if(checkbox.checked === false) {
+    if (checkbox.checked === false) {
       document.getElementById('checkboxText').classList.remove('darkmode');
       }
-  
-      
-     
   }
 //-----Papaparse
 //-----begins executing
