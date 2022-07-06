@@ -92,7 +92,7 @@ const config = {
     scales: {
       y: {
         color: "#666",
-        backgroundColor: "#222",
+        // backgroundColor: "#222",
         min: -300000,
         max: 300000,
         scaleLabel: {
@@ -102,8 +102,8 @@ const config = {
         },
       },
       x: {
-        color: "#666",
-        backgroundColor: "#222",
+        color: "666",
+        // backgroundColor: "#222",
         min: -300000, 
         max: 300000,
         scaleLabel: {
