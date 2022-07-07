@@ -22,7 +22,6 @@ const E = 8;
 
 //const sampleLength
 //bubbleChart Setup Block
-
 const chartData = {
   lables: ['DSCOVR', 'ACE', 'SUN'],
   datasets: [
@@ -58,22 +57,30 @@ const chartData = {
 //bubbleChart config block
 
 const config = {
+  
   type: 'bubble',
+
   data: chartData,
+
+  // defaults: {
+  //   backgroundColor: "rgba(1,1,1,1)",
+  //   },
+
   options: {
+
+    responsive: true,
+
     animation: {
       duration: 2000,
       easing: 'easeOutQuart',
-
-
     },
+
     layout: {
       padding: {
         left: 5,
         top: 5,
       }
     },
-    responsive: true,
 
     title: {
       display: true,
@@ -83,35 +90,53 @@ const config = {
     },
 
     plugins: {
+      title: {
+        display: true,
+        text: 'DSCOVR/ACE Locations Visualizer',
+        font: { 
+          size: 20,
+        },
+        
+      },
       legend: {
         labels: {
-          fontSize: 20,
+          font: {
+            size: 10
+          },
         }
       }
     },
+
     scales: {
-      y: {
-        color: "#666",
-        // backgroundColor: "#222",
-        min: -300000,
-        max: 300000,
-        scaleLabel: {
-          display: true,
-          labelString: "GSE Z-axis (km)",
-          fontSize: 16
-        },
-      },
+
       x: {
         color: "666",
         // backgroundColor: "#222",
         min: -300000, 
         max: 300000,
-        scaleLabel: {
+        title: {
           display: true,
-          labelString: "GSE Y-axis (km)",
-          fontSize: 16
+          text: "GSE Y-axis (km)",
+          font: {
+            size: 15
+          }
         }
+      },
+
+      y: {
+        color: "#0F0",
+        // backgroundColor: "#222",
+        min: -300000,
+        max: 300000,
+        title: {
+          display: true,
+          text: "GSE Z-axis (km)",
+          font: {
+            size: 15
+          }
+        },
       }
+      
     }
   }
 };
@@ -134,31 +159,36 @@ function updateChart() {
 
 // Dark/Light Mode Function
 
-  function darkMode(checkbox){
-    console.log("darkMode " + checkbox.checked);     
+function darkMode(checkbox){
+  console.log("darkMode " + checkbox.checked);     
 
-    const x = bubbleChart.config.options.scales.xAxes;
-    const y = bubbleChart.config.options.scales.yAxes;
-    console.log("xAxes options " + JSON.stringify(bubbleChart.config.options));
-    console.log("xAxes options.scales " + JSON.stringify(bubbleChart.config.options.scales));
-    console.log("xAxes options.scales.x " + JSON.stringify(bubbleChart.config.options.scales.x));
-    console.log("xAxes options.scales.x.ticks " + JSON.stringify(bubbleChart.config.options.scales.x.ticks));
+  const x = bubbleChart.config.options.scales.x;
+  const y = bubbleChart.config.options.scales.y;
+  console.log("defaults " + JSON.stringify(bubbleChart.defaults));
+
+  console.log("options " + JSON.stringify(bubbleChart.config.options));
+  console.log("options.scales " + JSON.stringify(bubbleChart.config.options.scales));
+  console.log("options.scales.x " + JSON.stringify(bubbleChart.config.options.scales.x));
+  console.log("options.scales.x.color " + JSON.stringify(bubbleChart.config.options.scales.x.color));
+  console.log("options.scales.x.grid " + JSON.stringify(bubbleChart.config.options.scales.x.grid));
+
+    // console.log("xAxes options.scales.x.ticks " + JSON.stringify(bubbleChart.config.options.scales.x.ticks));
 
 
-    if (checkbox.checked === true) {
+  if (checkbox.checked === true) {
       // x.grid.borderColor = 'white';
       // y.grid.borderColor = 'white';
-      console.log("xAxes.grid " + JSON.stringify(x.grid));
-
-      x[0].grid.color = 'rgba(255, 255, 255, 0.5)';
-      y[0].grid.color = 'rgba(255, 255, 255, 0.5)';
+      // console.log("xAxes.grid " + JSON.stringify(x.grid));
     document.getElementById('checkboxText').classList.add('darkmode');
-    }
-  
-    if (checkbox.checked === false) {
-      document.getElementById('checkboxText').classList.remove('darkmode');
-      }
   }
+  
+  if (checkbox.checked === false) {
+      document.getElementById('checkboxText').classList.remove('darkmode');
+      x.color = "#0F0"; //'rgba(255, 255, 255, 0.5)';
+      x.grid.color = 'rgba(255, 0, 0, 0.5)';
+      y.grid.color = "#00F"; //'rgba(255, 255, 255, 0.5)';
+  }
+}
 //-----Papaparse
 //-----begins executing
 // const uploadconfirm = document.getElementById('uploadconfirm').addEventListener('click', () => {

@@ -304,7 +304,7 @@
 
     // handle the Black/White button
     var blackWhiteButton = $('#black-white-button');
-    blackWhiteButton.click(function () {
+    blackWhiteButton.click(function () {x
       blackBackground = !blackBackground;
       setColorSchemeCSS();
       blackWhiteButton.text((blackBackground) ? 'White' : 'Black');
