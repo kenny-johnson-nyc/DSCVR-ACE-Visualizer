@@ -62,12 +62,9 @@ const config = {
 
   data: chartData,
 
-  // defaults: {
-  //   backgroundColor: "rgba(1,1,1,1)",
-  //   },
+
 
   options: {
-
     responsive: true,
 
     animation: {
@@ -90,6 +87,7 @@ const config = {
     },
 
     plugins: {
+      
       title: {
         display: true,
         text: 'DSCOVR/ACE Locations Visualizer',
@@ -143,10 +141,14 @@ const config = {
 
 //bubbleChart init block
 
-const bubbleChart = new Chart(
-  document.getElementById('bubbleChart'),
-  config
-);
+
+let bubbleChart;
+
+function createChart() { 
+  bubbleChart = new Chart(
+    document.getElementById('bubbleChart'),
+    config);
+ }
 
 function updateChart() {
   // console.log("updateChart: dscovr data[1] " + JSON.stringify(data.datasets[0].data[1]));
@@ -161,33 +163,34 @@ function updateChart() {
 
 function darkMode(checkbox){
   console.log("darkMode " + checkbox.checked);     
-
   const x = bubbleChart.config.options.scales.x;
   const y = bubbleChart.config.options.scales.y;
-  console.log("defaults " + JSON.stringify(bubbleChart.defaults));
+  if (checkbox.checked === false) {
+    x.grid.color = 'black';
+    y.grid.color = 'black';
+    document.body.classList.remove('darkmode');
+      
+  } else {
+    x.grid.color = 'white';
+    y.grid.color = 'white';
+    document.body.classList.add('darkmode');
+    
+    // console.log("xAxes.grid " + JSON.stringify(x.grid));
+    // console.log("defaults " + JSON.stringify(bubbleChart.defaults));
 
   console.log("options " + JSON.stringify(bubbleChart.config.options));
-  console.log("options.scales " + JSON.stringify(bubbleChart.config.options.scales));
-  console.log("options.scales.x " + JSON.stringify(bubbleChart.config.options.scales.x));
-  console.log("options.scales.x.color " + JSON.stringify(bubbleChart.config.options.scales.x.color));
-  console.log("options.scales.x.grid " + JSON.stringify(bubbleChart.config.options.scales.x.grid));
+  // console.log("options.scales " + JSON.stringify(bubbleChart.config.options.scales));
+  // console.log("options.scales.x " + JSON.stringify(bubbleChart.config.options.scales.x));
+  // console.log("options.scales.x.color " + JSON.stringify(bubbleChart.config.options.scales.x.color));
+  // console.log("options.scales.x.grid " + JSON.stringify(bubbleChart.config.options.scales.x.grid));
 
-    // console.log("xAxes options.scales.x.ticks " + JSON.stringify(bubbleChart.config.options.scales.x.ticks));
-
-
-  if (checkbox.checked === true) {
-      // x.grid.borderColor = 'white';
-      // y.grid.borderColor = 'white';
-      // console.log("xAxes.grid " + JSON.stringify(x.grid));
-    document.getElementById('checkboxText').classList.add('darkmode');
+    // console.log("xAxes options.scales.x.ticks " + JSON.stringify(bubbleChart.config.options.scales.x.ticks));      
   }
-  
-  if (checkbox.checked === false) {
-      document.getElementById('checkboxText').classList.remove('darkmode');
-      x.color = "#0F0"; //'rgba(255, 255, 255, 0.5)';
-      x.grid.color = 'rgba(255, 0, 0, 0.5)';
-      y.grid.color = "#00F"; //'rgba(255, 255, 255, 0.5)';
-  }
+  bubbleChart.destroy();
+  createChart(); 
+  // window.location.reload();   
+  // chart.update();
+  // chart.draw();
 }
 //-----Papaparse
 //-----begins executing
@@ -384,9 +387,13 @@ function skipDuplicates(input) {
     * displayObservatories function is registered to handle the results
     * of web service call. 
     */
-    $(document).ready(function() {
 
 
+  // $(function(){    <all your code for this function>     })
+
+    $(function() {
+      createChart();
+      darkMode(document.getElementById("dark-mode-checkbox"));
        defineEndTime();
         const start = convertTime(startTime);
         const end = convertTime(endTime);

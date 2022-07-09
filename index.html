@@ -20,12 +20,13 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <link rel="stylesheet" href="style.css">
 
- 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.6.2/sass.min.js"></script>
+    <link rel="stylesheet" href="style.css">
     
   </head>
   <body>
   <div class="wrapper">
-      <div class="content--container" onresize="responsiveFont()">
+      <div id="content--container" onresize="responsiveFont()">
         <div class="logos--container">
           <div>
             <a href="https://www.noaa.gov/">
@@ -49,10 +50,21 @@
           </div>
 
         </div>
-     <!-- Render chart canvas called bubbleChart -->
-          <canvas id="bubbleChart" height="400px" width="400px" position="absolute"></canvas>
+          <!-- Render chart canvas called bubbleChart -->
+        <div id="chart-container">
+          <canvas id="bubbleChart" height="100%%" width="100%%" position="absolute"></canvas>
+        </div>
+
+
+
           <!-- Darkmode Button -->
-          <input type="checkbox" onchange="darkMode(this)" name=""><span id="checkboxText" class="">Dark Mode / Light Mode</span>
+          <input id="dark-mode-checkbox" type="checkbox" onchange="darkMode(this)"  name=""><span id="checkboxText" class="">Dark Mode / Light Mode</span>
+
+
+
+
+
+
       <ul>  <!-- Links -->
         <li> 
           <div class="links">

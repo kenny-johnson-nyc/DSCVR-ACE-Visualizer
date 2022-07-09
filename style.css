@@ -2,11 +2,27 @@
     box-sizing: border-box;
 }
 .darkmode {
+    background-color:black;
     color:white;
+    a {
+        color: white;
+        text-decoration: none;
+      }
+      
+      a:hover, a:active {
+        color: rgb(30, 77, 131);
+      }
+    
+    .wrapper {
+        display: flex;
+    
+    }
+
 }
 
+
 a:link, a:visited {
-    background-color: white;
+
     color: black;
     text-decoration: none;
   }
@@ -19,11 +35,10 @@ a:link, a:visited {
     display: flex;
 
 }
-.content--container{
+#content--container{
     width: 100vw; 
     height: 100vh;
     padding: 10px 10px 10px 10px;
-    background-color:white;
     position:relative;
     top:0;
     left:0;
@@ -51,6 +66,12 @@ a:link, a:visited {
     min-width: 50px;
 } 
 
+/* #chart-container {
+    height: 400px;
+    width: 400px;
+} */
+
+
 .footer--container {
     margin-top: 20px;
     height: 80px;
@@ -71,3 +92,7 @@ a:link, a:visited {
     align-items: center;
 
 }
+
+/* #bubbleChart {
+    background-color: black;
+} */
