@@ -1,9 +1,10 @@
-<!-- https://api.nasa.gov/planetary/apod?api_key=MQATb4WWEga0ZXhAh3f0wBpmQLbEYpC22tGl4XUm
 
-/locations/{observatories}/{timeRange}/{coordinateSystems}/ -->
+
+<!-- /locations/{observatories}/{timeRange}/{coordinateSystems}/ --> 
 
 <!DOCTYPE html>
 <html lang="en">
+
 
   <head>
     <title>DSCOVR/ACE visualizer</title>
@@ -18,84 +19,102 @@
 
     <!-- Load PapaParse to read csv files -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.6.2/sass.min.js"></script>
+    
     <link rel="stylesheet" href="style.css">
     
   </head>
-  <body>
-  <div class="wrapper">
-      <div id="content--container" onresize="responsiveFont()">
-        <div class="logos--container">
-          <div>
-            <a href="https://www.noaa.gov/">
-              <img class="logo" src="imgs/noaa_logo.png">
-            </a>
+
+<body>
+  <div id="wrapper">
+
+
+        <!-- LOGOS -->
+    <header>
+      <div class="logos-container">
+        <div id="noaa-img" class="logo"></div>
+        <div id="dscovr-img" class="logo"></div>
+        <div id="ace-img" class="logo"></div>
+        <div id="nasa-img" class="logo"></div>
+        <div id="nws-img" class="logo"></div>
+        
+      </div>
+    </header>
+
+    <div id="content-container" onresize="responsiveFont()">
+
+      <!-- CHART -->
+
+
+      <div id="chart-container">
+        <canvas id="bubbleChart" height="100%" width="100%" position="absolute"></canvas>
+      </div>
+      <div id="chart-container">
+        <canvas id="lineChart" height="100%" width="100%" position="absolute"></canvas>
+      </div>
+
+
+
+
+      <!-- DARKMODE -->
+      <!-- Rounded switch -->
+      <label class="switch">
+        <input id="dark-mode-checkbox" type="checkbox" onchange="darkMode(this)">
+          <span id="checkbox-text" class="slider round">
+          </span>
+            <!-- label element 👇 -->
+          <span class="labels" data-on="ON" data-off="OFF">
+          </span>
+        </label>
+      </label>
+
+
+
+
+          <!-- INFO -->
+
+          <div class=info-container>
+            <h2>INFO</h2>
+            <figure>
+              <p>
+              This graph is designed to give a visual representation of the locations of two satellites l
+              </p>
+              <p>
+                https://en.wikipedia.org/wiki/Lagrange_point
+              </p>
+              
+                <img class="info-img" src="imgs/DSCOVR-Lissajous-orbit.png" alt="DSCOVR Lissajous chart"><figcaption>Lissajous</figcaption>
+            </figure>
+            
+          <h3>RELATED LINKS</h3>
+            <ul>  
+              <li> 
+                <div class="links">
+                  <a class="anchor-style" href ='https://www.ngdc.noaa.gov/dscovr/portal/#/'>DSCOVR Space Weather Data Portal
+                  </a>
+                </div>
+              </li>
+              <li>
+                <div class="links">
+                  <a class="anchor-style" href ='https://sscweb.gsfc.nasa.gov/WebServices/REST/#Get_Observatories'>SSC RESTful Web Services
+                  </a>
+                </div>
+              </li>
+              <li>
+                <div class="links">
+                  <a class="anchor-style" href ='https://www.swpc.noaa.gov/products/real-time-solar-wind'>SPACE WEATHER PREDICTION CENTER - Real Time Solar Wind
+                  </a>
+                </div>
+              </li>
+            </ul> 
           </div>
-          <div>
-            <a href="https://www.nesdis.noaa.gov/current-satellite-missions/currently-flying/dscovr-deep-space-climate-observatory">
-              <img class="logo" src="imgs/DSCOVR-Logo.png">
-            </a>
-          </div>
-          <div>
-            <a href="https://www.swpc.noaa.gov/products/ace-real-time-solar-wind">
-              <img class="logo" src="imgs/ACE_mission_logo.png">
-            </a>
-          </div> 
-          <div>
-            <a href="https://www.nasa.gov/">
-            <img class="logo" src="imgs/nasa_logo.png">
-            </a>
-          </div>
-
-        </div>
-          <!-- Render chart canvas called bubbleChart -->
-        <div id="chart-container">
-          <canvas id="bubbleChart" height="100%%" width="100%%" position="absolute"></canvas>
-        </div>
-
-
-
-          <!-- Darkmode Button -->
-          <input id="dark-mode-checkbox" type="checkbox" onchange="darkMode(this)"  name=""><span id="checkboxText" class="">Dark Mode / Light Mode</span>
-
-
-
-
-
-
-      <ul>  <!-- Links -->
-        <li> 
-          <div class="links">
-            <a href ='https://www.ngdc.noaa.gov/dscovr/portal/#/'>DSCOVR Space Weather Data Portal
-            </a>
-          </div>
-        </li>
-        <li>
-          <div class="links">
-            <a href ='https://sscweb.gsfc.nasa.gov/WebServices/REST/#Get_Observatories'>SSC RESTful Web Services
-            </a>
-          </div>
-        </li>
-        <li>
-          <div class="links">
-            <a href ='https://www.swpc.noaa.gov/'>SPACE WEATHER PREDICTION CENTER - NATIONAL OCEANIC AND ATMOSPHERIC ADMINISTRATION
-            </a>
-          </div>
-        </li>
-      </ul>
-      <!-- <div class ="footer--container">
-     
-        <div class="upload--container"> 
-              <input type="file" id="uploadfile" accept=".csv">
-              <button id="uploadconfirm">Upload</button>
-          </div>
-      </div> -->
-      
+        
+          <!-- FOOTER -->     
+             
+    <div class="footer">
+      <p>Designed and built by Kenny Johnson 2022</p>
     </div>
   </div>
-  <script src="apiscript.js"></script>
+
   <script src="script.js"></script>
 </body>
   
