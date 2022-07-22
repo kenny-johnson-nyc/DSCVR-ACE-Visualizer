@@ -220,3 +220,17 @@ input:checked+.slider:before {
   color: black;
   text-align: center;
 }
+
+/* #progressive-line-chart-container {
+  /* position: fixed; */
+} */
+
+#bubble-chart-container {
+  position: fixed;
+  top:auto;
+}
+
+#bubbleChart {
+  position: absolute;
+  z-index: -1;
+}

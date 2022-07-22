@@ -126,13 +126,6 @@ function initChartConfig(chartType, data) {
         }
       },
 
-      title: {
-        display: true,
-        text: 'DSCOVR/ACE Locations Visualizer',
-        fontSize: 20,
-        fontWeight: 1000,
-      },
-
       plugins: {
 
         title: {
@@ -140,8 +133,14 @@ function initChartConfig(chartType, data) {
           text: 'DSCOVR/ACE Locations Visualizer',
           font: {
             size: 20,
+            weight: 800,
           },
 
+        },
+        subtitle: {
+          display: true,
+          text: 'Real-time locations',
+          size: 15,
         },
         legend: {
           labels: {
@@ -219,6 +218,7 @@ function updateChart() {
   bubbleChart.update();
   lineChart.update();
   //bubbleChart.data.datasets[0].data = x_gse
+  drawLineChart();
 }
 
 
@@ -501,7 +501,7 @@ $(function () {
 
   createLineChart(configLine);
 
-
+ 
 
   // default to darkMode at startup, toggle button should be to the left
   darkMode(document.getElementById("dark-mode-checkbox"), localStorage.getItem("darkmode-cookie"));
@@ -671,6 +671,100 @@ function removeData(chart) {
     dataset.data.pop();
   });
   chart.update();
+}
+
+
+function drawLineChart(){
+  let data = dscovrData;
+  console.log("data check " +JSON.stringify(data[0]));
+  // let prev = 1;
+  // for (let i = 0; i < 10; i++) {
+  //     prev = 1 - Math.random() * 1;
+  //     data.push({ x: i, y: prev });
+  // }
+
+  let delayBetweenPoints = 200;
+  let started = {};
+  let ctx2 = document.getElementById("progressiveLineChart").getContext("2d");
+  let chart2 = new Chart(ctx2, {
+      type: "line",
+      data: {
+          datasets: [
+              {
+                  label:'DSCOVR interpolated flight path',
+                  cubicInterpolationMode: 'monotone',
+                  backgroundColor: "transparent",
+                  borderColor: "rgb(255, 99, 132)",
+                  borderWidth: 1,
+                  pointRadius: 1,
+                  data: data,
+                  fill: true,
+                  animation: (context) => {
+                      let delay = 0;
+                      let index = context.dataIndex;
+                      let chart = context.chart;
+                      if (!started[index]) {
+                          delay = index * delayBetweenPoints;
+                          started[index] = true;
+                      }
+
+                      let { x, y } = index > 0 ? chart.getDatasetMeta(0).data[index - 1].getProps(['y_gse', 'z_gse'], true) : { x: 0, y: chart.scales.y.getPixelForValue(100) };
+
+                      return {
+                          x: {
+                              easing: "easeInQuint",
+                              duration: delayBetweenPoints,
+                              from: x,
+                              delay
+                          },
+                          y: {
+                              easing: "easeInQuint",
+                              duration: delayBetweenPoints,
+                              from: y,
+                              delay
+                          },
+                          skip: {
+                              type: 'boolean',
+                              duration: delayBetweenPoints,
+                              from: true,
+                              to: false,
+                              delay: delay
+                          }
+                      };
+                  }
+              }
+          ]
+      },
+      options: {
+        parsing: {
+          xAxisKey: "y_gse",
+          yAxisKey: "z_gse"
+        },
+          scales: {
+              x: {
+                  type: 'linear',
+                  min: -300000,
+                  max: 300000,
+                  title: {
+                    display: true,
+                    text:
+                  }
+              },
+              y: {
+                type: 'linear',
+                min: -300000,
+                max: 300000,
+            }
+          }
+      },
+      plugins: [{
+          id: 'force_line_update',
+          beforeDatasetDraw(chart, ctx) {
+              ctx.meta.dataset.points = ctx.meta.data;
+              
+          }
+      }]
+  })
 }
 
 
