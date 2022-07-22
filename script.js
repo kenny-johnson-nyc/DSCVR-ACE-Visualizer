@@ -314,8 +314,8 @@ function processData(results) {
 
   //console.log("# of datapoints " + results.length);
 
-  // csv position file looks like this, 6 columns of data
-  //       time_tag	active	source	x_gse	y_gse	z_gse
+  // csv position file looks like 6 columns of data
+  // time_tag	  active	sourcex_gse	  y_gse	  z_gse
   // 2016-01-19 0:00:00	1	ACE	1479696	-235986	63780
   // 2016-01-19 1:00:00	1	ACE	1479696	-235986	63780
 

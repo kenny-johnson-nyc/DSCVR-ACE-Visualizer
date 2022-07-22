@@ -1,46 +1,46 @@
-
-
-<!-- /locations/{observatories}/{timeRange}/{coordinateSystems}/ --> 
+<!-- /locations/{observatories}/{timeRange}/{coordinateSystems}/ -->
 
 <!DOCTYPE html>
 <html lang="en">
 
 
-  <head>
-    <title>DSCOVR/ACE visualizer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8">
+<head>
+  <title>DSCOVR/ACE visualizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
 
-    <!-- Load jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  
-    <!-- Load Chart.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
+  <!-- Load jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-    <!-- Load PapaParse to read csv files -->
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-    
-    <link rel="stylesheet" href="style.css">
-    
-  </head>
+  <!-- Load Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
+
+  <!-- Load PapaParse to read csv files -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
 
 <body>
-  <div id="wrapper">
+  
 
 
-        <!-- LOGOS -->
+
     <header>
+
+    </header>
+
+    <main>
+      <!-- LOGOS -->
       <div class="logos-container">
         <div id="noaa-img" class="logo"></div>
         <div id="dscovr-img" class="logo"></div>
         <div id="ace-img" class="logo"></div>
         <div id="nasa-img" class="logo"></div>
         <div id="nws-img" class="logo"></div>
-        
-      </div>
-    </header>
 
-    <div id="content-container" onresize="responsiveFont()">
+      </div>
 
       <!-- CHART -->
 
@@ -52,70 +52,71 @@
         <canvas id="lineChart" height="100%" width="100%" position="absolute"></canvas>
       </div>
 
-
-
-
       <!-- DARKMODE -->
       <!-- Rounded switch -->
+
       <label class="switch">
         <input id="dark-mode-checkbox" type="checkbox" onchange="darkMode(this)">
-          <span id="checkbox-text" class="slider round">
-          </span>
-            <!-- label element 👇 -->
-          <span class="labels" data-on="ON" data-off="OFF">
-          </span>
-        </label>
+        <span id="checkbox-text" class="slider round">
+        </span>
+        <!-- label element -->
+        <span class="labels" data-on="ON" data-off="OFF">
+        </span>
+      </label>
       </label>
 
 
 
 
-          <!-- INFO -->
+      <!-- INFO -->
 
-          <div class=info-container>
-            <h2>INFO</h2>
-            <figure>
-              <p>
-              This graph is designed to give a visual representation of the locations of two satellites l
-              </p>
-              <p>
-                https://en.wikipedia.org/wiki/Lagrange_point
-              </p>
-              
-                <img class="info-img" src="imgs/DSCOVR-Lissajous-orbit.png" alt="DSCOVR Lissajous chart"><figcaption>Lissajous</figcaption>
-            </figure>
-            
-          <h3>RELATED LINKS</h3>
-            <ul>  
-              <li> 
-                <div class="links">
-                  <a class="anchor-style" href ='https://www.ngdc.noaa.gov/dscovr/portal/#/'>DSCOVR Space Weather Data Portal
-                  </a>
-                </div>
-              </li>
-              <li>
-                <div class="links">
-                  <a class="anchor-style" href ='https://sscweb.gsfc.nasa.gov/WebServices/REST/#Get_Observatories'>SSC RESTful Web Services
-                  </a>
-                </div>
-              </li>
-              <li>
-                <div class="links">
-                  <a class="anchor-style" href ='https://www.swpc.noaa.gov/products/real-time-solar-wind'>SPACE WEATHER PREDICTION CENTER - Real Time Solar Wind
-                  </a>
-                </div>
-              </li>
-            </ul> 
-          </div>
-        
-          <!-- FOOTER -->     
-             
-    <div class="footer">
-      <p>Designed and built by Kenny Johnson 2022</p>
+      <div class=info-container>
+        <h2>INFO</h2>
+        <figure>
+          <p>
+            This graph is designed to give a visual representation of the locations of two satellites.
+          </p>
+          <p>
+            https://en.wikipedia.org/wiki/Lagrange_point
+          </p>
+
+          <img class="info-img" src="imgs/DSCOVR-Lissajous-orbit.png" alt="DSCOVR Lissajous chart">
+          <figcaption>Lissajous</figcaption>
+        </figure>
+
+        <h3>RELATED LINKS</h3>
+        <ul>
+          <li>
+            <div class="links">
+              <a class="anchor-style" href='https://www.ngdc.noaa.gov/dscovr/portal/#/'>DSCOVR Space Weather Data Portal
+              </a>
+            </div>
+          </li>
+          <li>
+            <div class="links">
+              <a class="anchor-style" href='https://sscweb.gsfc.nasa.gov/WebServices/REST/#Get_Observatories'>SSC
+                RESTful Web Services
+              </a>
+            </div>
+          </li>
+          <li>
+            <div class="links">
+              <a class="anchor-style" href='https://www.swpc.noaa.gov/products/real-time-solar-wind'>SPACE WEATHER
+                PREDICTION CENTER - Real Time Solar Wind
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- FOOTER -->
+
+      <div class="footer">
+        <p>Designed and built by Kenny Johnson 2022</p>
+      </div>
     </div>
-  </div>
 
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
-  
+
 </html>
