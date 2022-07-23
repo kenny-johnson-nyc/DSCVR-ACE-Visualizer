@@ -27,8 +27,6 @@ a:active {
 
 body {
   background-color: white;
-  /* display: flex;
-  flex-direction: column; */
 }
 
 #wrapper {
@@ -221,16 +219,17 @@ input:checked+.slider:before {
   text-align: center;
 }
 
-/* #progressive-line-chart-container {
-  /* position: fixed; */
+#progressive-line-chart-container {
+  position: fixed;
+}
+
+
+/* #bubble-chart-container {
+  position: fixed;
+  top: auto;
 } */
 
-#bubble-chart-container {
-  position: fixed;
-  top:auto;
-}
-
 #bubbleChart {
-  position: absolute;
+  position: fixed;
   z-index: -1;
-}
+} 

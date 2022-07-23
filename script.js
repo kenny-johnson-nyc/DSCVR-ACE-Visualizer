@@ -113,34 +113,16 @@ function initChartConfig(chartType, data) {
     data: data,
     options: {
       responsive: true,
-
       animation: {
         duration: 2000,
         easing: 'easeOutQuart',
       },
-
-      layout: {
-        padding: {
-          left: 5,
-          top: 5,
-        }
-      },
-
       plugins: {
-
         title: {
-          display: true,
-          text: 'DSCOVR/ACE Locations Visualizer',
-          font: {
-            size: 20,
-            weight: 800,
-          },
-
+          display: false
         },
         subtitle: {
-          display: true,
-          text: 'Real-time locations',
-          size: 15,
+          display: false
         },
         legend: {
           labels: {
@@ -186,6 +168,125 @@ function initChartConfig(chartType, data) {
   }
 }
 
+
+/**
+ * Create and draw the progressive line chart.
+ */
+function drawLineChart() {
+  let data = dscovrData;
+  console.log("data check " + JSON.stringify(data[0]));
+  // let prev = 1;
+  // for (let i = 0; i < 10; i++) {
+  //     prev = 1 - Math.random() * 1;
+  //     data.push({ x: i, y: prev });
+  // }
+
+  let delayBetweenPoints = 200;
+  let started = {};
+  let ctx2 = document.getElementById("progressiveLineChart").getContext("2d");
+  let chart2 = new Chart(ctx2, {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          label: 'DSCOVR interpolated flight path',
+          cubicInterpolationMode: 'monotone',
+          backgroundColor: "transparent",
+          borderColor: "rgb(255, 99, 132)",
+          borderWidth: 1,
+          pointRadius: 1,
+          data: data,
+          fill: true,
+          animation: (context) => {
+            let delay = 0;
+            let index = context.dataIndex;
+            let chart = context.chart;
+            if (!started[index]) {
+              delay = index * delayBetweenPoints;
+              started[index] = true;
+            }
+
+            let { x, y } = index > 0 ? chart.getDatasetMeta(0).data[index - 1].getProps(['y_gse', 'z_gse'], true) : { x: 0, y: chart.scales.y.getPixelForValue(100) };
+
+            return {
+              x: {
+                easing: "easeInQuint",
+                duration: delayBetweenPoints,
+                from: x,
+                delay
+              },
+              y: {
+                easing: "easeInQuint",
+                duration: delayBetweenPoints,
+                from: y,
+                delay
+              },
+              skip: {
+                type: 'boolean',
+                duration: delayBetweenPoints,
+                from: true,
+                to: false,
+                delay: delay
+              }
+            };
+          }
+        }
+      ]
+    },
+    options: {
+      plugins: {
+        title: {
+          display: false
+        },
+        subtitle: {
+          display: false
+        },
+        legend: {
+          labels: {
+            font: {
+              size: 10
+            }
+          }
+        }
+      },
+      parsing: {
+        xAxisKey: "y_gse",
+        yAxisKey: "z_gse"
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          min: -300000,
+          max: 300000,
+          title: {
+            display: true,
+            text: "",
+            font: {
+              size: 15
+            }
+          }
+        },
+        y: {
+          type: 'linear',
+          min: -300000,
+          max: 300000,
+          title: {
+            display: true,
+            text: "",
+            font: {
+              size: 15
+            }
+          }
+        }
+      }
+    },
+   
+  })
+}
+
+
+
+
 //create a clone of bubbleChart config and data for a new chart (lineChart) that will render on top of bubbleChart
 
 // let config2 = structuredClone(config);
@@ -216,7 +317,7 @@ function updateChart() {
   // console.log("updateChart: dscovr backgroundColor[1] " + JSON.stringify(data.datasets[0].backgroundColors[1]));
 
   bubbleChart.update();
-  lineChart.update();
+  // lineChart.update();
   //bubbleChart.data.datasets[0].data = x_gse
   drawLineChart();
 }
@@ -270,11 +371,11 @@ function darkMode(checkbox, value) {
 
   // destroy chart data (chart.js peculiarity)
   bubbleChart.destroy();
-  lineChart.destroy();
+  // lineChart.destroy();
 
   // force chart to reload  
   createBubbleChart(configBubble);
-  createLineChart(configLine)
+  // createLineChart(configLine)
 }
 
 
@@ -490,19 +591,6 @@ $(function () {
 
   createBubbleChart(configBubble);
 
-  // initialize the chart config, which uses the data
-
-  // initLineChartData();
-
-  chartDataLine = {}; //structuredClone(chartDataBubble);
-  chartDataLine.x = structuredClone(chartDataLine.x)
-
-  configLine = initChartConfig("line", chartDataLine);
-
-  createLineChart(configLine);
-
- 
-
   // default to darkMode at startup, toggle button should be to the left
   darkMode(document.getElementById("dark-mode-checkbox"), localStorage.getItem("darkmode-cookie"));
 
@@ -543,28 +631,28 @@ function displayObservatories(params) {
   //           [
   //              {
 
-  let result = params.Result;
+  //let result = params.Result;
   // console.log("result " + JSON.stringify(result));
 
-  let sscData = result.Data;
+  //let sscData = result.Data;
   // console.log("data " + JSON.stringify(sscData));
 
-  let arrayList = sscData[1];
+  //let arrayList = sscData[1];
   // console.log("array " + JSON.stringify(arrayList));
 
-  let firstSub = arrayList[0];
+  // let firstSub = arrayList[0];
   // console.log("first sub " + JSON.stringify(firstSub));
 
-  let id = firstSub.Id;
+  // let id = firstSub.Id;
   // console.log("id " + JSON.stringify(id));
 
-  let coords = firstSub.Coordinates;
+  // let coords = firstSub.Coordinates;
   // console.log("coords " + JSON.stringify(coords[1]));
 
-  let coordsXpre = coords[1];
+  // let coordsXpre = coords[1];
   // console.log("coordsX " + JSON.stringify(coordsX));
 
-  let coordsX = coordsXpre[0].Y[1];
+  // let coordsX = coordsXpre[0].Y[1];
   // console.log("coordsX " + JSON.stringify(coordsX));
 
   // let spacecraft = params.Result.Data[1][0].Id;
@@ -572,8 +660,8 @@ function displayObservatories(params) {
   let ace = {};
   ace.time_tag = params.Result.Data[1][0].Time[1][1];
   let size = params.Result.Data[1][0].Time[1].length;
-  console.log("dscovr bounds " + JSON.stringify(params.Result.Data[1][0].Time[1][1]) + " to  " + params.Result.Data[1][0].Time[1][size - 1]);
-  console.log("dscovr adjacents " + JSON.stringify(params.Result.Data[1][0].Time[1][2]) + " to  " + params.Result.Data[1][0].Time[1][size - 2]);
+  // console.log("dscovr bounds " + JSON.stringify(params.Result.Data[1][0].Time[1][1]) + " to  " + params.Result.Data[1][0].Time[1][size - 1]);
+  // console.log("dscovr adjacents " + JSON.stringify(params.Result.Data[1][0].Time[1][2]) + " to  " + params.Result.Data[1][0].Time[1][size - 2]);
 
   ace.x_gse = params.Result.Data[1][0].Coordinates[1][0].X[1];
   ace.y_gse = params.Result.Data[1][0].Coordinates[1][0].Y[1];
@@ -585,23 +673,23 @@ function displayObservatories(params) {
   let dscovr = {};
   dscovr.time_tag = params.Result.Data[1][1].Time[1][1];
   size = params.Result.Data[1][1].Time[1].length;
-  console.log("dscovr bounds " + JSON.stringify(params.Result.Data[1][1].Time[1][1]) + " to  " + params.Result.Data[1][1].Time[1][size - 1]);
-  console.log("dscovr adjacents " + JSON.stringify(params.Result.Data[1][1].Time[1][2]) + " to  " + params.Result.Data[1][1].Time[1][size - 2]);
+  // console.log("dscovr bounds " + JSON.stringify(params.Result.Data[1][1].Time[1][1]) + " to  " + params.Result.Data[1][1].Time[1][size - 1]);
+  // console.log("dscovr adjacents " + JSON.stringify(params.Result.Data[1][1].Time[1][2]) + " to  " + params.Result.Data[1][1].Time[1][size - 2]);
   dscovr.x_gse = params.Result.Data[1][1].Coordinates[1][0].X[1];
   dscovr.y_gse = params.Result.Data[1][1].Coordinates[1][0].Y[1];
   dscovr.z_gse = params.Result.Data[1][1].Coordinates[1][0].Z[1];
   for (let i = 0; i < dscovr.x_gse.length; i++) { //push every point 
     dscovrData.push({ source: 'dscovr', x_gse: dscovr.x_gse[i], z_gse: dscovr.z_gse[i], y_gse: dscovr.y_gse[i] });
   }
-  console.log("initial aceData.length " + aceData.length);
-  console.log("initial dscovrData.length " + dscovrData.length);
+  // console.log("initial aceData.length " + aceData.length);
+  // console.log("initial dscovrData.length " + dscovrData.length);
 
   // clean up the data and reverse the time order      
   let tempAce = skipDuplicates(aceData);
   let tempDscovr = skipDuplicates(dscovrData);
 
-  console.log("skipped dups aceData.length " + aceData.length);
-  console.log("skipped dups dscovrData.length " + dscovrData.length);
+  // console.log("skipped dups aceData.length " + aceData.length);
+  // console.log("skipped dups dscovrData.length " + dscovrData.length);
 
   // let coordsY =  params.Result.Data[1][0].Coordinates[1][0].X[1];
   // console.log("coordsY " + JSON.stringify(coordsY));
@@ -610,11 +698,11 @@ function displayObservatories(params) {
   aceData = subsample(tempAce);
   dscovrData = subsample(tempDscovr);
 
-  console.log("subsampled aceData.length " + aceData.length);
-  console.log("subsampled dscovrData.length " + dscovrData.length);
+  // console.log("subsampled aceData.length " + aceData.length);
+  // console.log("subsampled dscovrData.length " + dscovrData.length);
 
   loadData();
-  console.log("loadData finished and returned control");
+  // console.log("loadData finished and returned control");
   updateChart();
 }
 
@@ -628,7 +716,7 @@ function convertTime(time) {
 
   let d = '' + time.getUTCFullYear() + zeroPad(time.getUTCMonth() + 1) + zeroPad(time.getUTCDate());
   let t = "T" + zeroPad(time.getUTCHours()) + zeroPad(time.getUTCMinutes()) + zeroPad(time.getUTCSeconds()) + "Z";
-  console.log("date " + d + " time " + t);
+  // console.log("date " + d + " time " + t);
 
   return '' + d + t;
 }
@@ -672,99 +760,4 @@ function removeData(chart) {
   });
   chart.update();
 }
-
-
-function drawLineChart(){
-  let data = dscovrData;
-  console.log("data check " +JSON.stringify(data[0]));
-  // let prev = 1;
-  // for (let i = 0; i < 10; i++) {
-  //     prev = 1 - Math.random() * 1;
-  //     data.push({ x: i, y: prev });
-  // }
-
-  let delayBetweenPoints = 200;
-  let started = {};
-  let ctx2 = document.getElementById("progressiveLineChart").getContext("2d");
-  let chart2 = new Chart(ctx2, {
-      type: "line",
-      data: {
-          datasets: [
-              {
-                  label:'DSCOVR interpolated flight path',
-                  cubicInterpolationMode: 'monotone',
-                  backgroundColor: "transparent",
-                  borderColor: "rgb(255, 99, 132)",
-                  borderWidth: 1,
-                  pointRadius: 1,
-                  data: data,
-                  fill: true,
-                  animation: (context) => {
-                      let delay = 0;
-                      let index = context.dataIndex;
-                      let chart = context.chart;
-                      if (!started[index]) {
-                          delay = index * delayBetweenPoints;
-                          started[index] = true;
-                      }
-
-                      let { x, y } = index > 0 ? chart.getDatasetMeta(0).data[index - 1].getProps(['y_gse', 'z_gse'], true) : { x: 0, y: chart.scales.y.getPixelForValue(100) };
-
-                      return {
-                          x: {
-                              easing: "easeInQuint",
-                              duration: delayBetweenPoints,
-                              from: x,
-                              delay
-                          },
-                          y: {
-                              easing: "easeInQuint",
-                              duration: delayBetweenPoints,
-                              from: y,
-                              delay
-                          },
-                          skip: {
-                              type: 'boolean',
-                              duration: delayBetweenPoints,
-                              from: true,
-                              to: false,
-                              delay: delay
-                          }
-                      };
-                  }
-              }
-          ]
-      },
-      options: {
-        parsing: {
-          xAxisKey: "y_gse",
-          yAxisKey: "z_gse"
-        },
-          scales: {
-              x: {
-                  type: 'linear',
-                  min: -300000,
-                  max: 300000,
-                  title: {
-                    display: true,
-                    text:
-                  }
-              },
-              y: {
-                type: 'linear',
-                min: -300000,
-                max: 300000,
-            }
-          }
-      },
-      plugins: [{
-          id: 'force_line_update',
-          beforeDatasetDraw(chart, ctx) {
-              ctx.meta.dataset.points = ctx.meta.data;
-              
-          }
-      }]
-  })
-}
-
 
