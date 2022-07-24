@@ -708,8 +708,6 @@ function displayObservatories(params) {
   // console.log('subsampled aceData.length ' + aceData.length);
   // console.log('subsampled dscovrData.length ' + dscovrData.length);
 
-  loadData();
-
   // console.log('loadData finished and returned control');
    // initialize the bubble chart data
    initChartData();
@@ -719,8 +717,12 @@ function displayObservatories(params) {
  
    // console.log('first configBubble ' + JSON.stringify(configBubble, null, '\t'));
  
+   
+
    createBubbleChart(configBubble);
    createLineChart();
+
+   loadData();
  
    // default to darkMode at startup, toggle button should be to the left
    darkMode(document.getElementById('dark-mode-checkbox'), localStorage.getItem('darkmode-cookie'));
