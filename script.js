@@ -93,24 +93,49 @@ function initChartData() {
         }]
       }
     ]
-  }
+  };
 
-  console.log('chartData.datasets[2].data[0].r ' + chartDataBubble.datasets[2].data[0].r);
+  // console.log('chartData.datasets[2].data[0].r ' + chartDataBubble.datasets[2].data[0].r);
 }
 
 //bubbleChart config block
+function initChartDataLine() {
+  chartDataLine = {
+    datasets: [
+      {
+        label: ['DSCOVR'],
+        backgroundColor: dscovrBackgroundColor,
+        borderColor: 'rgba(255,221,50,0)',
+        order: 0,
+        data: [{
 
+        }]
+      },
+      {
+        label: ['ACE'],
+        backgroundColor: aceBackgroundColor,
+        borderColor: 'rgba(60,186,159,0)',
+        order: 1,
+        data: [{
+
+        }]
+      },
+    ]
+  };
+
+  // console.log('chartData.datasets[2].data[0].r ' + chartDataBubble.datasets[2].data[0].r);
+}
 /**
- * Initialize Chart.js configuration and data
- * @param {string} chartType a valid Chart.js chart type name e.g., 'bubble', 'line'
+ * Initialize Chart.js bubble chart configuration and data
+ 
  * @returns Chart.js configuration object
  */
-function initChartConfig(chartType, data) {
+function initChartConfig() {
   console.log('starting initChartConfig');
 
   return {
-    type: chartType,
-    data: data,
+    type: "bubble",
+    data: chartDataBubble,
     options: {
       responsive: true,
       animation: {
@@ -165,7 +190,7 @@ function initChartConfig(chartType, data) {
 
       }
     }
-  }
+  };
 }
 
 
@@ -173,8 +198,8 @@ function initChartConfig(chartType, data) {
  * Create and draw the progressive line chart.
  */
 function createLineChart() {
-  let data = dscovrData;
-  console.log('data check ' + JSON.stringify(data[0]));
+  // let data = dscovrData;
+  // console.log('data check ' + JSON.stringify(data[0]));
   // let prev = 1;
   // for (let i = 0; i < 10; i++) {
   //     prev = 1 - Math.random() * 1;
@@ -186,53 +211,53 @@ function createLineChart() {
   let ctx2 = document.getElementById('lineChart').getContext('2d');
   lineChart = new Chart(ctx2, {
     type: 'line',
-    data: {
-      datasets: [
-        {
-          label: 'DSCOVR interpolated flight path',
-          // cubicInterpolationMode: 'monotone',
-          backgroundColor: 'transparent',
-          borderColor: 'rgb(255, 99, 132)',
-          borderWidth: 1,
-          pointRadius: 1,
-          data: data,
-          // fill: true,
-          // animation: (context) => {
-          //   let delay = 0;
-          //   let index = context.dataIndex;
-          //   let chart = context.chart;
-          //   if (!started[index]) {
-          //     delay = index * delayBetweenPoints;
-          //     started[index] = true;
-          //   }
+    data: chartDataBubble,
+      // datasets: [
+      //   {
+      //     label: 'DSCOVR interpolated flight path',
+      //     // cubicInterpolationMode: 'monotone',
+      //     backgroundColor: 'transparent',
+      //     borderColor: 'rgb(255, 99, 132)',
+      //     borderWidth: 1,
+      //     pointRadius: 1,
+      //     data: chartDataBubble,
+      //     // fill: true,
+      //     // animation: (context) => {
+      //     //   let delay = 0;
+      //     //   let index = context.dataIndex;
+      //     //   let chart = context.chart;
+      //     //   if (!started[index]) {
+      //     //     delay = index * delayBetweenPoints;
+      //     //     started[index] = true;
+      //     //   }
 
-          //   let { x, y } = index > 0 ? chart.getDatasetMeta(0).data[index - 1].getProps(['y_gse', 'z_gse'], true) : { x: 0, y: chart.scales.y.getPixelForValue(100) };
+      //     //   let { x, y } = index > 0 ? chart.getDatasetMeta(0).data[index - 1].getProps(['y_gse', 'z_gse'], true) : { x: 0, y: chart.scales.y.getPixelForValue(100) };
 
-          //   return {
-          //     x: {
-          //       easing: 'easeInQuint',
-          //       duration: delayBetweenPoints,
-          //       from: x,
-          //       delay
-          //     },
-          //     y: {
-          //       easing: 'easeInQuint',
-          //       duration: delayBetweenPoints,
-          //       from: y,
-          //       delay
-          //     },
-          //     skip: {
-          //       type: 'boolean',
-          //       duration: delayBetweenPoints,
-          //       from: true,
-          //       to: false,
-          //       delay: delay
-          //     }
-          //   };
-          // }
-        }
-      ]
-    },
+      //     //   return {
+      //     //     x: {
+      //     //       easing: 'easeInQuint',
+      //     //       duration: delayBetweenPoints,
+      //     //       from: x,
+      //     //       delay
+      //     //     },
+      //     //     y: {
+      //     //       easing: 'easeInQuint',
+      //     //       duration: delayBetweenPoints,
+      //     //       from: y,
+      //     //       delay
+      //     //     },
+      //     //     skip: {
+      //     //       type: 'boolean',
+      //     //       duration: delayBetweenPoints,
+      //     //       from: true,
+      //     //       to: false,
+      //     //       delay: delay
+      //     //     }
+      //     //   };
+      //     // }
+      //   }
+      // ]
+    // },
     options: {
       responsive: true,
       animation: {
@@ -254,10 +279,10 @@ function createLineChart() {
           }
         }
       },
-      parsing: {
-        xAxisKey: 'y_gse',
-        yAxisKey: 'z_gse'
-      },
+      // parsing: {
+      //   xAxisKey: 'y_gse',
+      //   yAxisKey: 'z_gse'
+      // },
       scales: {
         x: {
           type: 'linear',
@@ -286,7 +311,7 @@ function createLineChart() {
       }
     },
    
-  })
+  });
 }
 
 
@@ -380,7 +405,7 @@ function darkMode(checkbox, value) {
 
   // force chart to reload  
   createBubbleChart(configBubble);
-  createLineChart()
+  createLineChart();
 }
 
 
@@ -459,7 +484,7 @@ function subsample(inputData) {
     outputData.push(inputData[i]);
     // console.log('i ' + i);
   }
-  console.log('inputData # ' + inputData.length + " outputData # " + outputData.length)
+  console.log('inputData # ' + inputData.length + " outputData # " + outputData.length);
   return outputData;
 }
 
@@ -476,17 +501,19 @@ function bubbleFader(dataPoints, backgroundColors, colors, spaceCraft) {
     //console.log('alpha ' + ((dataPoints.length-i)/ dataPoints.length));
     backgroundColors.push(colors + ((dataPoints.length - i) / dataPoints.length) + ')');
     //console.log('color[' + i + '] ' + backgroundColors[backgroundColors.length-1]);
+
+    let d2 = {x: dataPoints[i].y_gse, y: dataPoints[i].z_gse};
+    chartDataLine.datasets[spaceCraft].data.push(d2);
   }
   chartDataBubble.datasets[spaceCraft].backgroundColors = backgroundColors;
 }
 
-
-
 // LOAD DATA
 
 function loadData() {
+  // put the retreived and massaged data into the globals
   bubbleFader(dscovrData, dscovrBackgroundColor, 'rgba(0,195,255,', 0);
-  bubbleFader(aceData, aceBackgroundColor, 'rgba(203,51,58,', 1);
+  bubbleFader(aceData, aceBackgroundColor, 'rgba(203,51,58,', 1);  
 }
 
 // split data by spacecraft
@@ -586,7 +613,7 @@ $(function () {
   startStopwatch = new Date().getTime();
 
   // determine the size of the Sun in pixels
-  addEventListener('resize', (event) => { initChartConfig('bubble'); updateChart() });
+  addEventListener('resize', (event) => { initChartConfig(); updateChart(); });
 
 
  
@@ -713,7 +740,7 @@ function displayObservatories(params) {
    initChartData();
 
    // initialize the chart config, which uses the data
-   configBubble = initChartConfig('bubble', chartDataBubble);
+   configBubble = initChartConfig();
  
    // console.log('first configBubble ' + JSON.stringify(configBubble, null, '\t'));
  
