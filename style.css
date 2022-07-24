@@ -225,9 +225,9 @@ input:checked+.slider:before {
 
 
 /* #bubble-chart-container {
-  position: fixed;
-  top: auto;
-} */
+  height:400px;
+ width:400px
+} */ 
 
 #bubbleChart {
   position: fixed;
