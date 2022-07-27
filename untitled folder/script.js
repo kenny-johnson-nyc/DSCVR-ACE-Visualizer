@@ -496,16 +496,18 @@ function bubbleFader(dataPoints, backgroundColors, colors, spaceCraft) {
   for (i = 0; i < dataPoints.length; i++) {
     // let bubbleRadius = 0.1 + Math.abs((i - dataPoints.length)) ** E / (dataPoints.length) ** E;
     let d = { x: dataPoints[i].y_gse, y: dataPoints[i].z_gse, r: 6 };
-    chartDataBubble.datasets[spaceCraft].data.push(d);
+    // chartDataBubble.datasets[spaceCraft].data.push(d);
 
     //console.log('alpha ' + ((dataPoints.length-i)/ dataPoints.length));
     backgroundColors.push(colors + ((dataPoints.length - i) / dataPoints.length) + ')');
     //console.log('color[' + i + '] ' + backgroundColors[backgroundColors.length-1]);
 
     let d2 = {x: dataPoints[i].y_gse, y: dataPoints[i].z_gse};
+    console.log("chartDataLine " + chartDataLine)
     chartDataLine.datasets[spaceCraft].data.push(d2);
+  
   }
-  chartDataBubble.datasets[spaceCraft].backgroundColors = backgroundColors;
+  // chartDataBubble.datasets[spaceCraft].backgroundColors = backgroundColors;
 }
 
 // LOAD DATA
@@ -737,16 +739,16 @@ function displayObservatories(params) {
 
   // console.log('loadData finished and returned control');
    // initialize the bubble chart data
-   initChartData();
+  //  initChartData();
 
-   // initialize the chart config, which uses the data
-   configBubble = initChartConfig();
+  //  // initialize the chart config, which uses the data
+  //  configBubble = initChartConfig();
  
-   // console.log('first configBubble ' + JSON.stringify(configBubble, null, '\t'));
- 
-   
+  //  // console.log('first configBubble ' + JSON.stringify(configBubble, null, '\t'));
+  //  createBubbleChart(configBubble);
 
-   createBubbleChart(configBubble);
+
+   initChartDataLine();
    createLineChart();
 
    loadData();
