@@ -438,42 +438,42 @@ function darkMode(checkbox, value) {
 
 
 
-function processData(results) {
-  let i;
-  let dscovr = [];
-  let ace = [];
+// function processData(results) {
+//   let i;
+//   let dscovr = [];
+//   let ace = [];
 
-  //console.log('# of datapoints ' + results.length);
+//   //console.log('# of datapoints ' + results.length);
 
-  // csv position file looks like 6 columns of data
-  // time_tag	  active	sourcex_gse	  y_gse	  z_gse
-  // 2016-01-19 0:00:00	1	ACE	1479696	-235986	63780
-  // 2016-01-19 1:00:00	1	ACE	1479696	-235986	63780
-
-
-  // Split data by spacecraft (source)
-
-  let splitData = splitBySpacecraft(results);
-  dscovr = splitData.dscovr;
-  ace = splitData.ace;
-
-  // skip duplicates create temp arrays
-
-  let tempAce = skipDuplicates(ace);
-  let tempDscovr = skipDuplicates(dscovr);
-
-  // Sample rate in hours (1 week = 168 hours)
-
-  // sampleRate = 48;
+//   // csv position file looks like 6 columns of data
+//   // time_tag	  active	sourcex_gse	  y_gse	  z_gse
+//   // 2016-01-19 0:00:00	1	ACE	1479696	-235986	63780
+//   // 2016-01-19 1:00:00	1	ACE	1479696	-235986	63780
 
 
-  console.log('dscovr data points ' + tempDscovr.length);
-  dscovrData = subsample(tempDscovr);
-  aceData = subsample(tempAce);
+//   // Split data by spacecraft (source)
 
-  loadData();
-  updateChart();
-}
+//   let splitData = splitBySpacecraft(results);
+//   dscovr = splitData.dscovr;
+//   ace = splitData.ace;
+
+//   // skip duplicates create temp arrays
+
+//   let tempAce = skipDuplicates(ace);
+//   let tempDscovr = skipDuplicates(dscovr);
+
+//   // Sample rate in hours (1 week = 168 hours)
+
+//   // sampleRate = 48;
+
+
+//   console.log('dscovr data points ' + tempDscovr.length);
+//   dscovrData = subsample(tempDscovr);
+//   aceData = subsample(tempAce);
+
+//   loadData();
+//   updateChart();
+// }
 
 function subsample(inputData) {
   let i;
@@ -739,7 +739,7 @@ function displayObservatories(params) {
 
   // console.log('loadData finished and returned control');
    // initialize the bubble chart data
-  //  initChartData();
+   initChartData();
 
   //  // initialize the chart config, which uses the data
   //  configBubble = initChartConfig();
