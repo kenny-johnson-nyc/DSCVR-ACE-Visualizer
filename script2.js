@@ -304,13 +304,6 @@ function updateChart() {
 
 
 
-
-
-
-
-
-
-
 function createLineChart() {
 
   let delayBetweenPoints = 200;
