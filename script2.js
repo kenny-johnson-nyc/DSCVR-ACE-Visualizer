@@ -25,19 +25,16 @@ let alpha = Math.atan(radiusSun / distanceToSun);
 let radiusSunAtL1 = distanceToL1 * Math.tan(alpha) * 1.6;
 
 
-
 /**
 * Called when the browser finished construction of the DOM. 
  */
 $(function () {
-
+createCharts();
   // compute the time range of data to request from NASA
   defineEndTime();
   const start = convertTime(startTime);
   const end = convertTime(endTime);
-  console.log('start ' + start + ' end ' + end);
   let sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
-  console.log('sscurl ' + sscUrl);
   $.get(sscUrl, fetchData, 'json');
 });
 
@@ -93,7 +90,7 @@ function fetchData(positionData) {
   aceData = subsample(tempAce);
   dscovrData = subsample(tempDscovr);
 
-  createCharts();
+  loadData();
 }
 
 function skipDuplicates(input) {
@@ -154,15 +151,16 @@ function createCharts() {
 
   // force chart to reload  
   createBubbleChart();
-  createLineChart();
-
   // createLineChart();
 
-  loadData();
+
+
 
   // default to darkMode at startup, toggle button should be to the left
   // darkMode(document.getElementById('dark-mode-checkbox'), localStorage.getItem('darkmode-cookie'));
 }
+
+
 
 /**
  * Create a Chart.js bubble chart for displaying the spacecraft position data.
@@ -283,10 +281,20 @@ function darkMode(checkbox, value) {
   lineChart.destroy();
 
   // force chart to reload  
-  createBubbleChart(configBubble);
+  createBubbleChart();
   createLineChart();
 }
 
+function bubbleFader(dataPoints, backgroundColors, colors, spaceCraft) {
+  let i;
+  for (i = 0; i < dataPoints.length; i++) {
+    let d = { x: dataPoints[i].y_gse, y: dataPoints[i].z_gse, r: 6 };
+    backgroundColors.push(colors + ((dataPoints.length - i) / dataPoints.length) + ')');
+    let d2 = { x: dataPoints[i].y_gse, y: dataPoints[i].z_gse };
+    chartDataLine.datasets[spaceCraft].data.push(d2);
+    // console.log("chartDataLine " + JSON.stringify(chartDataLine.datasets[spaceCraft].data));
+  }
+}
 
 
 
@@ -309,30 +317,31 @@ function createLineChart() {
   let delayBetweenPoints = 200;
   let started = {};
   let ctx2 = document.getElementById('lineChart').getContext('2d');
+  chartDataLine = {
+    datasets: [
+      {
+        label: ['DSCOVR'],
+        backgroundColor: dscovrBackgroundColor,
+        borderColor: 'rgba(255,221,50,0)',
+        order: 0,
+        data: [{
+
+        }]
+      },
+      {
+        label: ['ACE'],
+        backgroundColor: aceBackgroundColor,
+        borderColor: 'rgba(60,186,159,0)',
+        order: 1,
+        data: [{
+
+        }]
+      },
+    ]
+  };
   lineChart = new Chart(ctx2, {
     type: 'line',
-    data: {
-      datasets: [
-        {
-          label: ['DSCOVR'],
-          backgroundColor: dscovrBackgroundColor,
-          borderColor: 'rgba(255,221,50,0)',
-          order: 0,
-          data: [{
-
-          }]
-        },
-        {
-          label: ['ACE'],
-          backgroundColor: aceBackgroundColor,
-          borderColor: 'rgba(60,186,159,0)',
-          order: 1,
-          data: [{
-
-          }]
-        },
-      ]
-    },
+    data: chartDataLine,
     options: {
       responsive: true,
       animation: {
@@ -385,3 +394,4 @@ function createLineChart() {
 
   });
 }
+
