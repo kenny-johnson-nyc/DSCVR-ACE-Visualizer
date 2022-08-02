@@ -150,12 +150,8 @@ function convertKmToPx(km) {
 function createCharts() {
 
   // force chart to reload  
-  createBubbleChart();
-  // createLineChart();
-
-
-
-
+  // createBubbleChart();
+  createLineChart();
   // default to darkMode at startup, toggle button should be to the left
   // darkMode(document.getElementById('dark-mode-checkbox'), localStorage.getItem('darkmode-cookie'));
 }
@@ -166,10 +162,44 @@ function createCharts() {
  * Create a Chart.js bubble chart for displaying the spacecraft position data.
  */
 function createBubbleChart() {
+  chartDataBubble = {datasets: [
+    {
+      type: 'bubble',
+      label: ['DSCOVR'],
+      backgroundColor: dscovrBackgroundColor,
+      borderColor: 'rgba(255,221,50,0)',
+      order: 0,
+      data: [{
+
+      }]
+    },
+    {
+      type: 'bubble',
+      label: ['ACE'],
+      backgroundColor: aceBackgroundColor,
+      borderColor: 'rgba(60,186,159,0)',
+      order: 1,
+      data: [{
+
+      }]
+    },
+    {
+      type: 'bubble',
+      label: ['SUN'],
+      backgroundColor: 'rgba(255,214,0,.9)',
+      borderColor: 'rgba(255,214,0,.5)',
+      data: [{
+        x: 0,
+        y: 0,
+        r: convertKmToPx(radiusSunAtL1),
+      }]
+    }
+  ]};
+  
   bubbleChart = new Chart(
     document.getElementById('bubbleChart'),
     {
-      type: "bubble",
+      
       data: chartDataBubble,
       options: {
         responsive: true,
@@ -221,37 +251,8 @@ function createBubbleChart() {
           }
         }
       },
-      lables: ['DSCOVR', 'ACE', 'SUN'],
-      datasets: [
-        {
-          label: ['DSCOVR'],
-          backgroundColor: dscovrBackgroundColor,
-          borderColor: 'rgba(255,221,50,0)',
-          order: 0,
-          data: [{
+      lables: ['DSCOVR', 'ACE', 'SUN']
 
-          }]
-        },
-        {
-          label: ['ACE'],
-          backgroundColor: aceBackgroundColor,
-          borderColor: 'rgba(60,186,159,0)',
-          order: 1,
-          data: [{
-
-          }]
-        },
-        {
-          label: ['SUN'],
-          backgroundColor: 'rgba(255,214,0,.9)',
-          borderColor: 'rgba(255,214,0,.5)',
-          data: [{
-            x: 0,
-            y: 0,
-            r: convertKmToPx(radiusSunAtL1),
-          }]
-        }
-      ]
     }
   )
 }
@@ -292,6 +293,7 @@ function bubbleFader(dataPoints, backgroundColors, colors, spaceCraft) {
     backgroundColors.push(colors + ((dataPoints.length - i) / dataPoints.length) + ')');
     let d2 = { x: dataPoints[i].y_gse, y: dataPoints[i].z_gse };
     chartDataLine.datasets[spaceCraft].data.push(d2);
+    // chartDataBubble.datasets[spaceCraft].data.push(d2);
     // console.log("chartDataLine " + JSON.stringify(chartDataLine.datasets[spaceCraft].data));
   }
 }
@@ -302,10 +304,11 @@ function loadData() {
   // put the retreived and massaged data into the globals
   bubbleFader(dscovrData, dscovrBackgroundColor, 'rgba(0,195,255,', 0);
   bubbleFader(aceData, aceBackgroundColor, 'rgba(203,51,58,', 1);
+  updateCharts();
 }
 
-function updateChart() {
-  bubbleChart.update();
+function updateCharts() {
+  // bubbleChart.update();
   lineChart.update();
 }
 
@@ -316,10 +319,10 @@ function createLineChart() {
 
   let delayBetweenPoints = 200;
   let started = {};
-  let ctx2 = document.getElementById('lineChart').getContext('2d');
   chartDataLine = {
     datasets: [
       {
+        type: 'line',
         label: ['DSCOVR'],
         backgroundColor: dscovrBackgroundColor,
         borderColor: 'rgba(255,221,50,0)',
@@ -329,6 +332,7 @@ function createLineChart() {
         }]
       },
       {
+        type: 'line',
         label: ['ACE'],
         backgroundColor: aceBackgroundColor,
         borderColor: 'rgba(60,186,159,0)',
@@ -339,8 +343,7 @@ function createLineChart() {
       },
     ]
   };
-  lineChart = new Chart(ctx2, {
-    type: 'line',
+  lineChart = new Chart(document.getElementById('lineChart'), {
     data: chartDataLine,
     options: {
       responsive: true,

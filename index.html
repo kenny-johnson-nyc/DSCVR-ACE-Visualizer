@@ -15,8 +15,16 @@
   <!-- Load Chart.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
 
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-3d.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
   <link rel="stylesheet" href="style.css">
-  <script src="script2.js" defer></script>
+  <script src="script3.js" defer></script>
+  <script src="brand-dark.js" defer></script>
+  <script src="brand-dark.js.map" defer></script>
 
 </head>
 
@@ -43,11 +51,23 @@
       <!-- CHART -->
 
 
-      <div id="bubble-chart-container">
+      <figure class="highcharts-figure">
+        <div id="container"></div>
+        <p class="highcharts-description">
+            Chart demonstrating a 3D scatter plot, where the chart can be rotated to
+            inspect points from different angles. Each point has an x, y, and z
+            coordinate value.
+        </p>
+    </figure>
+
+    
+
+
+      <!-- <div id="bubble-chart-container">
         <canvas id="bubbleChart" height="100%" width="100%"></canvas>
         <canvas id="lineChart" height="100%" width="100%"></canvas>
       </div>
-     
+      -->
 
       <!-- DARKMODE -->
       <!-- Rounded switch -->
