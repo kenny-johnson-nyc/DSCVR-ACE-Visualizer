@@ -87,8 +87,6 @@ function fetchData(positionData) {
 
   chart.series[0].setData(aceData3d);
   chart.series[1].setData(dscovrData3d);
-  chart.series[2].setData(aceData3dLine);
-  chart.series[3].setData(dscovrData3dLine)
 }
 
 /**
@@ -180,10 +178,54 @@ function convertKmToPx(km) {
 (function (H) {
 
   function create3DChart() {
-    // Give the points a 3D feel by adding a radial gradient
+   
+// Theme loads before data 
+    Highcharts.theme = {
+      colors: {
+        linearGradient: [0, 0, 500, 500],
+        stops: [
+          [0, 'rgb(255, 255, 255)'],
+          [1, 'rgb(0, 240, 255)']
+        ]
+      },
+      
+      chart: {
+        backgroundColor: {
+          linearGradient: [0, 0, 500, 500],
+          stops: [
+            [0, 'rgb(255, 255, 255)'],
+            [0.1, 'rgb(100, 100, 255)'],
+            [1, 'rgb(0, 240, 255)']
+          ]
+        },
+      },
+      title: {
+        style: {
+          color: '#000',
+          font: 'bold 30px "Trebuchet MS", Verdana, sans-serif'
+        }
+      },
+      subtitle: {
+        style: {
+          color: '#666666',
+          font: 'bold 12px "Trebuchet MS", Verdana, sans-serif'
+        }
+      },
+      legend: {
+        itemStyle: {
+          font: '9pt Trebuchet MS, Verdana, sans-serif',
+          color: 'black'
+        },
+        itemHoverStyle: {
+          color: 'gray'
+        }
+      }
+    };
+    Highcharts.setOptions(Highcharts.theme);
+
+     // Give the points a 3D feel by adding a radial gradient
 
     Highcharts.setOptions({
-      theme: "brand-dark",
       colors: Highcharts.getOptions().colors.map(function (color) {
         return {
           radialGradient: {
@@ -205,14 +247,15 @@ function convertKmToPx(km) {
         renderTo: 'container',
         margin: 10,
         type: 'scatter3d',
-        animation: false,
+        spacingBottom: 15,
+        marginBottom: 30,
+        animation: true,
         options3d: {
           enabled: true,
           alpha: 10,
           beta: 30,
           depth: 250,
           viewDistance: 6,
-          fitToPlot: true,
           frame: {
             bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
             back: { size: 1, color: 'rgba(0,0,0,0.04)' },
@@ -221,12 +264,13 @@ function convertKmToPx(km) {
         }
       },
       title: {
-        text: 'Draggable box'
+        text: 'DSCOVR/ACE VISUALIZER'
       },
       subtitle: {
         text: 'Click and drag the plot area to rotate in space'
       },
       plotOptions: {
+
         scatter: {
           width: 10,
           height: 10,
@@ -249,13 +293,22 @@ function convertKmToPx(km) {
         showFirstLabel: true
       },
       legend: {
-        enabled: true
+        enabled: true,
+        floating: true,
+        align: 'left'
       },
-      series: [{
-        lineWidth: 1,
-      }, {
-        lineWidth: 1,
-      },
+      series: [
+        {
+          lineWidth: 1,
+
+        },
+
+        {
+          lineWidth: 1,
+        },
+        {
+          data: 'data',
+        },
       ]
     });
   }
