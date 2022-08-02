@@ -249,15 +249,12 @@ function convertKmToPx(km) {
         showFirstLabel: true
       },
       legend: {
-        enabled: false
+        enabled: true
       },
       series: [{
-      }, {
-        type: 'scatter',
         lineWidth: 1,
-        marker: {
-          enabled: false
-        },
+      }, {
+        lineWidth: 1,
       },
       ]
     });
