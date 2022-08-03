@@ -280,17 +280,27 @@ function convertKmToPx(km) {
       yAxis: {
         // min: -300000,
         // max: 300000,
-        title: 'GSE Y-Axis'
+        title: {
+          text:'GSE Y-axis'
+        }
       },
       xAxis: {
         // min: 1400000,
         // max: 1600000,
-        gridLineWidth: 1
+        gridLineWidth: 1,
+        title: {
+          text:'GSE X-axis'
+        }
       },
       zAxis: {
         // min: -300000,
         // max: 300000,
-        showFirstLabel: true
+        x:0,
+        y:0,
+        z:0,
+        title: {
+          text:'GSE Z-axis'
+        }
       },
       legend: {
         enabled: true,
@@ -307,7 +317,7 @@ function convertKmToPx(km) {
           lineWidth: 1,
         },
         {
-          data: 'data',
+          data: [0]
         },
       ]
     });
