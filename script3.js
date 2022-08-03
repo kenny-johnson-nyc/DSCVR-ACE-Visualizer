@@ -248,12 +248,13 @@ function convertKmToPx(km) {
         margin: 10,
         type: 'scatter3d',
         spacingBottom: 15,
-        marginBottom: 30,
+        marginLeft: 15,
+        marginBottom: 15,
         animation: true,
         options3d: {
           enabled: true,
-          alpha: 10,
-          beta: 30,
+          alpha: 0,
+          beta: 90,
           depth: 250,
           viewDistance: 6,
           frame: {
@@ -295,9 +296,7 @@ function convertKmToPx(km) {
       zAxis: {
         // min: -300000,
         // max: 300000,
-        x:0,
-        y:0,
-        z:0,
+       
         title: {
           text:'GSE Z-axis'
         }
