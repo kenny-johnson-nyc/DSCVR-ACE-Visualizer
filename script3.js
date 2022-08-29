@@ -145,7 +145,7 @@ function convertKmToPx(km) {
   // need DPR?
   let chartPx = (lineChart !== undefined) ? lineChart.canvas.width : 600;
   // console.log('chart width in pixels ' + chartPx);
-
+          
   // compute the pixel per km ratio
   let ratio = chartPx / 600000;
   // console.log('km to pixel ratio ' + ratio);
@@ -268,14 +268,26 @@ function convertKmToPx(km) {
         // animation: true,
         options3d: {
           enabled: true,
+
+  // Setting alpha and beta to zero puts earth on left and satellites on right.
+
           alpha: 0,
           beta: -90,
           depth: 500,
           viewDistance: 10,
           frame: {
-            bottom: { size: 1, color: 'rgba(0,0,0,0.4)' },
-            back: { size: 1, color: 'rgba(0,0,0,0.4)' },
-            side: { size: 1, color: 'rgba(0,0,0,0.4)' }
+           left: {
+            visible: false,
+           },
+           right: {
+            visible: true,
+           },
+           front: {
+            visible: true,
+           },
+           back: {
+            visible: false,
+           }
           }
         }
       },
@@ -325,8 +337,10 @@ function convertKmToPx(km) {
           name: "ACE",
           lineWidth: 1,
           marker: {
+            fillColor: 'purple',
             symbol: 'circle',
-            // symbol: 'url(imgs/1200px-ACE_spacecraft_model.png)', NEED TO CENTER
+            // symbol: 'url(imgs/1200px-ACE_spacecraft_model.png)', 
+            // NEED TO CENTER
             radius: 7,
             height: '7%',
             width: '7%',
@@ -337,6 +351,7 @@ function convertKmToPx(km) {
           name: "DSCOVR",
           lineWidth: 1,
           marker: {
+            fillColor: 'red',
             symbol: 'circle',
             // symbol: 'url(imgs/DSCOVR_spacecraft_model.png)', NEED TO CENTER
             radius: 7,
@@ -350,6 +365,7 @@ function convertKmToPx(km) {
           visible: false,
           lineWidth: 1,
           marker: {
+            fillColor: 'yellow',
             symbol: 'circle',
             // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
             radius: 7,
@@ -362,6 +378,7 @@ function convertKmToPx(km) {
           name: "EARTH",
           lineWidth: 1,
           marker: {
+            fillColor: 'blue',
             symbol: 'circle',
             // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
             radius: 7,
