@@ -7,7 +7,8 @@ const distanceToSun = 93000000; // miles
 const radiusSun = 432690; // miles
 const distanceToL1 = 1000000;
 const E = 8;
-const sunGSE = [[0, 0, 0]];
+const sunGSE = [[155000000, 0, 0]];
+const earthGSE = [[0, 0, 0]];
 let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
 let radiusSunPx;
 let startTime;
@@ -90,6 +91,7 @@ function fetchData(positionData) {
   chart.series[0].setData(aceData3d);
   chart.series[1].setData(dscovrData3d);
   chart.series[2].setData(sunGSE);
+  chart.series[3].setData(earthGSE);
 }
 
 /**
@@ -221,7 +223,7 @@ function convertKmToPx(km) {
       },
       legend: {
         itemStyle: {
-          font: '9pt Trebuchet MS, Verdana, sans-serif',
+          font: '10pt Trebuchet MS, Verdana, sans-serif',
           color: 'rgb(220, 220, 220)'
         },
         itemHoverStyle: {
@@ -257,7 +259,7 @@ function convertKmToPx(km) {
         margin: 10,
         type: 'scatter3d',
         spacingTop: 27,
-        spacingBottom: 10,
+        spacingBottom: 20,
         marginTop: 80,
         marginBottom: 80,
         height: '700',
@@ -293,24 +295,23 @@ function convertKmToPx(km) {
         }
       },
       yAxis: {
-        min: -300000,
-        max: 300000,
+        // min: -300000,
+        // max: 300000,
         title: {
           text: 'GSE Y-axis'
         }
       },
       xAxis: {
-        min: 0,
-        max: 1600000,
+        // min: 0,
+        // max: 1600000,
         gridLineWidth: 1,
         title: {
           text: 'GSE X-axis'
         }
       },
       zAxis: {
-        min: -300000,
-        max: 300000,
-
+        // min: -300000,
+        // max: 300000,
         title: {
           text: 'GSE Z-axis'
         }
@@ -346,14 +347,26 @@ function convertKmToPx(km) {
         },
         {
           name: "SUN",
+          visible: false,
           lineWidth: 1,
           marker: {
-            
+            symbol: 'circle',
             // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
             radius: 7,
             height: '3%',
             width: '3%',
+          }
 
+        },
+        {
+          name: "EARTH",
+          lineWidth: 1,
+          marker: {
+            symbol: 'circle',
+            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+            radius: 7,
+            height: '3%',
+            width: '3%',
           }
 
         },

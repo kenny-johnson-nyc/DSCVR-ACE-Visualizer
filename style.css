@@ -35,8 +35,8 @@ body {
   /* Must be set to fixed px. */
   min-width: 300px; 
   min-height: 300px;
-  width: 40rem;
-  height: 40rem;
+  width: 700px;
+  height: 700px;
   margin: auto;
   border-radius: .85em;
 }
