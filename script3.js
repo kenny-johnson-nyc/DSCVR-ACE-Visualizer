@@ -260,6 +260,9 @@ function convertKmToPx(km) {
         spacingBottom: 10,
         marginTop: 80,
         marginBottom: 80,
+        height: 600,
+        width: 600,
+        allowMutatingData: false,
         animation: true,
         options3d: {
           enabled: true,
@@ -285,7 +288,8 @@ function convertKmToPx(km) {
         scatter: {
           width: 10,
           height: 10,
-          depth: 10
+          depth: 10,
+          radius: 10,
         }
       },
       yAxis: {
@@ -319,7 +323,7 @@ function convertKmToPx(km) {
         {
           name: "ACE",
           lineWidth: 1,
-
+          
         },
 
         {

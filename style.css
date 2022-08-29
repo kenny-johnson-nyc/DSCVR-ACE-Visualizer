@@ -22,18 +22,20 @@ body {
   align-items: center;
   justify-content: center;
   flex-flow: column;
+  position: relative;
 }
 
 #container {
   display: flex;
-  align-items: center;
+  position: relative;
   justify-content: center;
+  align-items: center;
   box-shadow: 0 0 30px rgb(179, 179, 179);
 
   /* Must be set to fixed px. */
-  min-width: 600px; 
-  min-height: 600px;
-  width: 100%;
+  min-width: 300px; 
+  min-height: 300px;
+  width: 100vw;
   height: 100%;
 
   border-radius: .85em;
@@ -191,8 +193,6 @@ input:checked+.slider:before {
 
 .highcharts-figure,
 .highcharts-data-table table {
-  min-width: 310px;
-  max-width: 800px;
   margin: 0 auto;
 }
 
