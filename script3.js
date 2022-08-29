@@ -253,23 +253,24 @@ function convertKmToPx(km) {
     chart = new Highcharts.Chart({
       chart: {
         renderTo: 'container',
+        fitToPlot: 'false',
         margin: 10,
         type: 'scatter3d',
         spacingTop: 27,
         spacingBottom: 10,
-        marginTop: 20,
+        marginTop: 80,
         marginBottom: 80,
         animation: true,
         options3d: {
           enabled: true,
           alpha: 0,
           beta: 90,
-          depth: 250,
-          viewDistance: 6,
+          depth: 500,
+          viewDistance: 10,
           frame: {
-            bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
-            back: { size: 1, color: 'rgba(0,0,0,0.04)' },
-            side: { size: 1, color: 'rgba(0,0,0,0.06)' }
+            bottom: { size: 1, color: 'rgba(0,0,0,0.4)' },
+            back: { size: 1, color: 'rgba(0,0,0,0.4)' },
+            side: { size: 1, color: 'rgba(0,0,0,0.4)' }
           }
         }
       },
@@ -288,23 +289,23 @@ function convertKmToPx(km) {
         }
       },
       yAxis: {
-        // min: -300000,
-        // max: 300000,
+        min: -300000,
+        max: 300000,
         title: {
           text:'GSE Y-axis'
         }
       },
       xAxis: {
-        // min: 1400000,
-        // max: 1600000,
+        min: 0,
+        max: 1600000,
         gridLineWidth: 1,
         title: {
           text:'GSE X-axis'
         }
       },
       zAxis: {
-        // min: -300000,
-        // max: 300000,
+        min: -300000,
+        max: 300000,
        
         title: {
           text:'GSE Z-axis'

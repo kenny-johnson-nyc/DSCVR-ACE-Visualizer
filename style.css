@@ -25,9 +25,17 @@ body {
 }
 
 #container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-shadow: 0 0 30px rgb(179, 179, 179);
-  min-width: 700px;
-  min-height: 700px;
+
+  /* Must be set to fixed px. */
+  min-width: 600px; 
+  min-height: 600px;
+  width: 100%;
+  height: 100%;
+
   border-radius: .85em;
 }
 
