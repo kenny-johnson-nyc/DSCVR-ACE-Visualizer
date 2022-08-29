@@ -35,9 +35,9 @@ body {
   /* Must be set to fixed px. */
   min-width: 300px; 
   min-height: 300px;
-  width: 100vw;
-  height: 100%;
-
+  width: 40rem;
+  height: 40rem;
+  margin: auto;
   border-radius: .85em;
 }
 

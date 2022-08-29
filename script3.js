@@ -7,7 +7,7 @@ const distanceToSun = 93000000; // miles
 const radiusSun = 432690; // miles
 const distanceToL1 = 1000000;
 const E = 8;
-const sunGSE = [[0,0,0]];
+const sunGSE = [[0, 0, 0]];
 let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
 let radiusSunPx;
 let startTime;
@@ -19,7 +19,7 @@ let pointsPerWeek = 7 * 24 * (60 / minutesPerPoint);
 let pointsPerDay = 7 * 24;
 let aceData3d;
 let dscovrData3d;
-let aceData3dLine;
+let aceData3dLine; 
 let dscovrData3dLine;
 let chart;
 let alpha = Math.atan(radiusSun / distanceToSun);
@@ -181,8 +181,8 @@ function convertKmToPx(km) {
 (function (H) {
 
   function create3DChart() {
-   
-// Theme loads before data 
+
+    // Theme loads before data 
     Highcharts.theme = {
       colors: {
         linearGradient: [0, 0, 500, 500],
@@ -191,7 +191,7 @@ function convertKmToPx(km) {
           [1, 'rgb(0, 0, 0)']
         ]
       },
-      
+
       chart: {
         backgroundColor: {
           radialGradient: [0, 0, 5, 5],
@@ -204,7 +204,7 @@ function convertKmToPx(km) {
             [.9, 'rgb(20, 20, 20)'],
             [1, 'rgb(23, 23, 23)']
           ]
-          
+
         },
       },
       title: {
@@ -231,7 +231,7 @@ function convertKmToPx(km) {
     };
     Highcharts.setOptions(Highcharts.theme);
 
-     // Give the points a 3D feel by adding a radial gradient
+    // Give the points a 3D feel by adding a radial gradient
 
     Highcharts.setOptions({
       colors: Highcharts.getOptions().colors.map(function (color) {
@@ -260,8 +260,8 @@ function convertKmToPx(km) {
         spacingBottom: 10,
         marginTop: 80,
         marginBottom: 80,
-        height: 600,
-        width: 600,
+        height: '700',
+        width: '700',
         allowMutatingData: false,
         animation: true,
         options3d: {
@@ -296,7 +296,7 @@ function convertKmToPx(km) {
         min: -300000,
         max: 300000,
         title: {
-          text:'GSE Y-axis'
+          text: 'GSE Y-axis'
         }
       },
       xAxis: {
@@ -304,15 +304,15 @@ function convertKmToPx(km) {
         max: 1600000,
         gridLineWidth: 1,
         title: {
-          text:'GSE X-axis'
+          text: 'GSE X-axis'
         }
       },
       zAxis: {
         min: -300000,
         max: 300000,
-       
+
         title: {
-          text:'GSE Z-axis'
+          text: 'GSE Z-axis'
         }
       },
       legend: {
@@ -323,18 +323,39 @@ function convertKmToPx(km) {
         {
           name: "ACE",
           lineWidth: 1,
-          
+          marker: {
+            symbol: 'circle',
+            // symbol: 'url(imgs/1200px-ACE_spacecraft_model.png)', NEED TO CENTER
+            radius: 7,
+            height: '7%',
+            width: '7%',
+          }
         },
 
         {
           name: "DSCOVR",
           lineWidth: 1,
-      
+          marker: {
+            symbol: 'circle',
+            // symbol: 'url(imgs/DSCOVR_spacecraft_model.png)', NEED TO CENTER
+            radius: 7,
+            height: '7%',
+            width: '7%',
+          }
+
         },
         {
           name: "SUN",
           lineWidth: 1,
-   
+          marker: {
+            
+            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+            radius: 7,
+            height: '3%',
+            width: '3%',
+
+          }
+
         },
       ]
     });
