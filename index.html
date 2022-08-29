@@ -12,26 +12,31 @@
   <!-- Load jQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-  <!-- Load Chart.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
-
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/export-data.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  <script src="projections.js"></script>
+  <script src="brand-dark.js"></script>
   <link rel="stylesheet" href="style.css">
-  <script src="script2.js" defer></script>
+ 
 
 </head>
 
 <body>
-  
 
 
 
-    <header>
 
-    </header>
+  <header>
 
-    <main>
-      <!-- LOGOS -->
-      <!-- <div class="logos-container">
+  </header>
+
+  <main>
+
+    <!-- LOGOS -->
+    <!-- <div class="logos-container">
         <div id="noaa-img" class="logo"></div>
         <div id="dscovr-img" class="logo"></div>
         <div id="ace-img" class="logo"></div>
@@ -40,76 +45,85 @@
 
       </div> -->
 
-      <!-- CHART -->
 
 
-      <div id="bubble-chart-container">
-        <canvas id="bubbleChart" height="100%" width="100%"></canvas>
-        <canvas id="lineChart" height="100%" width="100%"></canvas>
-      </div>
-     
 
-      <!-- DARKMODE -->
-      <!-- Rounded switch -->
+    <!-- CHART -->
 
-      <label class="switch">
-        <input id="dark-mode-checkbox" type="checkbox" onchange="darkMode(this)">
-        <span id="checkbox-text" class="slider round">
-        </span>
-        <!-- label element -->
-        <span class="labels" data-on="ON" data-off="OFF">
-        </span>
-      </label>
-     
-      <!-- INFO -->
+    <figure class="highcharts-figure">
+      <div id="container"></div>
+      <p class="highcharts-description">
+      </p>
+    </figure>
 
-      <div class=info-container>
-        <h2>INFO</h2>
-        <figure>
-          <p>
-            This graph is designed to give a visual representation of the locations of two satellites.
-          </p>
-          <p>
-            https://en.wikipedia.org/wiki/Lagrange_point
-          </p>
 
-          <img class="info-img" src="imgs/DSCOVR-Lissajous-orbit.png" alt="DSCOVR Lissajous chart">
-          <figcaption>Lissajous</figcaption>
-        </figure>
 
-        <h3>RELATED LINKS</h3>
-        <ul>
-          <li>
-            <div class="links">
-              <a class="anchor-style" href='https://www.ngdc.noaa.gov/dscovr/portal/#/'>DSCOVR Space Weather Data Portal
-              </a>
-            </div>
-          </li>
-          <li>
-            <div class="links">
-              <a class="anchor-style" href='https://sscweb.gsfc.nasa.gov/WebServices/REST/#Get_Observatories'>SSC
-                RESTful Web Services
-              </a>
-            </div>
-          </li>
-          <li>
-            <div class="links">
-              <a class="anchor-style" href='https://www.swpc.noaa.gov/products/real-time-solar-wind'>SPACE WEATHER
-                PREDICTION CENTER - Real Time Solar Wind
-              </a>
-            </div>
-          </li>
-        </ul>
-      </div>
+    <!-- DARKMODE -->
+    <!-- Rounded switch -->
 
-      <!-- FOOTER -->
+    <label class="switch">
+      <input id="dark-mode-checkbox" type="checkbox" onchange="darkMode(this)">
+      <span id="checkbox-text" class="slider round">
+      </span>
+      <!-- label element -->
+      <span class="labels" data-on="ON" data-off="OFF">
+      </span>
+    </label>
 
-      <div class="footer">
-        <p>Designed and built by Kenny Johnson 2022</p>
-      </div>
+    <!-- INFO -->
+
+    <div class=info-container>
+      <h2>INFO</h2>
+      <figure>
+        <p>
+          This graph is designed to give a visual representation of the locations of two satellites.
+        </p>
+        <p>
+          https://en.wikipedia.org/wiki/Lagrange_point
+        </p>
+
+        <img class="info-img" src="imgs/DSCOVR-Lissajous-orbit.png" alt="DSCOVR Lissajous chart">
+        <figcaption>Lissajous</figcaption>
+      </figure>
+
+      <h3>RELATED LINKS</h3>
+      <ul>
+        <li>
+          <div class="links">
+            <a class="anchor-style" href='https://www.ngdc.noaa.gov/dscovr/portal/#/'>DSCOVR Space Weather Data Portal
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="links">
+            <a class="anchor-style" href='https://sscweb.gsfc.nasa.gov/WebServices/REST/#Get_Observatories'>SSC
+              RESTful Web Services
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="links">
+            <a class="anchor-style" href='https://www.swpc.noaa.gov/products/real-time-solar-wind'>SPACE WEATHER
+              PREDICTION CENTER - Real Time Solar Wind
+            </a>
+          </div>
+        </li>
+      </ul>
     </div>
 
-  
+    <!-- FOOTER -->
+
+    <div class="footer">
+      <p>Designed and built by Kenny Johnson 2022</p>
+    </div>
+    </div>
+
+    <script>
+
+    </script>
+     <script src="script3.js"></script>
+   
 </body>
+
 
 </html>
