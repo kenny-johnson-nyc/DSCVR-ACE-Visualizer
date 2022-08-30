@@ -8,7 +8,7 @@ const radiusSun = 432690; // miles
 const distanceToL1 = 1000000;
 const E = 8;
 const sunGSE = [[155000000, 0, 0]];
-const earthGSE = [[0 ,0 ,0 ]];
+const earthGSE = [[0, 0, 0]];
 const sez2deg = [[16000000, 0, 0]];
 const sez4deg = [[16000000, 0, 0]];
 let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
@@ -22,7 +22,7 @@ let pointsPerWeek = 7 * 24 * (60 / minutesPerPoint);
 let pointsPerDay = 7 * 24;
 let aceData3d;
 let dscovrData3d;
-let aceData3dLine; 
+let aceData3dLine;
 let dscovrData3dLine;
 let chart;
 let alpha = Math.atan(radiusSun / distanceToSun);
@@ -104,8 +104,8 @@ function fetchData(positionData) {
 
   chart.series[0].setData(aceData3d);
   chart.series[1].setData(dscovrData3d);
-  chart.series[2].setData(sunGSE);
-  chart.series[3].setData(earthGSE);
+  chart.series[2].setData(earthGSE);
+  chart.series[3].setData(sunGSE);
   chart.series[4].setData(sez2deg);
   chart.series[5].setData(sez4deg);
 }
@@ -166,7 +166,7 @@ function convertKmToPx(km) {
   // need DPR?
   let chartPx = (lineChart !== undefined) ? lineChart.canvas.width : 600;
   // console.log('chart width in pixels ' + chartPx);
-          
+
   // compute the pixel per km ratio
   let ratio = chartPx / 600000;
   // console.log('km to pixel ratio ' + ratio);
@@ -256,21 +256,21 @@ function convertKmToPx(km) {
 
     // Give the points a 3D feel by adding a radial gradient
 
-    Highcharts.setOptions({
-      colors: Highcharts.getOptions().colors.map(function (color) {
-        return {
-          radialGradient: {
-            cx: 0.4,
-            cy: 0.3,
-            r: 0.5
-          },
-          stops: [
-            [0, color],
-            [1, Highcharts.color(color).brighten(-0.2).get('rgb')]
-          ]
-        };
-      })
-    });
+    // Highcharts.setOptions({
+    //   colors: Highcharts.getOptions().colors.map(function (color) {
+    //     return {
+    //       radialGradient: {
+    //         cx: 0.4,
+    //         cy: 0.3,
+    //         r: 0.5
+    //       },
+    //       stops: [
+    //         [0, color],
+    //         [1, Highcharts.color(color).brighten(-0.2).get('rgb')]
+    //       ]
+    //     };
+    //   })
+    // });
 
     // Set up the chart
     chart = new Highcharts.Chart({
@@ -279,46 +279,47 @@ function convertKmToPx(km) {
         fitToPlot: 'false',
         margin: 10,
         type: 'scatter3d',
-        spacingTop: 27,
-        spacingBottom: 10,
-        marginTop: 80,
-        marginBottom: 80,
+        spacingTop: 30,
+        marginTop: 60,
+        spacingBottom: 30,
+        marginBottom: 60,
+        marginRight: 0,
+        marginLeft: 0,
         height: '700',
         width: '700',
         allowMutatingData: false,
         // animation: true,
         events: {
           load: function () {
-              // set up the updating of the chart each second
-              // let series = this.series[0];
-              setInterval(function () {}, 1000);
+            // set up the updating of the chart each second
+            // let series = this.series[0];
+            setInterval(function () { }, 1000);
           }
-      },
+        },
         options3d: {
           enabled: true,
 
-  // Setting alpha and beta to zero puts earth on left and satellites on right.
-
+          // Setting alpha and beta to zero puts earth on left and satellites on right. alpha rotates on the vertical axis. beta rotates on the horizontal axis.
           alpha: 0,
           beta: -90,
           depth: 500,
-          viewDistance: 10,
+          viewDistance: 5,
           frame: {
-           left: {
-            visible: false,
-           },
-           right: {
-            visible: false,
-           },
-           front: {
-            visible: false,
-           },
-           back: {
-            visible: false,
-           },
-           bottom: {
-            visible: false,
-           }
+            left: {
+              visible: false,
+            },
+            right: {
+              visible: false,
+            },
+            front: {
+              visible: false,
+            },
+            back: {
+              visible: false,
+            },
+            bottom: {
+              visible: false,
+            }
           }
         }
       },
@@ -366,28 +367,45 @@ function convertKmToPx(km) {
       series: [
         {
           name: "ACE",
-          lineWidth: .1,
+          lineWidth: 0.2,
           marker: {
+          //   color: {
+          //     linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+          //     stops: [
+          //         [0, '#090979'], // start
+          //         [0.5, '#790927'], // middle
+          //         [1, '#793109'] // end
+          //     ]
+          // },
             fillColor: 'purple',
             symbol: 'circle',
             // symbol: 'url(imgs/1200px-ACE_spacecraft_model.png)', 
             // NEED TO CENTER
             radius: 7,
-            height: '7%',
-            width: '7%',
+
           }
         },
 
         {
           name: "DSCOVR",
-          lineWidth: .1,
+          lineWidth: 0.2,
           marker: {
             fillColor: 'red',
             symbol: 'circle',
             // symbol: 'url(imgs/DSCOVR_spacecraft_model.png)', NEED TO CENTER
             radius: 7,
-            height: '7%',
-            width: '7%',
+          }
+
+        },
+
+        {
+          name: "EARTH",
+          lineWidth: 1,
+          marker: {
+            fillColor: 'blue',
+            symbol: 'circle',
+            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+            radius: 7,
           }
 
         },
@@ -400,19 +418,31 @@ function convertKmToPx(km) {
             symbol: 'circle',
             // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
             radius: 7,
-            height: '3%',
-            width: '3%',
           }
 
         },
         {
-          name: "EARTH",
+          name: "SEZ 2.0 deg",
           lineWidth: 1,
+          visible: false,
           marker: {
-            fillColor: 'blue',
+            border: '5px solid blue',
+            fillColor: 'green',
             symbol: 'circle',
             // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
-            radius: 7,
+            radius: 30,
+          }
+
+        },
+        {
+          name: "SEZ 4.0 deg",
+          lineWidth: 1,
+          visible: false,
+          marker: {
+            fillColor: 'orange',
+            symbol: 'circle',
+            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+            radius: 60,
             height: '3%',
             width: '3%',
           }
