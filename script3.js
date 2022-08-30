@@ -9,6 +9,7 @@ const distanceToL1 = 1000000;
 const E = 8;
 const sunGSE = [[155000000, 0, 0]];
 const earthGSE = [[0, 0, 0]];
+const eclipticGSE = [[0, 0, 0],[155000000, 0, 0]]
 const sez2deg = [[16000000, 0, 0]];
 const sez4deg = [[16000000, 0, 0]];
 let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
@@ -87,8 +88,6 @@ function fetchData(positionData) {
   aceData3d = convertTo3d(aceData);
   dscovrData3d = convertTo3d(dscovrData);
 
-  console.log("dscovrData3d " + JSON.stringify(dscovrData3d));
-
   // FEED DATA TO CHART
   let aceAnim = [];
   // chart.series[0].setData(aceData3d);
@@ -108,6 +107,7 @@ function fetchData(positionData) {
   chart.series[3].setData(sunGSE);
   chart.series[4].setData(sez2deg);
   chart.series[5].setData(sez4deg);
+  chart.series[6].setData(eclipticGSE)
 }
 
 
@@ -276,17 +276,18 @@ function convertKmToPx(km) {
     chart = new Highcharts.Chart({
       chart: {
         renderTo: 'container',
-        fitToPlot: 'false',
-        margin: 10,
+        fitToPlot: 'true',
         type: 'scatter3d',
         spacingTop: 30,
         marginTop: 60,
         spacingBottom: 30,
         marginBottom: 60,
-        marginRight: 0,
-        marginLeft: 0,
-        height: '700',
-        width: '700',
+        spacingRight: 10,
+        spacingLeft: 10,
+        marginRight: 10,
+        marginLeft: 10,
+        height: 700,
+        width: 700,
         allowMutatingData: false,
         // animation: true,
         events: {
@@ -364,20 +365,23 @@ function convertKmToPx(km) {
         enabled: true,
         floating: true,
       },
+      bubbleLegend: {
+        color: 'blue',
+      },
       series: [
-        
+
         {
           name: "ACE",
           lineWidth: 0.2,
           marker: {
-          //   color: {
-          //     linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
-          //     stops: [
-          //         [0, '#090979'], // start
-          //         [0.5, '#790927'], // middle
-          //         [1, '#793109'] // end
-          //     ]
-          // },
+            //   color: {
+            //     linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+            //     stops: [
+            //         [0, '#090979'], // start
+            //         [0.5, '#790927'], // middle
+            //         [1, '#793109'] // end
+            //     ]
+            // },
             fillColor: 'purple',
             symbol: 'circle',
             // symbol: 'url(imgs/1200px-ACE_spacecraft_model.png)', 
@@ -446,6 +450,18 @@ function convertKmToPx(km) {
             radius: 60,
             height: '3%',
             width: '3%',
+          }
+
+        },
+        {
+          name: "EclipticGSE",
+          lineWidth: 1,
+          visible: false,
+          marker: {
+            fillColor: 'orange',
+            symbol: 'circle',
+            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+            radius: 1,
           }
 
         },
