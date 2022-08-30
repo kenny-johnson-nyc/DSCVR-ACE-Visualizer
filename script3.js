@@ -8,7 +8,9 @@ const radiusSun = 432690; // miles
 const distanceToL1 = 1000000;
 const E = 8;
 const sunGSE = [[155000000, 0, 0]];
-const earthGSE = [[0, 0, 0]];
+const earthGSE = [[0 ,0 ,0 ]];
+const sez2deg = [[16000000, 0, 0]];
+const sez4deg = [[16000000, 0, 0]];
 let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
 let radiusSunPx;
 let startTime;
@@ -88,11 +90,30 @@ function fetchData(positionData) {
   console.log("dscovrData3d " + JSON.stringify(dscovrData3d));
 
   // FEED DATA TO CHART
+  let aceAnim = [];
+  // chart.series[0].setData(aceData3d);
+  // incrementally build the array that will drive the plot, with a small delay in between each increment to
+  // "animate" the drawing of the orbit path
+
+
+  for (let i = 0; i < aceData3d.length; i++) {
+    aceAnim.push(aceData3d[i]);
+    chart.series[0].setData(aceAnim);
+  }
+
+
   chart.series[0].setData(aceData3d);
   chart.series[1].setData(dscovrData3d);
   chart.series[2].setData(sunGSE);
   chart.series[3].setData(earthGSE);
+  chart.series[4].setData(sez2deg);
+  chart.series[5].setData(sez4deg);
 }
+
+
+
+
+
 
 /**
  * Convert an array of coordinate objects to an array of coordinate arrays.
@@ -266,6 +287,13 @@ function convertKmToPx(km) {
         width: '700',
         allowMutatingData: false,
         // animation: true,
+        events: {
+          load: function () {
+              // set up the updating of the chart each second
+              // let series = this.series[0];
+              setInterval(function () {}, 1000);
+          }
+      },
         options3d: {
           enabled: true,
 
@@ -280,12 +308,15 @@ function convertKmToPx(km) {
             visible: false,
            },
            right: {
-            visible: true,
+            visible: false,
            },
            front: {
-            visible: true,
+            visible: false,
            },
            back: {
+            visible: false,
+           },
+           bottom: {
             visible: false,
            }
           }
@@ -335,7 +366,7 @@ function convertKmToPx(km) {
       series: [
         {
           name: "ACE",
-          lineWidth: 1,
+          lineWidth: .1,
           marker: {
             fillColor: 'purple',
             symbol: 'circle',
@@ -349,7 +380,7 @@ function convertKmToPx(km) {
 
         {
           name: "DSCOVR",
-          lineWidth: 1,
+          lineWidth: .1,
           marker: {
             fillColor: 'red',
             symbol: 'circle',
@@ -462,4 +493,4 @@ function convertKmToPx(km) {
 //   ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
 // ].join('\r\n')
 
-// console.log(csv)
+// console.log(csv) 
