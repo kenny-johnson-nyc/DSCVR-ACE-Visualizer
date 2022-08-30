@@ -101,9 +101,12 @@ body {
   color: white;
 }
 
-.info-image {
-  height: 30vw;
-  width: 30vw;
+.info-img {
+  width: 75%;
+  height: auto;
+  border: 1px solid;
+  margin: 1em;
+
 }
 
 .links {
@@ -114,22 +117,6 @@ body {
 
 }
 
-.info-container {
-  height: 800px;
-  width: 100vw;
-  position: relative;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.info-img {
-  width: 75%;
-  height: auto;
-  border: 1px solid;
-
-}
 
 /* The switch - the box around the slider */
 .switch {

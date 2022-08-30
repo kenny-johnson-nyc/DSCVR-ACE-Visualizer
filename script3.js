@@ -365,6 +365,7 @@ function convertKmToPx(km) {
         floating: true,
       },
       series: [
+        
         {
           name: "ACE",
           lineWidth: 0.2,
