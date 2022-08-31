@@ -124,6 +124,10 @@ height: 50px;
 
 }
 
+.center-button {
+  width: 100px;
+  height: 100px;
+}
 
 /* The switch - the box around the slider */
 .switch {

@@ -9,7 +9,7 @@ const distanceToL1 = 1000000;
 const E = 8;
 const sunGSE = [[155000000, 0, 0]];
 const earthGSE = [[0, 0, 0]];
-const eclipticGSE = [[0, 0, 0],[155000000, 0, 0]]
+const eclipticGSE = [[0, 0, 0], [155000000, 0, 0]]
 const sez2deg = [[16000000, 0, 0]];
 const sez4deg = [[16000000, 0, 0]];
 let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
@@ -53,6 +53,15 @@ function convertTime(time) {
 function zeroPad(num) {
   return (num >= 0 && num < 10) ? '0' + num : num; //between 0 and 10 add to num
 }
+
+// compute the time range of data to request from NASA
+defineEndTime();
+const start = convertTime(startTime);
+const end = convertTime(endTime);
+let sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
+$.get(sscUrl, fetchData, 'json');
+
+
 
 
 function fetchData(positionData) {
@@ -99,6 +108,8 @@ function fetchData(positionData) {
     aceAnim.push(aceData3d[i]);
     chart.series[0].setData(aceAnim);
   }
+
+
 
 
   chart.series[0].setData(aceData3d);
@@ -368,106 +379,139 @@ function convertKmToPx(km) {
       bubbleLegend: {
         color: 'blue',
       },
-      series: [
+      exporting: {
+        buttons: {
+          resetButton: {
+            classname: 'reset-button',
 
-        {
-          name: "ACE",
-          lineWidth: 0.2,
-          marker: {
-            //   color: {
-            //     linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
-            //     stops: [
-            //         [0, '#090979'], // start
-            //         [0.5, '#790927'], // middle
-            //         [1, '#793109'] // end
-            //     ]
-            // },
-            fillColor: 'purple',
             symbol: 'circle',
-            // symbol: 'url(imgs/1200px-ACE_spacecraft_model.png)', 
-            // NEED TO CENTER
-            radius: 7,
+            symbolStrokeWidth: 1,
+            symbolFill: '#FFFFFF',
+            symbolStroke: '#330033',
 
-          }
+            onclick: function () {
+              let alpha = chart.options.chart.options3d.alpha;
+              let beta = chart.options.chart.options3d.beta;
+              alpha = 0;
+              beta = 0;
+              chart.update();
+            }
+            }
+            }
         },
+        series: [
 
-        {
-          name: "DSCOVR",
-          lineWidth: 0.2,
-          marker: {
-            fillColor: 'red',
-            symbol: 'circle',
-            // symbol: 'url(imgs/DSCOVR_spacecraft_model.png)', NEED TO CENTER
-            radius: 7,
-          }
+          {
+            name: "ACE",
+            lineWidth: 0.2,
+            marker: {
+              //   color: {
+              //     linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+              //     stops: [
+              //         [0, '#090979'], // start
+              //         [0.5, '#790927'], // middle
+              //         [1, '#793109'] // end
+              //     ]
+              // },
+              fillColor: 'purple',
+              symbol: 'circle',
+              // symbol: 'url(imgs/1200px-ACE_spacecraft_model.png)', 
+              // NEED TO CENTER
+              radius: 7,
 
-        },
+            }
+          },
 
-        {
-          name: "EARTH",
-          lineWidth: 1,
-          marker: {
-            fillColor: 'blue',
-            symbol: 'circle',
-            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
-            radius: 7,
-          }
+          {
+            name: "DSCOVR",
+            lineWidth: 0.2,
+            marker: {
+              fillColor: 'red',
+              symbol: 'circle',
+              // symbol: 'url(imgs/DSCOVR_spacecraft_model.png)', NEED TO CENTER
+              radius: 7,
+            }
 
-        },
-        {
-          name: "SUN",
-          visible: false,
-          lineWidth: 1,
-          marker: {
-            fillColor: 'yellow',
-            symbol: 'circle',
-            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
-            radius: 7,
-          }
+          },
 
-        },
-        {
-          name: "SEZ 2.0 deg",
-          lineWidth: 1,
-          visible: false,
-          marker: {
-            border: '5px solid blue',
-            fillColor: 'green',
-            symbol: 'circle',
-            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
-            radius: 30,
-          }
+          {
+            name: "EARTH",
+            lineWidth: 1,
+            marker: {
+              fillColor: 'blue',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 7,
+            }
 
-        },
-        {
-          name: "SEZ 4.0 deg",
-          lineWidth: 1,
-          visible: false,
-          marker: {
-            fillColor: 'orange',
-            symbol: 'circle',
-            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
-            radius: 60,
-            height: '3%',
-            width: '3%',
-          }
+          },
+          {
+            name: "SUN",
+            visible: false,
+            lineWidth: 1,
+            marker: {
+              fillColor: 'yellow',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 7,
+            }
 
-        },
-        {
-          name: "EclipticGSE",
-          lineWidth: 1,
-          visible: false,
-          marker: {
-            fillColor: 'orange',
-            symbol: 'circle',
-            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
-            radius: 1,
-          }
+          },
+          {
+            name: "SEZ 2.0 deg",
+            lineWidth: 1,
+            visible: false,
+            marker: {
+              border: '5px solid blue',
+              fillColor: 'green',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 30,
+            }
 
-        },
-      ]
-    });
+          },
+          {
+            name: "SEZ 4.0 deg",
+            lineWidth: 1,
+            visible: false,
+            marker: {
+              fillColor: 'orange',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 60,
+              height: '3%',
+              width: '3%',
+            }
+
+          },
+          {
+            name: "EclipticGSE",
+            lineWidth: 1,
+            visible: false,
+            marker: {
+              fillColor: 'orange',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 1,
+            }
+
+          },
+        ]
+      });
   }
+
+  // $('.reset-button').on('click', function() { 
+  //   chart.update({
+  //     chart: {
+  //       options3d: {
+  //         alpha: 0,
+  //         beta: -90,
+  //       }
+  //     }
+  //   })
+  // }
+
+
 
 
   //Draggable function 
@@ -515,15 +559,8 @@ function convertKmToPx(km) {
   H.addEvent(chart.container, 'mousedown', dragStart);
   H.addEvent(chart.container, 'touchstart', dragStart);
 
-  // compute the time range of data to request from NASA
-  defineEndTime();
-  const start = convertTime(startTime);
-  const end = convertTime(endTime);
-  let sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
-  $.get(sscUrl, fetchData, 'json');
 
 }(Highcharts));
-
 
 
 
