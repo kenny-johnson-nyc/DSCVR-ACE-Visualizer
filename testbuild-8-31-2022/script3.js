@@ -9,12 +9,9 @@ const distanceToL1 = 1000000;
 const E = 8;
 const sunGSE = [[155000000, 0, 0]];
 const earthGSE = [[0, 0, 0]];
-const sunEarthLine = [[0, 0, 0], [155000000, 0, 0]]
-const l1 = 1600000;
-const sez2rad = Math.tan(toRadians(2)) * l1;
-const sez4rad = Math.tan(toRadians(4)) * l1;
-const sez2Deg = buildCircle(sez2rad, l1);
-const sez4Deg = buildCircle(sez4rad, l1);
+const eclipticGSE = [[0, 0, 0], [155000000, 0, 0]]
+const sez2deg = [[16000000, 0, 0]];
+const sez4deg = [[16000000, 0, 0]];
 let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
 let radiusSunPx;
 let startTime;
@@ -32,28 +29,9 @@ let chart;
 let alpha = Math.atan(radiusSun / distanceToSun);
 let radiusSunAtL1 = distanceToL1 * Math.tan(alpha) * 1.6;
 
-
 /**
 * Called when the browser finished construction of the DOM. 
  */
-
-
-
-function buildCircle(radius, x){
-  let circleData = [];
-  for (let i = 0; i <= 360; i = i + 10) {  // <== Set circle resolution here
-    circleData.push( [x, radius * Math.cos(toRadians(i)), radius * Math.sin(toRadians(i))]);
-  }
-  return circleData;
-}
-
-console.log("buildCircle ", buildCircle(100000, l1));
-
-
-
-function toRadians (angle) {
-  return angle * (Math.PI / 180);
-}
 
 
 function defineEndTime() {
@@ -84,47 +62,27 @@ let sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + st
 $.get(sscUrl, fetchData, 'json');
 
 
-/**
- * 
- * @param {Array} positionData Spacecraft position data
- * 
- */
+
 
 function fetchData(positionData) {
 
   let ace = {};
-  let ACEsize = positionData.Result.Data[1][0].Time[1].length;
   ace.time_tag = positionData.Result.Data[1][0].Time[1][1];
-  // Assign properties to ace object. Each property is an array
+  let size = positionData.Result.Data[1][0].Time[1].length;
   ace.x_gse = positionData.Result.Data[1][0].Coordinates[1][0].X[1];
   ace.y_gse = positionData.Result.Data[1][0].Coordinates[1][0].Y[1];
   ace.z_gse = positionData.Result.Data[1][0].Coordinates[1][0].Z[1];
-  console.log("ace ", ace)
-  // Put all properties together into aceData object which contains arrays
-
-  // Swap Y GSE for Z to convert from GSE to local
-
-  for (let i = 0; i < ACEsize; i++) {
-    aceData.push({ source: 'ace', time: ace.time_tag,  x_gse: ace.x_gse[i], y_gse: ace.z_gse[i], z_gse: ace.y_gse[i] });
+  for (let i = 0; i < ace.x_gse.length; i++) {
+    aceData.push({ source: 'ace', x_gse: ace.x_gse[i], z_gse: ace.z_gse[i], y_gse: ace.y_gse[i] });
   }
-  console.log(ace.x_gse)
-  console.log("aceData ", aceData)
-
-  // Object
-
-  // Array(21840)
 
   let dscovr = {};
-  let DSCOVRsize = positionData.Result.Data[1][0].Time[1].length;
   dscovr.time_tag = positionData.Result.Data[1][1].Time[1][1];
   dscovr.x_gse = positionData.Result.Data[1][1].Coordinates[1][0].X[1];
   dscovr.y_gse = positionData.Result.Data[1][1].Coordinates[1][0].Y[1];
   dscovr.z_gse = positionData.Result.Data[1][1].Coordinates[1][0].Z[1];
-
-      // Swap Y GSE for Z to convert from GSE to local
-
-  for (let i = 0; i < DSCOVRsize; i++) {
-    dscovrData.push({ source: 'dscovr', time: dscovr.time_tag, x_gse: dscovr.x_gse[i], y_gse: dscovr.z_gse[i], z_gse: dscovr.y_gse[i] });
+  for (let i = 0; i < dscovr.x_gse.length; i++) {
+    dscovrData.push({ source: 'dscovr', x_gse: dscovr.x_gse[i], z_gse: dscovr.z_gse[i], y_gse: dscovr.y_gse[i] });
   }
 
   // clean up the data and reverse the time order      
@@ -151,15 +109,16 @@ function fetchData(positionData) {
     chart.series[0].setData(aceAnim);
   }
 
- 
+
+
 
   chart.series[0].setData(aceData3d);
   chart.series[1].setData(dscovrData3d);
   chart.series[2].setData(earthGSE);
   chart.series[3].setData(sunGSE);
-  chart.series[4].setData(sez2Deg);
-  chart.series[5].setData(sez4Deg);
-  chart.series[6].setData(sunEarthLine)
+  chart.series[4].setData(sez2deg);
+  chart.series[5].setData(sez4deg);
+  chart.series[6].setData(eclipticGSE)
 }
 
 
@@ -173,9 +132,6 @@ function fetchData(positionData) {
 function convertTo3d(data) {
   let result = [];
   for (const item of data) {
-    // X = Y GSE
-    // Y = Z GSE
-    // Z = X GSE
     result.push([item.x_gse, item.y_gse, item.z_gse]);
   }
   return result;
@@ -271,11 +227,6 @@ function convertKmToPx(km) {
       },
 
       chart: {
-        
-        animation: {
-          duration: 2000,
-          // defer: 1000,
-        },
         backgroundColor: {
           radialGradient: [0, 0, 5, 5],
           stops: [
@@ -338,59 +289,48 @@ function convertKmToPx(km) {
         renderTo: 'container',
         fitToPlot: 'true',
         type: 'scatter3d',
-        reflow: 'false',
-        // Spacing effects titles and legend only.
-        spacingTop: 10,
-        spacingBottom: 10,
-        spacingRight: 00,
-        spacingLeft: 00,
-        // Margin effects grid only. KEEP SQUARE!
-        marginTop: 80,
-        marginBottom: 80,
-        marginRight: 20,
-        marginLeft: 20,
-        // Hardcode equal pixels
-        height: 800,
-        width: 800,
-
-        // allowMutatingData: false,
+        spacingTop: 30,
+        marginTop: 60,
+        spacingBottom: 30,
+        marginBottom: 60,
+        spacingRight: 10,
+        spacingLeft: 10,
+        marginRight: 10,
+        marginLeft: 10,
+        height: 700,
+        width: 700,
+        allowMutatingData: false,
         // animation: true,
-        // events: {
-        //   load: function () {
-        //     // set up the updating of the chart each second
-        //     // let series = this.series[0];
-        //     setInterval(function () { }, 1000);
-        //   }
-        // },
+        events: {
+          load: function () {
+            // set up the updating of the chart each second
+            // let series = this.series[0];
+            setInterval(function () { }, 1000);
+          }
+        },
         options3d: {
-    
           enabled: true,
+
           // Setting alpha and beta to zero puts earth on left and satellites on right. alpha rotates on the vertical axis. beta rotates on the horizontal axis.
           alpha: 0,
           beta: -90,
-          // Depth effects scale!
-          depth: 620,
-          viewDistance: 10,
+          depth: 500,
+          viewDistance: 5,
           frame: {
-            left: { // Camera front
+            left: {
               visible: false,
             },
-            right: { // Camera back
+            right: {
               visible: false,
             },
-            
-            front: { // Camera right
+            front: {
               visible: false,
             },
-            back: { // Camera left
+            back: {
               visible: false,
             },
-            top: {
+            bottom: {
               visible: false,
-            },
-            bottom: { // Camera bottom
-              visible: false,
-             
             }
           }
         }
@@ -403,50 +343,34 @@ function convertKmToPx(km) {
       },
       plotOptions: {
 
-        scatter3d: {
-          label: {
-            connectorAllowed: true,
-            connectorNeighbourDistance: 40,
-
-          }
+        scatter: {
+          width: 10,
+          height: 10,
+          depth: 10,
+          radius: 10,
         }
       },
-
-      // GSE 0 is at Earth.
-      // X = Sun-Earth line
-      // Y = Sun Earth ecliptic
-      // Z = Up Down
-
-      // X = Y GSE
-      // Y = Z GSE
-      // Z = X GSE
-
-
       yAxis: {
-        min: -300000,
-        max: 300000,
+        // min: -300000,
+        // max: 300000,
         title: {
-          text: 'GSE Z-axis'
-        },
-        opposite: true,
+          text: 'GSE Y-axis'
+        }
       },
       xAxis: {
         // min: 0,
-        // max: 160000000,
+        // max: 1600000,
         gridLineWidth: 1,
         title: {
           text: 'GSE X-axis'
-        },
-        opposite: false,
+        }
       },
       zAxis: {
-        min: -300000,
-        max: 300000,
+        // min: -300000,
+        // max: 300000,
         title: {
-          // SUN EARTH LINE
-          text: 'GSE Y-axis'
-        },
-        opposite: false,
+          text: 'GSE Z-axis'
+        }
       },
       legend: {
         enabled: true,
@@ -465,119 +389,116 @@ function convertKmToPx(km) {
             symbolFill: '#FFFFFF',
             symbolStroke: '#330033',
 
-            // onclick: function () {
-            //   let alpha = chart.options.chart.options3d.alpha;
-            //   let beta = chart.options.chart.options3d.beta;
-            //   alpha = 0;
-            //   beta = 0;
-            //   chart.update();
-            // }
-          }
-        }
-      },
-      series: [
-
-        {
-          name: "ACE",
-          lineWidth: 0.2,
-          marker: {
-            color: {
-              linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
-              stops: [
-                [0, '#090979'], // start
-                [0.5, '#790927'], // middle
-                [1, '#793109'] // end
-              ]
-            },
-            fillColor: 'purple',
-            // symbol: 'circle',
-            // symbol: 'url(imgs/1200px-ACE_spacecraft_model.png)', 
-            // NEED TO CENTER
-            radius: 5,
-
-          }
+            onclick: function () {
+              let alpha = chart.options.chart.options3d.alpha;
+              let beta = chart.options.chart.options3d.beta;
+              alpha = 0;
+              beta = 0;
+              chart.update();
+            }
+            }
+            }
         },
+        series: [
 
-        {
-          name: "DSCOVR",
-          lineWidth: 0.2,
-          zones: [{
+          {
+            name: "ACE",
+            lineWidth: 0.2,
+            marker: {
+              //   color: {
+              //     linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+              //     stops: [
+              //         [0, '#090979'], // start
+              //         [0.5, '#790927'], // middle
+              //         [1, '#793109'] // end
+              //     ]
+              // },
+              fillColor: 'purple',
+              symbol: 'circle',
+              // symbol: 'url(imgs/1200px-ACE_spacecraft_model.png)', 
+              // NEED TO CENTER
+              radius: 7,
 
-            color: '#f7a35c'
-          }, {
-            value: 10,
-            color: '#7cb5ec'
-          }, {
-            color: '#90ed7d'
-          }],
-          marker: {
-            fillColor: 'red',
-            symbol: 'circle',
-            // symbol: 'url(imgs/DSCOVR_spacecraft_model.png)', NEED TO CENTER
-            radius: 5,
-          }
+            }
+          },
 
-        },
+          {
+            name: "DSCOVR",
+            lineWidth: 0.2,
+            marker: {
+              fillColor: 'red',
+              symbol: 'circle',
+              // symbol: 'url(imgs/DSCOVR_spacecraft_model.png)', NEED TO CENTER
+              radius: 7,
+            }
 
-        {
-          name: "EARTH",
-          lineWidth: 1,
-          marker: {
-            fillColor: 'blue',
-            symbol: 'circle',
-            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
-            radius: 7,
-          }
+          },
 
-        },
-        {
-          name: "SUN",
-          visible: false,
-          lineWidth: 1,
-          marker: {
-            fillColor: 'yellow',
-            symbol: 'circle',
-            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
-            radius: 7,
-          }
+          {
+            name: "EARTH",
+            lineWidth: 1,
+            marker: {
+              fillColor: 'blue',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 7,
+            }
 
-        },
-        {
-          name: "SEZ 2.0 deg",
-          lineWidth: 1,
-          visible: true,
-          marker: {
-          enabled: false
-          }
+          },
+          {
+            name: "SUN",
+            visible: false,
+            lineWidth: 1,
+            marker: {
+              fillColor: 'yellow',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 7,
+            }
 
-        },
-        {
-          name: "SEZ 4.0 deg",
-          lineWidth: 1,
-          visible: true,
-          marker: {
-          enabled: false
-          }
+          },
+          {
+            name: "SEZ 2.0 deg",
+            lineWidth: 1,
+            visible: false,
+            marker: {
+              border: '5px solid blue',
+              fillColor: 'green',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 30,
+            }
 
-        },
-        {
-          name: "Sun-Earth line",
-          lineWidth: 1,
-          visible: false,
-          marker: {
-            fillColor: 'orange',
-            symbol: 'circle',
-            // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
-            radius: 1,
-          }
+          },
+          {
+            name: "SEZ 4.0 deg",
+            lineWidth: 1,
+            visible: false,
+            marker: {
+              fillColor: 'orange',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 60,
+              height: '3%',
+              width: '3%',
+            }
 
-        },
-      ]
-    });
+          },
+          {
+            name: "EclipticGSE",
+            lineWidth: 1,
+            visible: false,
+            marker: {
+              fillColor: 'orange',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 1,
+            }
+
+          },
+        ]
+      });
   }
-
-
-  // RECENTER BUTTON
 
   // $('.reset-button').on('click', function() { 
   //   chart.update({
@@ -640,3 +561,20 @@ function convertKmToPx(km) {
 
 
 }(Highcharts));
+
+
+
+
+
+
+
+
+// const items = json3.items
+// const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
+// const header = Object.keys(items[0])
+// const csv = [
+//   header.join(','), // header row first
+//   ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+// ].join('\r\n')
+
+// console.log(csv) 

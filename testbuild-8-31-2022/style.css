@@ -34,9 +34,8 @@ body {
   /* Must be set to fixed px. */
   min-width: 300px;
   min-height: 300px;
-  /* Must match chart.height and chart.width in script3.js */
-  width: 800px;
-  height: 800px;
+  width: 700px;
+  height: 700px;
   margin-top: 2rem;
   margin-bottom: 2rem;
   border-radius: .85em;
@@ -53,15 +52,17 @@ body {
     box-shadow: 0 0 30px rgb(179, 179, 179);
   
     /* Must be set to fixed px. */
-/* min-width: 300px;
+    /* min-width: 300px;
     min-height: 300px;
     width: 300px;
     height: 300px;
     margin: auto;
     border-radius: .85em;
   }
-} */
-*/ .anchor-style {
+} */ */
+
+
+.anchor-style {
   color: white;
 }
 
@@ -117,9 +118,9 @@ body {
 }
 
 .footer {
-  background-color: #000000;
-  color: whitesmoke;
-  height: 50px;
+background-color: #000000;
+color: whitesmoke;
+height: 50px;
 
 }
 
