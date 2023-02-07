@@ -51,12 +51,14 @@ function toRadians(angle) {
 // set how far back in time to go
 function defineEndTime() {
   let end = endTime.getTime();
-  // offset is made by the number of weeks per orbit * the number of milliseconds per week
+  // offset is made by the number of weeks per orbit * the number of milliseconds per week. To adjust the time range, change the number of weeks per orbit. 
   let offset = weeksPerOrbit * pointsPerWeek * minutesPerPoint * millisPerMinute;
   //convert hours to milliseconds. hours back in time.
   let start = end - offset;
   startTime = new Date(start);
 }
+
+
 
 // concatinate string to access SSC api
 function convertTime(time) {
@@ -597,7 +599,11 @@ function subsample(inputData) {
           class: 'reset-button'          
         })
         .add();
+
+       
     }
+
+    
 
 
  

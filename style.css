@@ -33,6 +33,7 @@ body {
   /* Must be set to fixed px. */
   width: 100%;
   height: auto;
+  touch-action: none;
 }
 
 .logos {
