@@ -1,19 +1,12 @@
-<!-- /locations/{observatories}/{timeRange}/{coordinateSystems}/ -->
-
 <!DOCTYPE html>
 <html lang="en">
-
 
 <head>
   <title>DSCOVR/ACE visualizer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
-  <!-- add favicon -->
   <link rel="shortcut icon" href="imgs/sun.png" type="image/x-icon">
-
-  <!-- Load jQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
   <script src="https://code.highcharts.com/highcharts.src.js"></script>
   <script src="https://code.highcharts.com/highcharts-3d.js"></script>
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -23,11 +16,8 @@
 </head>
 
 <body>
-
   <header>
-
     <!-- LOGOS -->
-
     <div class="logos">
       <a
         href="https://www.nesdis.noaa.gov/current-satellite-missions/currently-flying/dscovr-deep-space-climate-observatory">
@@ -48,11 +38,8 @@
       </a>
     </div>
   </header>
-
   <main>
-
     <!-- CHART -->
-    
     <figure class="highcharts-figure">
       <div class="wrapper">
         <div id="container"></div>
@@ -60,12 +47,9 @@
       <p class="highcharts-description">
       </p>
     </figure>
-
     <!-- INFO -->
-
     <div class=info-container>
       <h2>INFO</h2>
-
       <p>
         This graph is designed to give a visual representation of the locations of two space weather satellites orbting
         the sun. It uses real-time data from the <a
@@ -116,7 +100,6 @@
         </li>
       </ul>
     </div>
-
     <!-- Ecliptic is a 2d plane that cust through the sun. Aligned along the sun's equator. 
     GSE 0 is at Earth.
     X = Sun-Earth line
@@ -124,11 +107,9 @@
     Z = Up Down
     RLP 0 is at L1
   -->
-
     <script src="index.js"></script>
     </div>
   </main>
 </body>
-
 
 </html>

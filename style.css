@@ -87,8 +87,8 @@ header {
   align-items: center;
   justify-content: center;
   border: 1px solid black;
-  height: 100vw;
-  width: 100vw;
+  height: 95vw;
+  width: 95vw;
 }
 
 .highcharts-figure,
