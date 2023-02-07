@@ -1,10 +1,7 @@
-const endTime = new Date();
-const minutesPerPoint = 12;// SSCweb data for ACE and DSCOVR is resolution 720 = 12 minutes
 const millisPerMinute = 60 * 1000;
 const distanceToSun = 93000000; // miles
 const radiusSun = 432690; // sun radius in miles
 const distanceToL1 = 1000000; // distance to l1 from earth
-const E = 8;
 const sunGSE = [[155000000, 0, 0]]; // GSE coordinates of the sun
 const earthGSE = [[0, 0, 0]]; // GSE coordinates of Earth
 const sunEarthLine = [[0, 0, 0], [155000000, 0, 0]] // line from sun to earth with earth at origin
@@ -15,18 +12,16 @@ const sez4rad = Math.tan(toRadians(4)) * l1; // SEZ4 radius
 const sezHalfDeg = buildCircle(sezHalfrad, l1); // SEZ.5 boundary
 const sez2Deg = buildCircle(sez2rad, l1); // SEZ2 boundary
 const sez4Deg = buildCircle(sez4rad, l1); // Build a circle for the SEZ4 boundary
-let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
-let radiusSunPx;
+const weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
+const minutesPerPoint = 12;// SSCweb data for ACE and DSCOVR is resolution 720 = 12 minutes per point
+const pointsPerDay = 7 * 24; // 7 days * 24 hours
+const pointsPerWeek = 7 * 24 * (60 / minutesPerPoint); // 7 days * 24 hours * 60 minutes / 12 minutes per point
+const endTime = new Date()
 let startTime;
 let aceData = [];
 let dscovrData = [];
 let dscovrBackgroundColor = [];
 let aceBackgroundColor = [];
-let pointsPerWeek = 7 * 24 * (60 / minutesPerPoint); // 7 days * 24 hours * 60 minutes / 12 minutes per point
-let pointsPerDay = 7 * 24; // 7 days * 24 hours
-let aceData3d;
-let dscovrData3d;
-let chart;
 let alpha = Math.atan(radiusSun / distanceToSun);
 let radiusSunAtL1 = distanceToL1 * Math.tan(alpha) * 1.6;
 let windowWidth = function () {
@@ -76,11 +71,13 @@ function zeroPad(num) {
   return (num >= 0 && num < 10) ? '0' + num : num;
 }
 
-// compute the time range of data to request from NASA
+// compute the time range of data to request from NASA.
 defineEndTime();
-const start = convertTime(startTime);
-const end = convertTime(endTime);
+let start = convertTime(startTime);
+let end = convertTime(endTime);
 let sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
+console.log(sscUrl);
+
 // get the data from the SSC api
 $.get(sscUrl, fetchData, 'json');
 
@@ -287,6 +284,9 @@ function subsample(inputData) {
                 chart.hideLoading();
                 chart.series[0].setData()
               }, 1700);
+
+              // add button 
+
             }
           },
           options3d: {
@@ -599,6 +599,8 @@ function subsample(inputData) {
         .add();
     }
 
+
+ 
     // Resize chart based on responsive wrapper
     var wrapper = $('.wrapper'),
       container = $('#container'),
@@ -652,6 +654,8 @@ function subsample(inputData) {
     })
     updateValues()
     adjustContainer();
+
+
 
 
 
