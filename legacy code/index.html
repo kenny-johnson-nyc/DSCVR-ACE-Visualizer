@@ -1,0 +1,147 @@
+<!-- /locations/{observatories}/{timeRange}/{coordinateSystems}/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <title>DSCOVR/ACE visualizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+
+  <!-- Load jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+  <!-- <script src="https://code.highcharts.com/modules/series-label.js"></script> -->
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/export-data.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  <link rel="stylesheet" href="style.css">
+
+
+</head>
+
+<body>
+
+
+
+
+  <header>
+
+  </header>
+
+  <main>
+
+    <!-- LOGOS -->
+    <!-- <figure class="logos-container">
+        <div id="noaa-img" class="logo"></div>
+        <div id="dscovr-img" class="logo"></div>
+        <div id="ace-img" class="logo"></div>
+        <div id="nasa-img" class="logo"></div>
+        <div id="nws-img" class="logo"></div>
+
+    </figure> -->
+
+
+
+
+    <!-- CHART -->
+
+    <figure class="highcharts-figure">
+      <div id="container"></div>
+      <p class="highcharts-description">
+      </p>
+    </figure>
+
+    <!-- <button class="center-button" onclick="centerChart()">RECENTER</button> -->
+
+
+
+    <!-- DARKMODE -->
+    <!-- Rounded switch -->
+
+    <!-- <label class="switch">
+      <input id="dark-mode-checkbox" type="checkbox" onchange="darkMode(this)">
+      <span id="checkbox-text" class="slider round">
+      </span>
+      label element -->
+      <!-- <span class="labels" data-on="ON" data-off="OFF">
+      </span>
+    </label> --> 
+
+    <!-- INFO -->
+
+    <div class=info-container>
+      <h2>INFO</h2>
+
+      <p>
+        This graph is designed to give a visual representation of the locations of two satellites.
+      </p>
+      <p>
+        https://en.wikipedia.org/wiki/Lagrange_point
+      </p>
+      <figure>
+        <img class="info-img" src="imgs/DSCOVR-Lissajous-orbit.png" alt="DSCOVR Lissajous chart">
+        <figcaption>Lissajous</figcaption>
+      </figure>
+      <figure>
+        <img class="info-img" src="imgs/3330.jpg" alt="">
+        <figcaption>Lagrange point visualization (not to scale)</figcaption>
+      </figure>
+
+      <h3>RELATED LINKS</h3>
+      <ul>
+        <li>
+          <div class="links">
+            <a class="anchor-style" href='https://www.ngdc.noaa.gov/dscovr/portal/#/'>DSCOVR Space Weather Data Portal
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="links">
+            <a class="anchor-style" href='https://sscweb.gsfc.nasa.gov/WebServices/REST/#Get_Observatories'>SSC
+              RESTful Web Services
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="links">
+            <a class="anchor-style" href='https://www.swpc.noaa.gov/products/real-time-solar-wind'>SPACE WEATHER
+              PREDICTION CENTER - Real Time Solar Wind
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Ecliptic is a 2d plane that cust through the sun. Aligned along the sun's equator. 
+    
+    GSE 0 is at Earth.
+    X = Sun-Earth line
+    Y = Sun Earth ecliptic
+    Z = Up Down
+
+    RLP 0 is at L1
+  
+
+  
+  -->
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+      <p>Built by Kenny Johnson 2022</p>
+    </div>
+    </div>
+
+    <script>
+
+    </script>
+    <script src="script3.js"></script>
+
+</body>
+
+
+</html>

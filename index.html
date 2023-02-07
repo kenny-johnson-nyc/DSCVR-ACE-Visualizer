@@ -8,68 +8,58 @@
   <title>DSCOVR/ACE visualizer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
+  <!-- add favicon -->
+  <link rel="shortcut icon" href="imgs/sun.png" type="image/x-icon">
 
   <!-- Load jQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts.src.js"></script>
   <script src="https://code.highcharts.com/highcharts-3d.js"></script>
-  <!-- <script src="https://code.highcharts.com/modules/series-label.js"></script> -->
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
   <script src="https://code.highcharts.com/modules/export-data.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
   <link rel="stylesheet" href="style.css">
-
-
 </head>
 
 <body>
 
-
-
-
   <header>
 
+    <!-- LOGOS -->
+
+    <div class="logos">
+      <a
+        href="https://www.nesdis.noaa.gov/current-satellite-missions/currently-flying/dscovr-deep-space-climate-observatory">
+        <img src="imgs/DSCOVR-Logo.png" alt="USRA" class="logo">
+      </a>
+      <a
+        href="https://solarsystem.nasa.gov/missions/ace/in-depth/#:~:text=NASA's%20Advanced%20Composition%20Explorer%20(ACE,evolution%20of%20the%20solar%20system.">
+        <img src="imgs/ACE_mission_logo.png" alt="USRA" class="logo">
+      </a>
+      <a href="https://www.noaa.gov/">
+        <img src="imgs/noaa_logo.png" alt="NOAA" class="logo">
+      </a>
+      <a href="https://www.nasa.gov/">
+        <img src="imgs/nasa_logo.png" alt="NSF" class="logo">
+      </a>
+      <a href="https://www.weather.gov/">
+        <img src="imgs/nws_logo.png" alt="USRA" class="logo">
+      </a>
+    </div>
   </header>
 
   <main>
 
-    <!-- LOGOS -->
-    <!-- <figure class="logos-container">
-        <div id="noaa-img" class="logo"></div>
-        <div id="dscovr-img" class="logo"></div>
-        <div id="ace-img" class="logo"></div>
-        <div id="nasa-img" class="logo"></div>
-        <div id="nws-img" class="logo"></div>
-
-    </figure> -->
-
-
-
-
     <!-- CHART -->
-
+    
     <figure class="highcharts-figure">
-      <div id="container"></div>
+      <div class="wrapper">
+        <div id="container"></div>
+      </div>
       <p class="highcharts-description">
       </p>
     </figure>
-
-    <!-- <button class="center-button" onclick="centerChart()">RECENTER</button> -->
-
-
-
-    <!-- DARKMODE -->
-    <!-- Rounded switch -->
-
-    <!-- <label class="switch">
-      <input id="dark-mode-checkbox" type="checkbox" onchange="darkMode(this)">
-      <span id="checkbox-text" class="slider round">
-      </span>
-      label element -->
-      <!-- <span class="labels" data-on="ON" data-off="OFF">
-      </span>
-    </label> --> 
 
     <!-- INFO -->
 
@@ -77,7 +67,18 @@
       <h2>INFO</h2>
 
       <p>
-        This graph is designed to give a visual representation of the locations of two satellites.
+        This graph is designed to give a visual representation of the locations of two space weather satellites orbting
+        the sun. It uses real-time data from the <a
+          href="https://www.swpc.noaa.gov/products/ace-real-time-solar-wind">NOAA Space Weather Prediction Center</a>
+        and the <a href="https://www.swpc.noaa.gov/products/dscovr-real-time-solar-wind">DSCOVR/ACE</a> satellites. The
+        default view is looking at the satellites from the Earth's perspective, but you can also view the satellites
+        from the Sun's perspective by clicking and dragging.
+      </p>
+      <p>
+        The mission of the DSCOVR/ACE satellites is to monitor the sun and its effects on Earth. The DSCOVR/ACE
+        satellites are part of the <a href="https://www.swpc.noaa.gov/">NOAA Space Weather Prediction Center</a> and are
+        funded by the <a href="https://www.nasa.gov/">NASA</a>, <a href="https://www.noaa.gov/">NOAA</a>, and <a
+          href="https://www.nsf.gov/">NSF</a>.
       </p>
       <p>
         https://en.wikipedia.org/wiki/Lagrange_point
@@ -117,30 +118,16 @@
     </div>
 
     <!-- Ecliptic is a 2d plane that cust through the sun. Aligned along the sun's equator. 
-    
     GSE 0 is at Earth.
     X = Sun-Earth line
     Y = Sun Earth ecliptic
     Z = Up Down
-
     RLP 0 is at L1
-  
-
-  
   -->
 
-    <!-- FOOTER -->
-
-    <div class="footer">
-      <p>Built by Kenny Johnson 2022</p>
+    <script src="index.js"></script>
     </div>
-    </div>
-
-    <script>
-
-    </script>
-    <script src="script3.js"></script>
-
+  </main>
 </body>
 
 

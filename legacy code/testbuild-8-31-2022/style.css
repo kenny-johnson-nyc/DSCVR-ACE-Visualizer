@@ -1,0 +1,251 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a:link,
+a:visited {
+
+  color: whitesmoke;
+  text-decoration: none;
+}
+
+a:hover,
+a:active {
+  color: rgb(30, 77, 131);
+}
+
+body {
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+}
+
+#container {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 49px rgba(179, 179, 179, 0.379);
+  /* Must be set to fixed px. */
+  min-width: 300px;
+  min-height: 300px;
+  width: 700px;
+  height: 700px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-radius: .85em;
+}
+
+/* 
+@media (pointer:none),
+(pointer:coarse) {
+  #container {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 30px rgb(179, 179, 179);
+  
+    /* Must be set to fixed px. */
+    /* min-width: 300px;
+    min-height: 300px;
+    width: 300px;
+    height: 300px;
+    margin: auto;
+    border-radius: .85em;
+  }
+} */ */
+
+
+.anchor-style {
+  color: white;
+}
+
+.logos-container {
+  margin-left: auto;
+  margin-right: auto;
+  height: 80px;
+  width: 70%;
+  display: inline-flex;
+  position: relative;
+}
+
+.logo {
+  width: 80px;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  max-width: 85px;
+  margin: 0 auto;
+  text-align: center;
+  clear: left;
+  padding-left: 5px;
+}
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  margin-top: 2rem;
+  max-width: 700px;
+  min-width: 400px;
+  min-height: 400px;
+  box-shadow: 0 0 3px rgb(179, 179, 179);
+  color: white;
+}
+
+.info-img {
+  width: 75%;
+  height: auto;
+  border: 1px solid;
+  margin: 1em;
+
+}
+
+.links {
+  font-family: sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  position: relative;
+
+}
+
+.footer {
+background-color: #000000;
+color: whitesmoke;
+height: 50px;
+
+}
+
+.center-button {
+  width: 100px;
+  height: 100px;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin: 10px;
+
+
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(103, 103, 103, 0.449);
+  -webkit-transition: .4s;
+  transition: .4s;
+  box-shadow: 0 0 1px white;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+
+}
+
+input:checked+.slider {
+  background-color: rgba(40, 85, 185, 0.777);
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 3px white;
+}
+
+
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+  color: hsla(rgb(0, 0, 0))
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
+
+#progressive-line-chart-container {
+  position: fixed;
+}
+
+
+.highcharts-figure,
+.highcharts-data-table table {
+  margin: 0 auto;
+}
+
+.highcharts-data-table table {
+  font-family: Verdana, sans-serif;
+  border-collapse: collapse;
+  border: 1px solid #ebebeb;
+  margin: 10px auto;
+  text-align: center;
+  width: 100%;
+  max-width: 200px;
+
+}
+
+.highcharts-data-table caption {
+  padding: 1em 0;
+  font-size: 1.2em;
+  color: #555;
+}
+
+.highcharts-data-table th {
+  font-weight: 600;
+  padding: 0.5em;
+}
+
+.highcharts-data-table td,
+.highcharts-data-table th,
+.highcharts-data-table caption {
+  padding: 0.5em;
+}
+
+.highcharts-data-table thead tr,
+.highcharts-data-table tr:nth-child(even) {
+  background: #f8f8f8;
+}
+
+.highcharts-data-table tr:hover {
+  background: #f1f7ff;
+}
