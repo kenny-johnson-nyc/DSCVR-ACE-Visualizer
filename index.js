@@ -12,11 +12,12 @@ const sez4rad = Math.tan(toRadians(4)) * l1; // SEZ4 radius
 const sezHalfDeg = buildCircle(sezHalfrad, l1); // SEZ.5 boundary
 const sez2Deg = buildCircle(sez2rad, l1); // SEZ2 boundary
 const sez4Deg = buildCircle(sez4rad, l1); // Build a circle for the SEZ4 boundary
-const weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
 const minutesPerPoint = 12;// SSCweb data for ACE and DSCOVR is resolution 720 = 12 minutes per point
 const pointsPerDay = 7 * 24; // 7 days * 24 hours
 const pointsPerWeek = 7 * 24 * (60 / minutesPerPoint); // 7 days * 24 hours * 60 minutes / 12 minutes per point
 const endTime = new Date()
+let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
+
 let startTime;
 let aceData = [];
 let dscovrData = [];
@@ -30,6 +31,10 @@ let windowWidth = function () {
 let windowHeight = function () {
   return $(window).height();
 }
+
+
+
+
 
 
 // Build a circle for the SEZ2 and SEZ4 boundaries
@@ -596,17 +601,17 @@ function subsample(inputData) {
         )
         .attr({
           zIndex: 100,
-          class: 'reset-button'          
+          class: 'reset-button'
         })
         .add();
 
-       
+
     }
 
-    
 
 
- 
+
+
     // Resize chart based on responsive wrapper
     var wrapper = $('.wrapper'),
       container = $('#container'),
@@ -631,6 +636,8 @@ function subsample(inputData) {
 
     //  Set chart depth on window load
     $(window).on('load', function () {
+      // update slider-value with current value
+      $("#slider-value").text($("#slider").val());
       updateValues();
       adjustContainer();
       // update options3d depth
@@ -663,7 +670,18 @@ function subsample(inputData) {
 
 
 
-
+    // Listen for slider changes
+    $("#slider").on("input", function () {
+      // update slider-value element with current value
+      $("#slider-value").text(this.value);
+      weeksPerOrbit = parseInt(this.value);
+      defineEndTime();
+      start = convertTime(startTime);
+      end = convertTime(endTime);
+      sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
+      console.log(sscUrl);
+      $.get(sscUrl, fetchData, 'json');
+    });
 
 
 
@@ -717,6 +735,8 @@ function subsample(inputData) {
   }
 
 }(Highcharts));
+
+
 
 // Created by Kenny Johnson and Jeff Johnson
 // Email for questions/comment/job offers kenny.johnson.nyc@gmail.com
