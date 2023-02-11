@@ -82,22 +82,10 @@ let end = convertTime(endTime);
 let sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
 console.log(sscUrl);
 
-console.time('fetchData')
-// get the data from the SSC api using AXIOS
-axios.get(sscUrl)
-  .then(function (response) {
-    // handle success
-    fetchData(response.data);
-    // console.log(response.data);
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  })
-  .then(function () {
-    // always executed
-  });
-console.timeEnd('fetchData')
+
+
+
+
 
 
 /**
@@ -249,11 +237,32 @@ function subsample(inputData) {
   return outputData;
 }
 
+console.time('fetchData')
+
+// Get the data from the SSC api using Axios
+axios.get(sscUrl)
+  .then(function (response) {
+    fetchData(response.data);
+    // console.log('response.data', response.data);
+    // store the data in local storage
+    localStorage.setItem('aceData', JSON.stringify(aceData));
+    localStorage.setItem('dscovrData', JSON.stringify(dscovrData));
+    localStorage.setItem('dscovrBackgroundColor', JSON.stringify(dscovrBackgroundColor));
+    localStorage.setItem('aceBackgroundColor', JSON.stringify(aceBackgroundColor));
+    console.log(localStorage.getItem('aceData'));
+    console.log(localStorage.getItem('dscovrData'));
+  })
+  .catch(function (error) {
+    console.log(error);
+  })
+
+console.timeEnd('fetchData')
+
+
 // HIGHCHARTS CONFIGURATION BEGINS HERE
 (function (H) {
   try {
     function create3DChart() {
-
       // Theme loads before data 
       Highcharts.theme = {
         title: {
