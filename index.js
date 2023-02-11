@@ -34,9 +34,6 @@ let windowHeight = function () {
 
 
 
-
-
-
 // Build a circle for the SEZ2 and SEZ4 boundaries
 function buildCircle(radius, x) {
   let circleData = [];
@@ -181,6 +178,26 @@ function fetchData(positionData) {
     }
     return result;
   }
+
+  // Calculate Solar Earth Vehicle angle for each data point
+  let dscovrSEV = [];
+  let aceSEV = [];
+
+  const calculateSEV = (data) => {
+    let sev = Math.acos((data.x_gse * sunGSE[0] + data.y_gse * sunGSE[1] + data.z_gse * sunGSE[2]) / (Math.sqrt(data.x_gse * data.x_gse + data.y_gse * data.y_gse + data.z_gse * data.z_gse) * Math.sqrt(sunGSE[0] * sunGSE[0] + sunGSE[1] * sunGSE[1] + sunGSE[2] * sunGSE[2]))) * 180 / Math.PI;
+    console.log("SEV angle: " + sev + " degrees")
+    return sev;
+  }
+
+  for (let i = 0; i < dscovrData.length; i++) {
+    dscovrSEV.push(calculateSEV(dscovrData[i]));
+  }
+  for (let i = 0; i < aceData.length; i++) {
+    aceSEV.push(calculateSEV(aceData[i]));
+  }
+  console.log(dscovrSEV);
+  console.log(aceSEV);
+
 
   aceData3d = prepareAceData(aceData);
   dscovrData3d = prepareDscovrData(dscovrData);
@@ -671,7 +688,7 @@ function subsample(inputData) {
 
 
     // Listen for slider changes
-    $("#slider").on("input", function () {
+    $("#slider").on("change", function () {
       // update slider-value element with current value
       $("#slider-value").text(this.value);
       weeksPerOrbit = parseInt(this.value);
