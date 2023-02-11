@@ -82,8 +82,22 @@ let end = convertTime(endTime);
 let sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
 console.log(sscUrl);
 
-// get the data from the SSC api
-$.get(sscUrl, fetchData, 'json');
+console.time('fetchData')
+// get the data from the SSC api using AXIOS
+axios.get(sscUrl)
+  .then(function (response) {
+    // handle success
+    fetchData(response.data);
+    // console.log(response.data);
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
+  .then(function () {
+    // always executed
+  });
+console.timeEnd('fetchData')
 
 
 /**
