@@ -557,7 +557,7 @@ console.timeEnd('fetchData')
               name: "EARTH",
               lineWidth: 1,
               zIndex: 2,
-              visible: false,
+              visible: true,
               marker: {
                 fillColor: 'blue',
                 // symbol: 'circle',
@@ -584,7 +584,7 @@ console.timeEnd('fetchData')
               name: "SUN DISC/SEV 0.5 deg",
               lineWidth: 1,
               zIndex: 2,
-              visible: false,
+              visible: true,
               marker: {
                 fillColor: 'rgba(255, 165, 0, 1)',
                 symbol: 'circle',
@@ -615,7 +615,7 @@ console.timeEnd('fetchData')
             {
               name: "Sun-Earth line",
               lineWidth: 1,
-              visible: false,
+              visible: true,
               marker: {
                 fillColor: 'orange',
                 symbol: 'circle',
