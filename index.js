@@ -720,7 +720,19 @@ console.timeEnd('fetchData')
         console.log(sscUrl);
        axios.get(sscUrl)
           .then(function (response) {
-            
+            fetchData(response.data);
+
+            // store the data in local storage
+            localStorage.setItem('aceData', JSON.stringify(aceData));
+            localStorage.setItem('dscovrData', JSON.stringify(dscovrData));
+            localStorage.setItem('dscovrBackgroundColor', JSON.stringify(dscovrBackgroundColor));
+            localStorage.setItem('aceBackgroundColor', JSON.stringify(aceBackgroundColor));
+            console.log(localStorage.getItem('aceData'));
+            console.log(localStorage.getItem('dscovrData'));
+        
+            // FEED DATA TO HIGHCHARTS
+            chart.series[0].setData(dscovrData3d);
+            chart.series[1].setData(aceData3d);      
           })
       });
 
