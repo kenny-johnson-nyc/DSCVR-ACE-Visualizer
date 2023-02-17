@@ -1,11 +1,13 @@
 const millisPerMinute = 60 * 1000;
-const distanceToSun = 93000000; // miles
-const radiusSun = 432690; // sun radius in miles
-const distanceToL1 = 1000000; // distance to l1 from earth
-const sunGSE = [[91806000, 0, 0]]; // GSE coordinates of the sun
+const radiusSun = 695700; // km
+const distanceToSun = 1500000000; // km
+const distanceToL1 = 1481100; // km
+const sunGSE = [[1481100, 0, 0]]; // GSE coordinates of the sun
 const earthGSE = [[0, 0, 0]]; // GSE coordinates of Earth
-const sunEarthLine = [[0, 0, 0], [91806000, 0, 0]] // line from sun to earth with earth at origin
-const l1 = 1600000; // L1 distance in miles
+const sunEarthLine = [[0, 0, 0], [1481100, 0, 0]] // line from sun to earth with earth at origin
+const earthDSCOVRLine = [[0, 0, 0], []] // line from earth to DSCOVR with earth at origin
+const earthACELine = [[0, 0, 0], []] // line from earth to ACE with earth at origin
+const l1 = 1481100; // km
 const sezHalfrad = Math.tan(toRadians(0.5)) * l1; // SEZ.5 radius
 const sez2rad = Math.tan(toRadians(2)) * l1; // SEZ2 radius
 const sez4rad = Math.tan(toRadians(4)) * l1; // SEZ4 radius
@@ -24,7 +26,7 @@ let dscovrData = [];
 let dscovrBackgroundColor = [];
 let aceBackgroundColor = [];
 let alpha = Math.atan(radiusSun / distanceToSun);
-let radiusSunAtL1 = distanceToL1 * Math.tan(alpha) * 1.6;
+let radiusSunAtL1 = l1 * Math.tan(alpha) * 1.6;
 let windowWidth = function () {
   return $(window).width();
 }
@@ -204,6 +206,16 @@ function fetchData(positionData) {
   aceData3d = prepareAceData(aceData);
   dscovrData3d = prepareDscovrData(dscovrData);
 
+  let d = dscovrData3d[dscovrData3d.length-1]
+  let a = aceData3d[aceData3d.length-1]
+  console.log('d', d)
+
+
+  earthDSCOVRLine[1] = [d.x, d.y, d.z] // line from earth to DSCOVR with earth at origin
+  earthACELine[1] =  [a.x, a.y, a.z] // line from earth to ACE with earth at origin
+
+  console.log('earthDSCOVRLine', earthDSCOVRLine)
+  console.log('earthACELine', earthACELine)
 
 }
 
@@ -229,10 +241,17 @@ function subsample(inputData) {
   return outputData;
 }
 
-console.time('fetchData')
+
+
+const config = {
+  headers: {
+    'Content-Type': 'application/json'
+  }
+}
+
 
 // Get the data from the SSC api using Axios
-axios.get(sscUrl)
+axios.get(sscUrl, config)
   .then(function (response) {
     fetchData(response.data);
 
@@ -241,8 +260,8 @@ axios.get(sscUrl)
     localStorage.setItem('dscovrData', JSON.stringify(dscovrData));
     localStorage.setItem('dscovrBackgroundColor', JSON.stringify(dscovrBackgroundColor));
     localStorage.setItem('aceBackgroundColor', JSON.stringify(aceBackgroundColor));
-    console.log(localStorage.getItem('aceData'));
-    console.log(localStorage.getItem('dscovrData'));
+    console.log(localStorage.getItem('aceData', JSON.stringify(aceData)));
+    console.log(localStorage.getItem('dscovrData', JSON.stringify(dscovrData)));
 
     // FEED DATA TO HIGHCHARTS
     chart.series[0].setData(dscovrData3d);
@@ -252,542 +271,581 @@ axios.get(sscUrl)
     chart.series[4].setData(earthGSE);
     chart.series[5].setData(sez2Deg);
     chart.series[6].setData(sez4Deg);
-    chart.series[7].setData(sunEarthLine)
+    chart.series[7].setData(sunEarthLine);
+    chart.series[8].setData(earthDSCOVRLine);
+    chart.series[9].setData(earthACELine);
   })
   .catch(function (error) {
     console.log(error);
-  })
-
-console.timeEnd('fetchData')
+  });
 
 
-  // HIGHCHARTS CONFIGURATION BEGINS HERE
-  (function (H) {
-    try {
-      function create3DChart() {
-        // Theme loads before data 
-        Highcharts.theme = {
-          title: {
-            style: {
-              color: 'rgb(250, 250, 250)',
-              font: 'bold 25px "Arial", sans-serif'
-            }
-          },
-          subtitle: {
-            style: {
-              color: '#666666',
-              font: 'bold 12px "Arial", sans-serif'
-            }
-          },
-          legend: {
-            itemMargin: 10,
-            itemStyle: {
-              font: '10pt Trebuchet MS, Verdana, sans-serif'
-            },
-            itemHoverStyle: {
-              color: 'gray'
-            }
-          },
-          chart: {
-            // set background color to black
-            backgroundColor: {
-              color: 'rgb(0, 0, 0)'
-            }
+
+
+
+// HIGHCHARTS CONFIGURATION BEGINS HERE
+(function (H) {
+  try {
+    function create3DChart() {
+      // Theme loads before data 
+      Highcharts.theme = {
+        title: {
+          style: {
+            color: 'rgb(250, 250, 250)',
+            font: 'bold 25px "Arial", sans-serif'
           }
-
-        };
-        Highcharts.setOptions(Highcharts.theme);
-
-        // Set up the chart
-        chart = new Highcharts.Chart({
-          chart: {
-            type: 'scatter3d',
-            renderTo: 'container', // Target element id
-            fitToPlot: 'true',
-            reflow: 'false',
-            zoomType: 'z',
-            // Spacing effects titles and legend only
-            spacingTop: 25,
-            spacingBottom: 15,
-            spacingRight: 10,
-            spacingLeft: 10,
-            // Margin effects grid and chart!
-            marginTop: 0,
-            marginBottom: 0,
-            marginRight: 0,
-            marginLeft: 0,
-            // KEEP SQUARE!
-            // Get screen width from window object using jQuery. update on resize
-            // width: windowWidth(),
-            // height: windowWidth(),
-            // set responsive rules to keep chart and 3d frame square
-
-            allowMutatingData: false,
-            animation: true,
-            // Set loading screen
-            events: {
-              load() {
-                const chart = this;
-                chart.showLoading('Fetching data from NASA...');
-                setTimeout(function () {
-                  chart.hideLoading();
-                  chart.series[0].setData()
-                }, 1700);
-
-                // add button 
-
-              }
-            },
-            options3d: {
-              enabled: true,
-              // Setting alpha and beta to zero puts earth on left and satellites on right. alpha rotates on the vertical axis. beta rotates on the horizontal axis.
-              alpha: 0,
-              beta: -90,
-              // MUST MATCH WIDTH AND HEIGHT OF CHART
-              // depth: windowWidth(),
-              viewDistance: 5,
-              frame: {
-                left: { // Camera front
-                  visible: false,
-                },
-                right: { // Camera back
-                  visible: false,
-                },
-                front: { // Camera right
-                  visible: false,
-                },
-                back: { // Camera left
-                  visible: false,
-                },
-                top: {
-                  visible: false,
-                },
-                bottom: { // Camera bottom
-                  visible: false,
-                }
-              }
-            }
-          },
-          // need to fix this
-          exporting: {
-            enabled: true,
-            buttons: {
-              contextButton: {
-                menuItems: ['downloadPNG', 'downloadJPEG', 'downloadPDF', 'downloadSVG', 'separator', 'downloadCSV', 'downloadXLS']
-              }
-            }
-          },
-          title: {
-            text: 'DSCOVR and ACE Orbit Visualization'
-          },
-          subtitle: {
-            text: 'Click and drag the plot area to rotate in space'
-          },
-          plotOptions: {
-            scatter3d: {
-              width: 1,
-              height: 1,
-              depth: 1,
-              // animation on load only
-              animation: true,
-              animationLimit: 1000,
-              animationDuration: 1000,
-              turboThreshold: 100000,
-              allowPointSelect: true,
-              point: {
-                events: {
-                  drag: function (event) {
-                    event.target.update({
-                      animation: false
-                    });
-                  },
-                  drop: function (event) {
-                    event.target.update({
-                      animation: true
-                    });
-                  }
-                }
-              },
-              marker: {
-                states: {
-                  hover: {
-                    enabled: true,
-                    lineColor: 'rgb(100,100,100)',
-                    lineWidth: 1,
-                  }
-                }
-              },
-              // Set the style and default values for tooltips on hover
-              tooltip: {
-                shared: false,
-                useHTML: true,
-                valueDecimals: 0, // Set decimals following each value in tooltip
-              },
-            }
-          },
-          // GSE 0 is at Earth.
-          // X = Sun-Earth line
-          // Y = Sun Earth ecliptic
-          // Z = Up Down
-
-          // X = Y GSE
-          // Y = Z GSE
-          // Z = X GSE
-          yAxis: {
-            min: -300000,
-            floor: -300000,
-            max: 300000,
-            title: {
-              text: 'GSE Z-axis'
-            },
-
-            opposite: true,
-            labels: {
-              skew3d: true,
-              style: {
-                color: 'rgba(255,255,255, 0.8)'
-              }
-            }
-          },
-          xAxis: {
-            floor: 0,
-            // min: 0,
-            // max: 160000000,
-            gridLineWidth: 1,
-            title: {
-              text: 'GSE X-axis'
-            },
-            opposite: false,
-            labels: {
-              skew3d: true,
-              style: {
-                color: 'rgba(255,255,255, 0.8)'
-              }
-            }
-          },
-          zAxis: {
-            min: -300000,
-            floor: -300000,
-            max: 300000,
-            title: {
-              text: 'GSE Y-axis'
-            },
-            opposite: false,
-            labels: {
-              skew3d: true,
-              style: {
-                color: 'rgba(255,255,255, 0.8)'
-              }
-            }
-          },
-          // Set the legend
-          legend: {
-            enabled: true,
-            title: {
-              text: 'Click to hide/show data series',
-              style: {
-                color: 'rgba(255,255,255, 0.8)',
-                fontSize: '10px',
-                fontWeight: 'light',
-                letterSpacing: '1px'
-              }
-            },
-            align: 'center',
-            verticalAlign: 'bottom',
-            layout: 'horizontal',
-            labelFormatter: function () {
-              return this.name;
-            },
-            itemStyle: {
-              color: 'rgba(255,255,255, 0.8)'
-            },
-            itemHoverStyle: {
-              color: 'rgba(255,255,255, 1)'
-            },
-            itemHiddenStyle: {
-              color: 'rgba(255,255,255, 0.3)'
-            }
-          },
-          navigation: {
-            buttonOptions: {
-              width: 120,
-              text: 'Download'
-
-            }
-
-          },
-          // SERIES CONFIGURATION BEGINS HERE
-          series: [
-            {
-
-              name: "DSCOVR",
-              lineWidth: 0.2,
-              lineColor: 'rgba(255, 255, 255, 1)',
-              lineZIndex: 1,
-              zIndex: 3,
-              tooltip: {
-                headerFormat: '<span>{series.name}</span>',
-                pointFormat: '</span> <br>X GSE :{point.x} <br>Y GSE: {point.y} <br> Z GSE: {point.z} <br> UTC: {point.custom}',
-                footerFormat: '</p>'
-              },
-              marker: {
-                symbol: 'circle',
-                radius: 5,
-              },
-              color: 'rgb(0, 0, 255)'
-            },
-            {
-              name: "ACE",
-              lineWidth: 0.2,
-              lineColor: 'rgba(255, 255, 255, 1)',
-              lineZIndex: 1,
-              zIndex: 3,
-              tooltip: {
-                headerFormat: '<span>{series.name}</span>',
-                pointFormat: '</span> <br>X GSE: {point.x} <br>Y GSE: {point.y} <br>Z GSE: {point.z} <br> UTC: {point.custom}',
-                footerFormat: '</p>',
-              },
-              marker: {
-                symbol: 'circle',
-                radius: 5,
-              },
-              color: 'rgb(36, 201, 85)'
-            },
-            {
-              name: "EARTH",
-              lineWidth: 1,
-              zIndex: 2,
-              visible: true,
-              marker: {
-                fillColor: 'blue',
-                // symbol: 'circle',
-                symbol: 'url(imgs/earth.png)',
-                height: 15,
-                width: 15,
-                radius: 1,
-              }
-            },
-            {
-              name: "SUN",
-              visible: true,
-              lineWidth: 1,
-              zIndex: 1,
-              marker: {
-                fillColor: 'yellow',
-                symbol: 'url(imgs/sun.png)',
-                height: 34,
-                width: 34,
-              }
-
-            },
-            {
-              name: "SUN DISC/SEV 0.5 deg",
-              lineWidth: 1,
-              zIndex: 2,
-              visible: true,
-              marker: {
-                fillColor: 'rgba(255, 165, 0, 1)',
-                symbol: 'circle',
-                radius: 12,
-              }
-            },
-            {
-              name: "SEZ 2.0 deg",
-              lineWidth: 1,
-              visible: true,
-              zIndex: 2,
-              color: 'rgba(255, 0, 0, 1)',
-              marker: {
-                enabled: false
-              }
-            },
-            {
-              name: "SEZ 4.0 deg",
-              lineWidth: 1,
-              visible: true,
-              zIndex: 2,
-              color: 'rgba(255, 255, 51, 1)',
-              marker: {
-                enabled: false
-              }
-
-            },
-            {
-              name: "Sun-Earth line",
-              lineWidth: 1,
-              visible: true,
-              marker: {
-                fillColor: 'orange',
-                symbol: 'circle',
-                // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
-                radius: 1,
-              }
-            }
-            // SERIES CONFIGURATION ENDS HERE
-          ]
-        });
-
-        // Here we add the reset button using the renderer. The arguments are the text, x and y position.
-        // Get plot width and height 
-        chart.renderer.button('RESET CAMERA', 0, 16)
-          .on('click', function () {
-            chart.update({
-              chart: {
-                options3d: {
-                  alpha: 0,
-                  beta: -90
-                }
-              }
-            });
+        },
+        subtitle: {
+          style: {
+            color: '#666666',
+            font: 'bold 12px "Arial", sans-serif'
           }
-          )
-          .attr({
-            zIndex: 100,
-            class: 'reset-button'
-          })
-          .add();
-
-
-      }
-
-      // Resize chart based on responsive wrapper
-      var wrapper = $('.wrapper'),
-        container = $('#container'),
-        wrapperHeight,
-        wrapperWidth;
-
-      var updateValues = function () {
-        // add 150 to wrapper height to account for the height of the legend. 
-        wrapperHeight = wrapper.height() - 150;
-        wrapperWidth = wrapper.width();
-      };
-      // Check if wrapper is taller than it is wide, and set chart height and width accordingly
-      var adjustContainer = function () {
-        if (wrapperHeight <= wrapperWidth) {
-          container.width(wrapperHeight);
-          container.height('100%')
-        } else {
-          container.height(wrapperWidth);
-          container.width('100%')
+        },
+        legend: {
+          itemMargin: 10,
+          itemStyle: {
+            font: '10pt Trebuchet MS, Verdana, sans-serif'
+          },
+          itemHoverStyle: {
+            color: 'gray'
+          }
+        },
+        chart: {
+          // set background color to black
+          backgroundColor: {
+            color: 'rgb(0, 0, 0)'
+          }
         }
+
       };
+      Highcharts.setOptions(Highcharts.theme);
 
-      //  Set chart depth on window load
-      $(window).on('load', function () {
-        // update slider-value with current value
-        $("#slider-value").text($("#slider").val());
-        updateValues();
-        adjustContainer();
-        // update options3d depth
-        chart.update({
-          chart: {
-            options3d: {
-              depth: wrapperWidth
+      // Set up the chart
+      chart = new Highcharts.Chart({
+        chart: {
+          type: 'scatter3d',
+          renderTo: 'container', // Target element id
+          fitToPlot: 'true',
+          reflow: 'false',
+          zoomType: 'z',
+          // Spacing effects titles and legend only
+          spacingTop: 25,
+          spacingBottom: 15,
+          spacingRight: 10,
+          spacingLeft: 10,
+          // Margin effects grid and chart!
+          marginTop: 0,
+          marginBottom: 0,
+          marginRight: 0,
+          marginLeft: 0,
+          // KEEP SQUARE!
+          // Get screen width from window object using jQuery. update on resize
+          // width: windowWidth(),
+          // height: windowWidth(),
+          // set responsive rules to keep chart and 3d frame square
+
+          allowMutatingData: false,
+          animation: true,
+          // Set loading screen
+          events: {
+            load() {
+              const chart = this;
+              chart.showLoading('Fetching data from NASA...');
+              setTimeout(function () {
+                chart.hideLoading();
+                chart.series[0].setData()
+              }, 1700);
+
+              // add button 
+
+            }
+          },
+          options3d: {
+            enabled: true,
+            // Setting alpha and beta to zero puts earth on left and satellites on right. alpha rotates on the vertical axis. beta rotates on the horizontal axis.
+            alpha: 0,
+            beta: -90,
+            // MUST MATCH WIDTH AND HEIGHT OF CHART
+            // depth: windowWidth(),
+            viewDistance: 5,
+            frame: {
+              left: { // Camera front
+                visible: false,
+              },
+              right: { // Camera back
+                visible: false,
+              },
+              front: { // Camera right
+                visible: false,
+              },
+              back: { // Camera left
+                visible: false,
+              },
+              top: {
+                visible: false,
+              },
+              bottom: { // Camera bottom
+                visible: false,
+              }
             }
           }
-        });
-      })
-
-      // Resize chart on window resize
-      $(window).on('resize', function () {
-
-        updateValues();
-        adjustContainer();
-        // update options3d depth
-        chart.update({
-          chart: {
-            options3d: {
-              depth: wrapperWidth
+        },
+        // need to fix this
+        exporting: {
+          enabled: true,
+          buttons: {
+            contextButton: {
+              menuItems: ['downloadPNG', 'downloadJPEG', 'downloadPDF', 'downloadSVG', 'separator', 'downloadCSV', 'downloadXLS']
             }
           }
-        });
+        },
+        title: {
+          text: 'DSCOVR and ACE Orbit Visualization'
+        },
+        subtitle: {
+          text: 'Click and drag the plot area to rotate in space.<br>Click the legend to turn on/off data series. The chart will resize to fit the data.'
+        },
+        plotOptions: {
+          scatter3d: {
+            width: 1,
+            height: 1,
+            depth: 1,
+            // animation on load only
+            animation: true,
+            animationLimit: 1000,
+            animationDuration: 1000,
+            turboThreshold: 100000,
+            allowPointSelect: true,
+            point: {
+              events: {
+                drag: function (event) {
+                  event.target.update({
+                    animation: false
+                  });
+                },
+                drop: function (event) {
+                  event.target.update({
+                    animation: true
+                  });
+                }
+              }
+            },
+            marker: {
+              states: {
+                hover: {
+                  enabled: true,
+                  lineColor: 'rgb(100,100,100)',
+                  lineWidth: 1,
+                }
+              }
+            },
+            // Set the style and default values for tooltips on hover
+            tooltip: {
+              shared: false,
+              useHTML: true,
+              valueDecimals: 0, // Set decimals following each value in tooltip
+            },
+          }
+        },
+        // GSE 0 is at Earth.
+        // X = Sun-Earth line
+        // Y = Sun Earth ecliptic
+        // Z = Up Down
 
-      })
-      updateValues()
-      adjustContainer();
+        // X = Y GSE
+        // Y = Z GSE
+        // Z = X GSE
+        yAxis: {
+          min: -300000,
+          floor: -300000,
+          max: 300000,
+          title: {
+            text: 'GSE Z-axis'
+          },
 
+          opposite: false,
+          labels: {
+            skew3d: true,
+            style: {
+              color: 'rgba(255,255,255, 0.8)'
+            }
+          }
+        },
+        xAxis: {
+          floor: 0,
+          // min: 0,
+          // max: 160000000,
+          gridLineWidth: 1,
+          title: {
+            text: 'GSE X-axis'
+          },
+          opposite: false,
+          labels: {
+            skew3d: true,
+            style: {
+              color: 'rgba(255,255,255, 0.8)'
+            }
+          }
+        },
+        zAxis: {
+          min: -300000,
+          floor: -300000,
+          max: 300000,
+          title: {
+            text: 'GSE Y-axis'
+          },
+          opposite: false,
+          labels: {
+            skew3d: true,
+            style: {
+              color: 'rgba(255,255,255, 0.8)'
+            }
+          }
+        },
+        // Set the legend
+        legend: {
+          enabled: true,
+          title: {
+            text: 'Click to hide/show data series',
+            style: {
+              color: 'rgba(255,255,255, 0.8)',
+              fontSize: '10px',
+              fontWeight: 'light',
+              letterSpacing: '1px'
+            }
+          },
+          align: 'center',
+          verticalAlign: 'bottom',
+          layout: 'horizontal',
+          labelFormatter: function () {
+            return this.name;
+          },
+          itemStyle: {
+            color: 'rgba(255,255,255, 0.8)'
+          },
+          itemHoverStyle: {
+            color: 'rgba(255,255,255, 1)'
+          },
+          itemHiddenStyle: {
+            color: 'rgba(255,255,255, 0.3)'
+          }
+        },
+        navigation: {
+          buttonOptions: {
+            width: 120,
+            text: 'Download'
 
+          }
 
-      // Listen for slider changes
-      $("#slider").on("change", function () {
-        // update slider-value element with current value
-        $("#slider-value").text(this.value);
-        weeksPerOrbit = parseInt(this.value);
-        defineEndTime();
-        start = convertTime(startTime);
-        end = convertTime(endTime);
-        sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
-        console.log(sscUrl);
-       axios.get(sscUrl)
-          .then(function (response) {
-            fetchData(response.data);
+        },
+        // SERIES CONFIGURATION BEGINS HERE
+        series: [
+          {
 
-            // store the data in local storage
-            localStorage.setItem('aceData', JSON.stringify(aceData));
-            localStorage.setItem('dscovrData', JSON.stringify(dscovrData));
-            localStorage.setItem('dscovrBackgroundColor', JSON.stringify(dscovrBackgroundColor));
-            localStorage.setItem('aceBackgroundColor', JSON.stringify(aceBackgroundColor));
-            console.log(localStorage.getItem('aceData'));
-            console.log(localStorage.getItem('dscovrData'));
-        
-            // FEED DATA TO HIGHCHARTS
-            chart.series[0].setData(dscovrData3d);
-            chart.series[1].setData(aceData3d);      
-          })
+            name: "DSCOVR",
+            lineWidth: 0.2,
+            lineColor: 'rgba(255, 255, 255, 1)',
+            lineZIndex: 1,
+            zIndex: 3,
+            tooltip: {
+              headerFormat: '<span>{series.name}</span>',
+              pointFormat: '</span> <br>X GSE :{point.x} <br>Y GSE: {point.y} <br> Z GSE: {point.z} <br> UTC: {point.custom}',
+              footerFormat: '</p>'
+            },
+            marker: {
+              symbol: 'circle',
+              radius: 5,
+            },
+            color: 'rgb(0, 0, 255)'
+          },
+          {
+            name: "ACE",
+            lineWidth: 0.2,
+            lineColor: 'rgba(255, 255, 255, 1)',
+            lineZIndex: 1,
+            zIndex: 3,
+            tooltip: {
+              headerFormat: '<span>{series.name}</span>',
+              pointFormat: '</span> <br>X GSE: {point.x} <br>Y GSE: {point.y} <br>Z GSE: {point.z} <br> UTC: {point.custom}',
+              footerFormat: '</p>',
+            },
+            marker: {
+              symbol: 'circle',
+              radius: 5,
+            },
+            color: 'rgb(36, 201, 85)'
+          },
+          {
+            name: "EARTH",
+            lineWidth: 1,
+            zIndex: 2,
+            visible: true,
+            marker: {
+              fillColor: 'blue',
+              // symbol: 'circle',
+              symbol: 'url(imgs/earth.png)',
+              height: 15,
+              width: 15,
+              radius: 1,
+            }
+          },
+          {
+            name: "SUN",
+            visible: false,
+            lineWidth: 1,
+            zIndex: 1,
+            marker: {
+              fillColor: 'yellow',
+              symbol: 'url(imgs/sun.png)',
+              height: 34,
+              width: 34,
+            }
+
+          },
+          {
+            name: "SUN DISC/SEV 0.5 deg",
+            lineWidth: 1,
+            zIndex: 2,
+            visible: true,
+            marker: {
+              fillColor: 'rgba(255, 165, 0, 1)',
+              symbol: 'circle',
+              radius: 12,
+            }
+          },
+          {
+            name: "SEZ 2.0 deg",
+            lineWidth: 1,
+            visible: true,
+            zIndex: 2,
+            color: 'rgba(255, 0, 0, 1)',
+            marker: {
+              enabled: false
+            }
+          },
+          {
+            name: "SEZ 4.0 deg",
+            lineWidth: 1,
+            visible: true,
+            zIndex: 2,
+            color: 'rgba(255, 255, 51, 1)',
+            marker: {
+              enabled: false
+            }
+
+          },
+          {
+            name: "Sun-Earth line",
+            lineWidth: 1,
+            visible: true,
+            marker: {
+              fillColor: 'orange',
+              symbol: 'circle',
+              // symbol: 'url(imgs/sun.jpeg)', NEED TO CENTER
+              radius: 1,
+            }
+          },
+          {
+            name: "Earth DSCOVR line",
+            lineWidth: 1,
+            visible: true,
+            marker: {
+              fillColor: 'orange',
+              symbol: 'circle'
+            }
+          },
+          {
+            name: "Earth ACE line",
+            lineWidth: 1,
+            visible: true,
+            marker: {
+              fillColor: 'orange',
+              symbol: 'circle'
+            }
+          }
+          // SERIES CONFIGURATION ENDS HERE
+        ]
       });
 
-
-
-      // Make the chart draggable
-      function dragStart(eStart) {
-        eStart = chart.pointer.normalize(eStart);
-
-        let posX = eStart.chartX,
-          posY = eStart.chartY,
-          alpha = chart.options.chart.options3d.alpha,
-          beta = chart.options.chart.options3d.beta,
-          sensitivity = 5,  // lower is more sensitive
-          handlers = [];
-
-        function drag(e) {
-          // Get e.chartX and e.chartY
-          e = chart.pointer.normalize(e);
-
+      // Here we add the reset button using the renderer. The arguments are the text, x and y position.
+      // Get plot width and height 
+      chart.renderer.button('RESET CAMERA', 0, 16)
+        .on('click', function () {
           chart.update({
             chart: {
               options3d: {
-                alpha: alpha + (e.chartY - posY) / sensitivity,
-                beta: beta + (posX - e.chartX) / sensitivity
+                alpha: 0,
+                beta: -90
               }
             }
-          }, undefined, undefined, false);
+          });
         }
+        )
+        .attr({
+          zIndex: 100,
+          class: 'reset-button'
+        })
+        .add();
 
-        function unbindAll() {
-          handlers.forEach(function (unbind) {
-            if (unbind) {
-              unbind();
+        chart.renderer.button('SIDE', 0, 60)
+        .on('click', function () {
+          chart.update({
+            chart: {
+              options3d: {
+                alpha: 0,
+                beta: 0
+              }
             }
           });
-          handlers.length = 0;
         }
+        )
+        .attr({
+          zIndex: 100,
+          class: 'reset-button'
+        })
+        .add();
 
-        handlers.push(H.addEvent(document, 'mousemove', drag));
-        handlers.push(H.addEvent(document, 'touchmove', drag));
 
-        handlers.push(H.addEvent(document, 'mouseup', unbindAll));
-        handlers.push(H.addEvent(document, 'touchend', unbindAll));
-      }
-
-      create3DChart();
-      H.addEvent(chart.container, 'mousedown', dragStart);
-      H.addEvent(chart.container, 'touchstart', dragStart);
-
-    } catch (e) {
-      console.log(e);
     }
 
-  }(Highcharts));
+    // Resize chart based on responsive wrapper
+    var wrapper = $('.wrapper'),
+      container = $('#container'),
+      wrapperHeight,
+      wrapperWidth;
+
+    var updateValues = function () {
+      // add 150 to wrapper height to account for the height of the legend. 
+      wrapperHeight = wrapper.height() - 150;
+      wrapperWidth = wrapper.width();
+    };
+    // Check if wrapper is taller than it is wide, and set chart height and width accordingly
+    var adjustContainer = function () {
+      if (wrapperHeight <= wrapperWidth) {
+        container.width(wrapperHeight);
+        container.height('100%')
+      } else {
+        container.height(wrapperWidth);
+        container.width('100%')
+      }
+    };
+
+    //  Set chart depth on window load
+    $(window).on('load', function () {
+      // update slider-value with current value
+      $("#slider-value").text($("#slider").val());
+      updateValues();
+      adjustContainer();
+      // update options3d depth
+      chart.update({
+        chart: {
+          options3d: {
+            depth: wrapperWidth
+          }
+        }
+      });
+    })
+
+    // Resize chart on window resize
+    $(window).on('resize', function () {
+
+      updateValues();
+      adjustContainer();
+      // update options3d depth
+      chart.update({
+        chart: {
+          options3d: {
+            depth: wrapperWidth
+          }
+        }
+      });
+
+    })
+    updateValues()
+    adjustContainer();
+
+
+
+    // Listen for slider changes
+    $("#slider").on("change", function () {
+      // update slider-value element with current value
+      $("#slider-value").text(this.value);
+      weeksPerOrbit = parseInt(this.value);
+      defineEndTime();
+      start = convertTime(startTime);
+      end = convertTime(endTime);
+      sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
+      console.log(sscUrl);
+      axios.get(sscUrl)
+        .then(function (response) {
+          fetchData(response.data);
+
+          // store the data in local storage
+          localStorage.setItem('aceData', JSON.stringify(aceData));
+          localStorage.setItem('dscovrData', JSON.stringify(dscovrData));
+          localStorage.setItem('dscovrBackgroundColor', JSON.stringify(dscovrBackgroundColor));
+          localStorage.setItem('aceBackgroundColor', JSON.stringify(aceBackgroundColor));
+          console.log(localStorage.getItem('aceData'));
+          console.log(localStorage.getItem('dscovrData'));
+
+          // FEED DATA TO HIGHCHARTS
+          chart.series[0].setData(dscovrData3d);
+          chart.series[1].setData(aceData3d);
+        })
+    });
+
+
+
+    // Make the chart draggable
+    function dragStart(eStart) {
+      eStart = chart.pointer.normalize(eStart);
+
+      let posX = eStart.chartX,
+        posY = eStart.chartY,
+        alpha = chart.options.chart.options3d.alpha,
+        beta = chart.options.chart.options3d.beta,
+        sensitivity = 5,  // lower is more sensitive
+        handlers = [];
+
+      function drag(e) {
+        // Get e.chartX and e.chartY
+        e = chart.pointer.normalize(e);
+
+        chart.update({
+          chart: {
+            options3d: {
+              alpha: alpha + (e.chartY - posY) / sensitivity,
+              beta: beta + (posX - e.chartX) / sensitivity
+            }
+          }
+        }, undefined, undefined, false);
+      }
+
+      function unbindAll() {
+        handlers.forEach(function (unbind) {
+          if (unbind) {
+            unbind();
+          }
+        });
+        handlers.length = 0;
+      }
+
+      handlers.push(H.addEvent(document, 'mousemove', drag));
+      handlers.push(H.addEvent(document, 'touchmove', drag));
+
+      handlers.push(H.addEvent(document, 'mouseup', unbindAll));
+      handlers.push(H.addEvent(document, 'touchend', unbindAll));
+    }
+
+    create3DChart();
+    H.addEvent(chart.container, 'mousedown', dragStart);
+    H.addEvent(chart.container, 'touchstart', dragStart);
+
+  } catch (e) {
+    console.log(e);
+  }
+
+}(Highcharts));
 
 
 
