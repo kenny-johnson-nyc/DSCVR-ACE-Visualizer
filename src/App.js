@@ -1,10 +1,11 @@
 import React from "react";
+import Chart from "./Create3DChart.js";
 
-const App = () =>{
+const App = () => {
     return (
-        <h1>
-            Hello world! I am using React
-        </h1>
+        <div>
+            <Chart />
+        </div>
     )
 }
 
