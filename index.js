@@ -189,7 +189,7 @@ function fetchData(positionData) {
 
   const calculateSEV = (data) => {
     let sev = Math.acos((data.x_gse * sunGSE[0] + data.y_gse * sunGSE[1] + data.z_gse * sunGSE[2]) / (Math.sqrt(data.x_gse * data.x_gse + data.y_gse * data.y_gse + data.z_gse * data.z_gse) * Math.sqrt(sunGSE[0] * sunGSE[0] + sunGSE[1] * sunGSE[1] + sunGSE[2] * sunGSE[2]))) * 180 / Math.PI;
-    console.log("SEV angle: " + sev + " degrees")
+    // console.log("SEV angle: " + sev + " degrees")
     return sev;
   }
 
@@ -199,8 +199,8 @@ function fetchData(positionData) {
   for (let i = 0; i < aceData.length; i++) {
     aceSEV.push(calculateSEV(aceData[i]));
   }
-  console.log(dscovrSEV);
-  console.log(aceSEV);
+  // console.log(dscovrSEV);
+  // console.log(aceSEV);
 
 
   aceData3d = prepareAceData(aceData);
@@ -260,8 +260,10 @@ axios.get(sscUrl, config)
     localStorage.setItem('dscovrData', JSON.stringify(dscovrData));
     localStorage.setItem('dscovrBackgroundColor', JSON.stringify(dscovrBackgroundColor));
     localStorage.setItem('aceBackgroundColor', JSON.stringify(aceBackgroundColor));
-    console.log(localStorage.getItem('aceData', JSON.stringify(aceData)));
-    console.log(localStorage.getItem('dscovrData', JSON.stringify(dscovrData)));
+
+    // console.log(localStorage.getItem('aceData'));
+    // console.log(localStorage.getItem('dscovrData'));
+
 
     // FEED DATA TO HIGHCHARTS
     chart.series[0].setData(dscovrData3d);
@@ -278,10 +280,6 @@ axios.get(sscUrl, config)
   .catch(function (error) {
     console.log(error);
   });
-
-
-
-
 
 // HIGHCHARTS CONFIGURATION BEGINS HERE
 (function (H) {
@@ -412,6 +410,45 @@ axios.get(sscUrl, config)
             depth: 1,
             // animation on load only
             animation: true,
+
+            // Set loading screen
+            events: {
+              load() {
+                const chart = this;
+                chart.showLoading('Fetching data from NASA...');
+                setTimeout(function () {
+                  chart.hideLoading();
+                  chart.series[0].setData()
+                }, 1700);
+
+              }
+            },
+            options3d: {
+              enabled: true,
+              // Setting alpha and beta to zero puts earth on left and satellites on right. alpha rotates on the vertical axis. beta rotates on the horizontal axis.
+              alpha: 0,
+              beta: -90,
+              // MUST MATCH WIDTH AND HEIGHT OF CHART
+              depth: 500,
+              viewDistance: 3,
+              frame: {
+                left: { // Camera front
+                  visible: false,
+                },
+                right: { // Camera back
+                  visible: false,
+                },
+                front: { // Camera right
+                  visible: false,
+                },
+                back: { // Camera left
+                  visible: false,
+                },
+                top: {
+                  visible: false,
+                },
+                bottom: { // Camera bottom
+                  visible: false,
             animationLimit: 1000,
             animationDuration: 1000,
             turboThreshold: 100000,
@@ -818,8 +855,99 @@ axios.get(sscUrl, config)
               beta: beta + (posX - e.chartX) / sensitivity
             }
           }
+
+        });
+
+      })
+      updateValues()
+      adjustContainer();
+
+
+
+      // Listen for slider changes
+      $("#slider").on("change", function () {
+        // update slider-value element with current value
+        $("#slider-value").text(this.value);
+        weeksPerOrbit = parseInt(this.value);
+        defineEndTime();
+        start = convertTime(startTime);
+        end = convertTime(endTime);
+        sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
+        console.log(sscUrl);
+        axios.get(sscUrl)
+          .then(function (response) {
+            fetchData(response.data);
+
+            // store the data in local storage
+            localStorage.setItem('aceData', JSON.stringify(aceData));
+            localStorage.setItem('dscovrData', JSON.stringify(dscovrData));
+            localStorage.setItem('dscovrBackgroundColor', JSON.stringify(dscovrBackgroundColor));
+            localStorage.setItem('aceBackgroundColor', JSON.stringify(aceBackgroundColor));
+            // console.log(localStorage.getItem('aceData'));
+            // console.log(localStorage.getItem('dscovrData'));
+
+            // FEED DATA TO HIGHCHARTS
+            chart.series[0].setData(dscovrData3d);
+            chart.series[1].setData(aceData3d);
+          })
+      });
+
+
+
+      // Make the chart draggable
+      function dragStart(eStart) {
+        eStart = chart.pointer.normalize(eStart);
+
+        let posX = eStart.chartX,
+          posY = eStart.chartY,
+          alpha = chart.options.chart.options3d.alpha,
+          beta = chart.options.chart.options3d.beta
+     
+          sensitivity = 10,  // lower is more sensitive
+          handlers = [];
+
+        let updatePending = false;
+        let latestEvent = null;
+
+        function drag(e) {
+          // Store the latest event and request an animation frame if one is not already pending
+          latestEvent = e;
+          if (!updatePending) {
+            updatePending = true;
+            requestAnimationFrame(() => {
+              updatePending = false;
+              // Get e.chartX and e.chartY
+              e = chart.pointer.normalize(latestEvent);
+
+              chart.update({
+                chart: {
+                  options3d: {
+                    alpha: 0,
+                    beta: beta + (posX - e.chartX) / sensitivity
+                  
+                  }
+                }
+              }, undefined, undefined, false);
+            });
+          }
+        }
+
+        console.log("alpha", alpha);
+
+        function unbindAll() {
+          handlers.forEach(function (unbind) {
+            if (unbind) {
+              unbind();
+            }
+          });
+          handlers.length = 0;
+        }
+
+        handlers.push(H.addEvent(document, 'mousemove', drag));
+        handlers.push(H.addEvent(document, 'touchmove', drag));
         }, undefined, undefined, false);
       }
+
 
       function unbindAll() {
         handlers.forEach(function (unbind) {
@@ -830,6 +958,12 @@ axios.get(sscUrl, config)
         handlers.length = 0;
       }
 
+      create3DChart();
+      if ('ontouchstart' in window) {
+        H.addEvent(chart.container, 'touchstart', dragStart);
+      } else {
+        H.addEvent(chart.container, 'mousedown', dragStart);
+      }
       handlers.push(H.addEvent(document, 'mousemove', drag));
       handlers.push(H.addEvent(document, 'touchmove', drag));
 
