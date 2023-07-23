@@ -318,6 +318,8 @@ axios.get(sscUrl)
             // width: windowWidth(),
             // height: windowWidth(),
             // set responsive rules to keep chart and 3d frame square
+            minWidth: 700,
+            minHeight: 700,
 
             allowMutatingData: false,
             animation: true,
@@ -363,12 +365,13 @@ axios.get(sscUrl)
               }
             }
           },
+
           // need to fix this
           exporting: {
             enabled: true,
             buttons: {
               contextButton: {
-                menuItems: ['downloadPNG', 'downloadJPEG', 'downloadPDF', 'downloadSVG', 'separator', 'downloadCSV', 'downloadXLS']
+                menuItems: ['downloadCSV', 'downloadXLS']
               }
             }
           },
@@ -445,6 +448,7 @@ axios.get(sscUrl)
             }
           },
           xAxis: {
+            zoomEnabled: true,
             floor: 0,
             // min: 0,
             // max: 160000000,
@@ -552,7 +556,7 @@ axios.get(sscUrl)
               name: "EARTH",
               lineWidth: 1,
               zIndex: 2,
-              visible: false,
+              visible: true,
               marker: {
                 fillColor: 'blue',
                 // symbol: 'circle',
@@ -564,7 +568,7 @@ axios.get(sscUrl)
             },
             {
               name: "SUN",
-              visible: true,
+              visible: false,
               lineWidth: 1,
               zIndex: 1,
               marker: {
@@ -624,7 +628,14 @@ axios.get(sscUrl)
 
         // Here we add the reset button using the renderer. The arguments are the text, x and y position.
         // Get plot width and height 
-        chart.renderer.button('RESET CAMERA', 0, 16)
+        const plotWidth = chart.plotWidth;
+        const plotHeight = chart.plotHeight;
+
+        const initialY = 20;
+        const buttonSpacing = 40;
+
+        // Reset Camera button
+        chart.renderer.button('RESET CAMERA', 10, initialY)
           .on('click', function () {
             chart.update({
               chart: {
@@ -634,16 +645,63 @@ axios.get(sscUrl)
                 }
               }
             });
-          }
-          )
+          })
           .attr({
             zIndex: 100,
-            class: 'reset-button'
+            'class': 'zoom-button',
+            padding: 5,
+            fill: 'rgba(255, 255, 255, 0.7)'
           })
           .add();
 
+        // Zoom In button
+        chart.renderer.button('ZOOM IN', 10, initialY + buttonSpacing)
+          .on('click', function () {
+            // Scale down all data points
+            chart.series.forEach(function (series) {
+              series.data.forEach(function (point) {
+                point.update({
+                  x: point.x * 1.5,
+                  y: point.y * 1.5,
+                  z: point.z * 1.5
+                }, false); // false to disable redraw
+              });
+            });
+            chart.redraw(); // manually redraw after all points have been updated
+          })
+          .attr({
+            zIndex: 100,
+            'class': 'zoom-button',
+            padding: 5,
+            fill: 'rgba(255, 255, 255, 0.7)'
+          })
+          .add();
+
+        // Zoom Out button
+        chart.renderer.button('ZOOM OUT', 10, initialY + 2 * buttonSpacing)
+          .on('click', function () {
+            // Scale up all data points
+            chart.series.forEach(function (series) {
+              series.data.forEach(function (point) {
+                point.update({
+                  x: point.x / 1.5,
+                  y: point.y / 1.5,
+                  z: point.z / 1.5
+                }, false); // false to disable redraw
+              });
+            });
+            chart.redraw(); // manually redraw after all points have been updated
+          })
+          .attr({
+            zIndex: 100,
+            'class': 'zoom-button',
+            padding: 5,
+            fill: 'rgba(255, 255, 255, 0.7)'
+          })
+          .add();
 
       }
+
 
       // Resize chart based on responsive wrapper
       var wrapper = $('.wrapper'),
@@ -653,8 +711,8 @@ axios.get(sscUrl)
 
       var updateValues = function () {
         // add 150 to wrapper height to account for the height of the legend. 
-        wrapperHeight = wrapper.height() - 150;
-        wrapperWidth = wrapper.width();
+        Math.min(850, wrapperHeight = wrapper.height() - 150);
+        Math.min(700, wrapperWidth = wrapper.width());
       };
       // Check if wrapper is taller than it is wide, and set chart height and width accordingly
       var adjustContainer = function () {
@@ -701,8 +759,6 @@ axios.get(sscUrl)
       updateValues()
       adjustContainer();
 
-
-
       // Listen for slider changes
       $("#slider").on("change", function () {
         // update slider-value element with current value
@@ -741,8 +797,8 @@ axios.get(sscUrl)
           posY = eStart.chartY,
           alpha = chart.options.chart.options3d.alpha,
           beta = chart.options.chart.options3d.beta
-     
-          sensitivity = 10,  // lower is more sensitive
+
+        sensitivity = 10,  // lower is more sensitive
           handlers = [];
 
         let updatePending = false;
@@ -762,8 +818,9 @@ axios.get(sscUrl)
                 chart: {
                   options3d: {
                     alpha: 0,
-                    beta: beta + (posX - e.chartX) / sensitivity
-                  
+                    beta: beta + (posX - e.chartX) / sensitivity,
+                    viewDistance: 3
+
                   }
                 }
               }, undefined, undefined, false);

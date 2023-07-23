@@ -98,6 +98,11 @@ header {
   width: 95vw;
 }
 
+.highcharts-container .highcharts-3d-chart, #container{
+  min-width: 700px;
+}
+
+
 .highcharts-figure,
 .highcharts-data-table table {
   margin: 0 auto;
