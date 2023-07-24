@@ -33,7 +33,6 @@ let windowHeight = function () {
 }
 
 
-
 // Build a circle for the SEZ2 and SEZ4 boundaries
 function buildCircle(radius, x) {
   let circleData = [];
@@ -79,14 +78,10 @@ function zeroPad(num) {
 defineEndTime();
 let start = convertTime(startTime);
 let end = convertTime(endTime);
+
+// build the url to access the SSC api
 let sscUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/ace,dscovr/' + start + ',' + end + '/';
 console.log(sscUrl);
-
-
-
-
-
-
 
 /**
  * 
@@ -277,6 +272,7 @@ axios.get(sscUrl)
             }
           },
           legend: {
+            y: -50,
             itemMargin: 10,
             itemStyle: {
               font: '10pt Trebuchet MS, Verdana, sans-serif'
@@ -324,6 +320,9 @@ axios.get(sscUrl)
             allowMutatingData: false,
             animation: true,
             // Set loading screen
+            exporting: {
+              enabled: false
+            },
             events: {
               load() {
                 const chart = this;
@@ -362,16 +361,6 @@ axios.get(sscUrl)
                 bottom: { // Camera bottom
                   visible: false,
                 }
-              }
-            }
-          },
-
-          // need to fix this
-          exporting: {
-            enabled: true,
-            buttons: {
-              contextButton: {
-                menuItems: ['downloadCSV', 'downloadXLS']
               }
             }
           },
@@ -507,14 +496,6 @@ axios.get(sscUrl)
               color: 'rgba(255,255,255, 0.3)'
             }
           },
-          navigation: {
-            buttonOptions: {
-              width: 120,
-              text: 'Download'
-
-            }
-
-          },
           // SERIES CONFIGURATION BEGINS HERE
           series: [
             {
@@ -635,7 +616,7 @@ axios.get(sscUrl)
         const buttonSpacing = 40;
 
         // Reset Camera button
-        chart.renderer.button('RESET CAMERA', 10, initialY)
+        chart.renderer.button('RESET', 10, initialY)
           .on('click', function () {
             chart.update({
               chart: {
@@ -650,7 +631,10 @@ axios.get(sscUrl)
             zIndex: 100,
             'class': 'zoom-button',
             padding: 5,
-            fill: 'rgba(255, 255, 255, 0.7)'
+            fill: 'rgba(255, 255, 255, 0.1)'
+          })
+          .css({
+            color: 'rgba(255, 255, 255, 1)'
           })
           .add();
 
@@ -673,7 +657,10 @@ axios.get(sscUrl)
             zIndex: 100,
             'class': 'zoom-button',
             padding: 5,
-            fill: 'rgba(255, 255, 255, 0.7)'
+            fill: 'rgba(255, 255, 255, 0.1)'
+          })
+          .css({
+            color: 'rgba(255, 255, 255, 1)'
           })
           .add();
 
@@ -696,7 +683,10 @@ axios.get(sscUrl)
             zIndex: 100,
             'class': 'zoom-button',
             padding: 5,
-            fill: 'rgba(255, 255, 255, 0.7)'
+            fill: 'rgba(255, 255, 255, 0.1)'
+          })
+          .css({
+            color: 'rgba(255, 255, 255, 1)'
           })
           .add();
 
@@ -787,8 +777,6 @@ axios.get(sscUrl)
           })
       });
 
-
-
       // Make the chart draggable
       function dragStart(eStart) {
         eStart = chart.pointer.normalize(eStart);
@@ -859,9 +847,5 @@ axios.get(sscUrl)
 
   }(Highcharts));
 
-
-
 // Created by Kenny Johnson and Jeff Johnson
 // Email for questions/comment/job offers kenny.johnson.nyc@gmail.com
-
-

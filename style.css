@@ -211,3 +211,7 @@ header {
   margin: 0;
   padding: 0;
 }
+
+.highcharts-contextbutton {
+  display: none !important;
+}
