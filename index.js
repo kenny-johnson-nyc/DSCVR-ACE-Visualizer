@@ -637,11 +637,6 @@ axios.get(sscUrl)
                 }
               }
             })
-           // Reset the data to the original data
-        chart.series[0].setData(originalDSCVRData); 
-        chart.series[1].setData(originalACEData);
-        chart.redraw(); // manually redraw after all points have been updated
-          
           })
           .attr({
             zIndex: 100,
