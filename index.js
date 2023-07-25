@@ -9,9 +9,7 @@ const l1 = 1600000; // L1 distance in miles
 const sezHalfrad = Math.tan(toRadians(0.5)) * l1; // SEZ.5 radius
 const sez2rad = Math.tan(toRadians(2)) * l1; // SEZ2 radius
 const sez4rad = Math.tan(toRadians(4)) * l1; // SEZ4 radius
-const sezHalfDeg = buildCircle(sezHalfrad, l1); // SEZ.5 boundary
-const sez2Deg = buildCircle(sez2rad, l1); // SEZ2 boundary
-const sez4Deg = buildCircle(sez4rad, l1); // Build a circle for the SEZ4 boundary
+
 const minutesPerPoint = 12;// SSCweb data for ACE and DSCOVR is resolution 720 = 12 minutes per point
 const pointsPerDay = 7 * 24; // 7 days * 24 hours
 const pointsPerWeek = 7 * 24 * (60 / minutesPerPoint); // 7 days * 24 hours * 60 minutes / 12 minutes per point
@@ -43,6 +41,10 @@ function buildCircle(radius, x) {
   }
   return circleData;
 }
+
+const sezHalfDeg = buildCircle(sezHalfrad, l1); // SEZ.5 boundary
+const sez2Deg = buildCircle(sez2rad, l1); // SEZ2 boundary
+const sez4Deg = buildCircle(sez4rad, l1); // Build a circle for the SEZ4 boundary
 
 // convert degrees to radians
 function toRadians(angle) {
@@ -181,10 +183,19 @@ function fetchData(positionData) {
   let aceSEV = [];
 
   const calculateSEV = (data) => {
-    let sev = Math.acos((data.x_gse * sunGSE[0] + data.y_gse * sunGSE[1] + data.z_gse * sunGSE[2]) / (Math.sqrt(data.x_gse * data.x_gse + data.y_gse * data.y_gse + data.z_gse * data.z_gse) * Math.sqrt(sunGSE[0] * sunGSE[0] + sunGSE[1] * sunGSE[1] + sunGSE[2] * sunGSE[2]))) * 180 / Math.PI;
+    let sunGSE_X = sunGSE[0][0];
+    let sunGSE_Y = sunGSE[0][1];
+    let sunGSE_Z = sunGSE[0][2];
+    
+    let sev = Math.acos((data.x_gse * sunGSE_X + data.y_gse * sunGSE_Y + data.z_gse * sunGSE_Z) / 
+    (Math.sqrt(data.x_gse * data.x_gse + data.y_gse * data.y_gse + data.z_gse * data.z_gse) * 
+    Math.sqrt(sunGSE_X * sunGSE_X + sunGSE_Y * sunGSE_Y + sunGSE_Z * sunGSE_Z))) * 180 / Math.PI;
+    
     // console.log("SEV angle: " + sev + " degrees")
     return sev;
-  }
+}
+
+
 
   for (let i = 0; i < dscovrData.length; i++) {
     dscovrSEV.push(calculateSEV(dscovrData[i]));
@@ -192,8 +203,8 @@ function fetchData(positionData) {
   for (let i = 0; i < aceData.length; i++) {
     aceSEV.push(calculateSEV(aceData[i]));
   }
-  // console.log(dscovrSEV);
-  // console.log(aceSEV);
+  console.log(dscovrSEV);
+  console.log(aceSEV);
 
 
   aceData3d = prepareAceData(aceData);
@@ -272,7 +283,7 @@ axios.get(sscUrl)
             }
           },
           legend: {
-            y: -50,
+            y: 120,
             itemMargin: 10,
             itemStyle: {
               font: '10pt Trebuchet MS, Verdana, sans-serif'
@@ -298,7 +309,6 @@ axios.get(sscUrl)
             renderTo: 'container', // Target element id
             fitToPlot: 'true',
             reflow: 'false',
-            zoomType: 'z',
             // Spacing effects titles and legend only
             spacingTop: 25,
             spacingBottom: 15,
@@ -316,7 +326,6 @@ axios.get(sscUrl)
             // set responsive rules to keep chart and 3d frame square
             minWidth: 700,
             minHeight: 700,
-
             allowMutatingData: false,
             animation: true,
             // Set loading screen
@@ -480,9 +489,9 @@ axios.get(sscUrl)
                 letterSpacing: '1px'
               }
             },
-            align: 'center',
-            verticalAlign: 'bottom',
-            layout: 'horizontal',
+            align: 'left',
+            verticalAlign: 'left',
+            layout: 'vertical',
             labelFormatter: function () {
               return this.name;
             },
@@ -607,13 +616,15 @@ axios.get(sscUrl)
           ]
         });
 
-        // Here we add the reset button using the renderer. The arguments are the text, x and y position.
-        // Get plot width and height 
-        const plotWidth = chart.plotWidth;
-        const plotHeight = chart.plotHeight;
+        // BUTTONS
 
         const initialY = 20;
         const buttonSpacing = 40;
+
+        // Store the original data
+        let originalDSCVRData = chart.series[0].data;
+        let originalACEData = chart.series[1].data;
+        
 
         // Reset Camera button
         chart.renderer.button('RESET', 10, initialY)
@@ -625,7 +636,12 @@ axios.get(sscUrl)
                   beta: -90
                 }
               }
-            });
+            })
+           // Reset the data to the original data
+        chart.series[0].setData(originalDSCVRData); 
+        chart.series[1].setData(originalACEData);
+        chart.redraw(); // manually redraw after all points have been updated
+          
           })
           .attr({
             zIndex: 100,
