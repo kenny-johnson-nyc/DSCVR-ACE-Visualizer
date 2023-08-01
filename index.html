@@ -21,29 +21,13 @@
 </head>
 
 <body>
-  <header>
-    <!-- LOGOS -->
-    <div class="logos">
-      <a
-        href="https://www.nesdis.noaa.gov/current-satellite-missions/currently-flying/dscovr-deep-space-climate-observatory">
-        <img src="imgs/DSCOVR-Logo.png" alt="USRA" class="logo">
-      </a>
-      <a
-        href="https://solarsystem.nasa.gov/missions/ace/in-depth/#:~:text=NASA's%20Advanced%20Composition%20Explorer%20(ACE,evolution%20of%20the%20solar%20system.">
-        <img src="imgs/ACE_mission_logo.png" alt="USRA" class="logo">
-      </a>
-      <a href="https://www.noaa.gov/">
-        <img src="imgs/noaa_logo.png" alt="NOAA" class="logo">
-      </a>
-      <a href="https://www.nasa.gov/">
-        <img src="imgs/nasa_logo.png" alt="NSF" class="logo">
-      </a>
-      <a href="https://www.weather.gov/">
-        <img src="imgs/nws_logo.png" alt="USRA" class="logo">
-      </a>
-    </div>
-  </header>
   <main>
+
+    <div class="title">
+      <h2>DSCOVR/ACE Orbit Visualizer</h2>
+      <h5>Click and/or drag to rotate</h5>
+    </div>
+
     <!-- CHART -->
     <figure class="highcharts-figure">
       <div class="wrapper">
@@ -53,16 +37,23 @@
       </p>
     </figure>
 
+    <div id="loading" style="display: none;">Loading...</div>
+    <div class="button-container">
+      <button id="resetBtn" class="zoom-button">RESET ROTATION</button>
+      <button id="zoomInBtn" class="zoom-button">ZOOM IN</button>
+      <button id="zoomOutBtn" class="zoom-button">ZOOM OUT</button>
+    </div>
+
     <!-- SLIDER -->
     <div class="slider-container">
       <input type="range" id="slider" min="10" value="26" max="100" step="2">
-      <span>Adjust the amount of weeks displayed. </span>
+      <span>Adjust the amount of weeks displayed</span>
       <span>Currently displaying: </span>
       <span id="slider-value"></span>
       <span> weeks</span>
     </div>
+
     <script src="index.js"></script>
-    </div>
   </main>
 </body>
 

@@ -98,7 +98,8 @@ header {
   width: 95vw;
 }
 
-.highcharts-container .highcharts-3d-chart, #container{
+.highcharts-container .highcharts-3d-chart,
+#container {
   min-width: 700px;
 }
 
@@ -178,7 +179,7 @@ header {
   -webkit-appearance: none;
   width: 30%;
   height: 15px;
-  border-radius: 5px;  
+  border-radius: 5px;
   background: #d3d3d3;
   outline: none;
   opacity: 0.7;
@@ -191,7 +192,7 @@ header {
   appearance: none;
   width: 25px;
   height: 25px;
-  border-radius: 50%; 
+  border-radius: 50%;
   background: #04AA6D;
   cursor: pointer;
 }
@@ -214,4 +215,27 @@ header {
 
 .highcharts-contextbutton {
   display: none !important;
+}
+
+button {
+  padding: 0.5em !important;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+}
+
+.zoom-button {
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 1);
+  z-index: 100;
+}
+
+.title {
+  text-align: center;
 }

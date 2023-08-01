@@ -186,14 +186,14 @@ function fetchData(positionData) {
     let sunGSE_X = sunGSE[0][0];
     let sunGSE_Y = sunGSE[0][1];
     let sunGSE_Z = sunGSE[0][2];
-    
-    let sev = Math.acos((data.x_gse * sunGSE_X + data.y_gse * sunGSE_Y + data.z_gse * sunGSE_Z) / 
-    (Math.sqrt(data.x_gse * data.x_gse + data.y_gse * data.y_gse + data.z_gse * data.z_gse) * 
-    Math.sqrt(sunGSE_X * sunGSE_X + sunGSE_Y * sunGSE_Y + sunGSE_Z * sunGSE_Z))) * 180 / Math.PI;
-    
+
+    let sev = Math.acos((data.x_gse * sunGSE_X + data.y_gse * sunGSE_Y + data.z_gse * sunGSE_Z) /
+      (Math.sqrt(data.x_gse * data.x_gse + data.y_gse * data.y_gse + data.z_gse * data.z_gse) *
+        Math.sqrt(sunGSE_X * sunGSE_X + sunGSE_Y * sunGSE_Y + sunGSE_Z * sunGSE_Z))) * 180 / Math.PI;
+
     // console.log("SEV angle: " + sev + " degrees")
     return sev;
-}
+  }
 
 
 
@@ -253,12 +253,11 @@ axios.get(sscUrl)
     // FEED DATA TO HIGHCHARTS
     chart.series[0].setData(dscovrData3d);
     chart.series[1].setData(aceData3d);
-    chart.series[2].setData(earthGSE);
-    chart.series[3].setData(sunGSE);
-    chart.series[4].setData(earthGSE);
-    chart.series[5].setData(sez2Deg);
-    chart.series[6].setData(sez4Deg);
-    chart.series[7].setData(sunEarthLine)
+    chart.series[2].setData(sez2Deg);
+    chart.series[3].setData(sez4Deg);
+    chart.series[4].setData(sunGSE);
+    chart.series[5].setData(earthGSE);
+    chart.series[6].setData(sunEarthLine)
   })
   .catch(function (error) {
     console.log(error);
@@ -283,8 +282,7 @@ axios.get(sscUrl)
             }
           },
           legend: {
-            y: 120,
-            itemMargin: 10,
+            symbolPadding: 10,
             itemStyle: {
               font: '10pt Trebuchet MS, Verdana, sans-serif'
             },
@@ -324,8 +322,6 @@ axios.get(sscUrl)
             // width: windowWidth(),
             // height: windowWidth(),
             // set responsive rules to keep chart and 3d frame square
-            minWidth: 700,
-            minHeight: 700,
             allowMutatingData: false,
             animation: true,
             // Set loading screen
@@ -374,16 +370,15 @@ axios.get(sscUrl)
             }
           },
           title: {
-            text: 'DSCOVR and ACE Orbit Visualization'
+            text: null
           },
           subtitle: {
-            text: 'Click and drag the plot area to rotate in space'
+            text: null,
+            align: 'center'
+
           },
           plotOptions: {
             scatter3d: {
-              width: 1,
-              height: 1,
-              depth: 1,
               // animation on load only
               animation: true,
               animationLimit: 1000,
@@ -407,6 +402,11 @@ axios.get(sscUrl)
               marker: {
                 states: {
                   hover: {
+                    enabled: true,
+                    lineColor: 'rgb(100,100,100)',
+                    lineWidth: 1,
+                  },
+                  select: {
                     enabled: true,
                     lineColor: 'rgb(100,100,100)',
                     lineWidth: 1,
@@ -480,8 +480,9 @@ axios.get(sscUrl)
           // Set the legend
           legend: {
             enabled: true,
+            width: '100%',
             title: {
-              text: 'Click to hide/show data series',
+              text: 'Click to hide/show',
               style: {
                 color: 'rgba(255,255,255, 0.8)',
                 fontSize: '10px',
@@ -489,9 +490,9 @@ axios.get(sscUrl)
                 letterSpacing: '1px'
               }
             },
-            align: 'left',
-            verticalAlign: 'left',
-            layout: 'vertical',
+            align: 'center',
+            verticalAlign: 'top',
+            layout: 'horizontal',
             labelFormatter: function () {
               return this.name;
             },
@@ -543,44 +544,6 @@ axios.get(sscUrl)
               color: 'rgb(36, 201, 85)'
             },
             {
-              name: "EARTH",
-              lineWidth: 1,
-              zIndex: 2,
-              visible: true,
-              marker: {
-                fillColor: 'blue',
-                // symbol: 'circle',
-                symbol: 'url(imgs/earth.png)',
-                height: 15,
-                width: 15,
-                radius: 1,
-              }
-            },
-            {
-              name: "SUN",
-              visible: false,
-              lineWidth: 1,
-              zIndex: 1,
-              marker: {
-                fillColor: 'yellow',
-                symbol: 'url(imgs/sun.png)',
-                height: 34,
-                width: 34,
-              }
-
-            },
-            {
-              name: "SUN DISC/SEV 0.5 deg",
-              lineWidth: 1,
-              zIndex: 2,
-              visible: false,
-              marker: {
-                fillColor: 'rgba(255, 165, 0, 1)',
-                symbol: 'circle',
-                radius: 12,
-              }
-            },
-            {
               name: "SEZ 2.0 deg",
               lineWidth: 1,
               visible: true,
@@ -602,6 +565,33 @@ axios.get(sscUrl)
 
             },
             {
+              name: "SUN",
+              visible: false,
+              lineWidth: 1,
+              zIndex: 1,
+              marker: {
+                fillColor: 'yellow',
+                symbol: 'url(imgs/sun.png)',
+                height: 34,
+                width: 34,
+              }
+
+            },
+            {
+              name: "EARTH",
+              lineWidth: 1,
+              zIndex: 2,
+              visible: false,
+              marker: {
+                fillColor: 'blue',
+                // symbol: 'circle',
+                symbol: 'url(imgs/earth.png)',
+                height: 15,
+                width: 15,
+                radius: 1,
+              }
+            },
+            {
               name: "Sun-Earth line",
               lineWidth: 1,
               visible: false,
@@ -616,90 +606,52 @@ axios.get(sscUrl)
           ]
         });
 
-        // BUTTONS
-
-        const initialY = 20;
-        const buttonSpacing = 40;
-
-        // Store the original data
-        let originalDSCVRData = chart.series[0].data;
-        let originalACEData = chart.series[1].data;
-        
+        // BUTTONS ---------------------------------------------
 
         // Reset Camera button
-        chart.renderer.button('RESET', 10, initialY)
-          .on('click', function () {
-            chart.update({
-              chart: {
-                options3d: {
-                  alpha: 0,
-                  beta: -90
-                }
+        document.getElementById('resetBtn').addEventListener('click', function () {
+          chart.update({
+            chart: {
+              options3d: {
+                alpha: 0,
+                beta: -90
               }
-            })
-          })
-          .attr({
-            zIndex: 100,
-            'class': 'zoom-button',
-            padding: 5,
-            fill: 'rgba(255, 255, 255, 0.1)'
-          })
-          .css({
-            color: 'rgba(255, 255, 255, 1)'
-          })
-          .add();
+            }
+          });
+        });
 
         // Zoom In button
-        chart.renderer.button('ZOOM IN', 10, initialY + buttonSpacing)
-          .on('click', function () {
-            // Scale down all data points
-            chart.series.forEach(function (series) {
-              series.data.forEach(function (point) {
-                point.update({
-                  x: point.x * 1.5,
-                  y: point.y * 1.5,
-                  z: point.z * 1.5
-                }, false); // false to disable redraw
-              });
+        document.getElementById('zoomInBtn').addEventListener('click', function () {
+          // Scale down all data points
+          chart.series.forEach(function (series) {
+            series.data.forEach(function (point) {
+              point.update({
+                x: point.x * 1.5,
+                y: point.y * 1.5,
+                z: point.z * 1.5
+              }, false); // false to disable redraw
             });
-            chart.redraw(); // manually redraw after all points have been updated
-          })
-          .attr({
-            zIndex: 100,
-            'class': 'zoom-button',
-            padding: 5,
-            fill: 'rgba(255, 255, 255, 0.1)'
-          })
-          .css({
-            color: 'rgba(255, 255, 255, 1)'
-          })
-          .add();
+          });
+          chart.redraw(); // manually redraw after all points have been updated
+        });
 
         // Zoom Out button
-        chart.renderer.button('ZOOM OUT', 10, initialY + 2 * buttonSpacing)
-          .on('click', function () {
-            // Scale up all data points
-            chart.series.forEach(function (series) {
-              series.data.forEach(function (point) {
-                point.update({
-                  x: point.x / 1.5,
-                  y: point.y / 1.5,
-                  z: point.z / 1.5
-                }, false); // false to disable redraw
-              });
+        document.getElementById('zoomOutBtn').addEventListener('click', function () {
+          // Scale up all data points
+          chart.series.forEach(function (series) {
+            series.data.forEach(function (point) {
+              point.update({
+                x: point.x / 1.5,
+                y: point.y / 1.5,
+                z: point.z / 1.5
+              }, false); // false to disable redraw
             });
-            chart.redraw(); // manually redraw after all points have been updated
-          })
-          .attr({
-            zIndex: 100,
-            'class': 'zoom-button',
-            padding: 5,
-            fill: 'rgba(255, 255, 255, 0.1)'
-          })
-          .css({
-            color: 'rgba(255, 255, 255, 1)'
-          })
-          .add();
+          });
+          chart.redraw(); // manually redraw after all points have been updated
+        });
+
+
+
 
       }
 
