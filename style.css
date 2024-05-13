@@ -31,11 +31,23 @@ body {
 }
 
 #container {
-  /* Must be set to fixed px. */
-  width: 100%;
   height: auto;
   touch-action: none;
 }
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+}
+
+.highcharts-container .highcharts-3d-chart,
+#container {
+  min-width: 800px;
+  min-height: 800px;
+}
+
 
 .logos {
   display: flex;
@@ -89,19 +101,6 @@ header {
 
 /* Highcharts */
 
-.wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid black;
-  height: 95vw;
-  width: 95vw;
-}
-
-.highcharts-container .highcharts-3d-chart,
-#container {
-  min-width: 700px;
-}
 
 
 .highcharts-figure,
@@ -176,7 +175,6 @@ header {
 }
 
 #slider {
-  -webkit-appearance: none;
   width: 30%;
   height: 15px;
   border-radius: 5px;

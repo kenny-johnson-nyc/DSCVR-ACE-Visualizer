@@ -17,6 +17,8 @@
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
   <script src="https://code.highcharts.com/modules/export-data.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  <!--import lodash-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -40,13 +42,13 @@
     <div id="loading" style="display: none;">Loading...</div>
     <div class="button-container">
       <button id="resetBtn" class="zoom-button">RESET ROTATION</button>
-      <button id="zoomInBtn" class="zoom-button">ZOOM IN</button>
-      <button id="zoomOutBtn" class="zoom-button">ZOOM OUT</button>
+      <!-- <button id="zoomInBtn" class="zoom-button">ZOOM IN</button>
+      <button id="zoomOutBtn" class="zoom-button">ZOOM OUT</button> -->
     </div>
 
     <!-- SLIDER -->
     <div class="slider-container">
-      <input type="range" id="slider" min="10" value="26" max="100" step="2">
+      <input type="range" id="slider" min="4" value="26" max="104" step="4">
       <span>Adjust the amount of weeks displayed</span>
       <span>Currently displaying: </span>
       <span id="slider-value"></span>
