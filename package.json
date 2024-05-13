@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "axios-debug-log": "^1.0.0"
+  },
+  "devDependencies": {
+    "axios-logger": "^2.8.0"
+  }
+}
