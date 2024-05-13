@@ -46,13 +46,11 @@
       <button id="zoomOutBtn" class="zoom-button">ZOOM OUT</button> -->
     </div>
 
-    <!-- SLIDER -->
-    <div class="slider-container">
-      <input type="range" id="slider" min="4" value="26" max="104" step="4">
-      <span>Adjust the amount of weeks displayed</span>
-      <span>Currently displaying: </span>
-      <span id="slider-value"></span>
-      <span> weeks</span>
+    <div class="dropdown-container">
+      <label for="weeksDropdown">Currently displaying:</label>
+      <select id="weeksDropdown">
+        <!-- Options will be dynamically generated in JavaScript -->
+      </select>
     </div>
 
     <script src="index.js"></script>

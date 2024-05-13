@@ -94,15 +94,32 @@ function extractData(dataElements, id) {
   const xs = coordinates.getElementsByTagNameNS(namespace, "X");
   const ys = coordinates.getElementsByTagNameNS(namespace, "Y");
   const zs = coordinates.getElementsByTagNameNS(namespace, "Z");
-  const times = element.getElementsByTagNameNS(namespace, "Time"); 
+  const times = element.getElementsByTagNameNS(namespace, "Time");
 
   let data = [];
+  let minTime = Number.MAX_SAFE_INTEGER;
+  let maxTime = Number.MIN_SAFE_INTEGER;
+
+  // First pass to determine min and max times for opacity scaling
+  for (let i = 0; i < times.length; i++) {
+    const timeValue = new Date(times[i].textContent).getTime();
+    if (timeValue < minTime) minTime = timeValue;
+    if (timeValue > maxTime) maxTime = timeValue;
+  }
+
+  const minOpacity = 0.2; // Minimum opacity value
+
+  // Second pass to create data points with scaled opacity and color
   for (let i = 0; i < xs.length; i += subsampleFactor) {
+    const timeValue = new Date(times[i].textContent).getTime();
+    const opacity = minOpacity + (1 - minOpacity) * ((timeValue - minTime) / (maxTime - minTime)); // Scale opacity between minOpacity and 1
+    const color = id === "dscovr" ? `rgba(0, 0, 255, ${opacity})` : `rgba(36, 201, 85, ${opacity})`; // Set color based on satellite ID
     data.push({
       x: parseFloat(xs[i].textContent),
       y: parseFloat(ys[i] ? ys[i].textContent : 0),
       z: parseFloat(zs[i] ? zs[i].textContent : 0),
-      time: times[i] ? times[i].textContent : null
+      time: times[i] ? times[i].textContent : null,
+      color: color // Set color property
     });
   }
   return data;
@@ -190,7 +207,7 @@ const chartOptions = {
       enabled: true,
       // Setting alpha and beta to zero puts earth on left and satellites on right. alpha rotates on the vertical axis. beta rotates on the horizontal axis.
       alpha: 0, // Rotate vertically
-      beta: -90, // Rotate horizontally
+      beta: 90, // Rotate horizontally
       depth: 800, // Depth must match width in pixels of container!!!
       viewDistance: 5, // 
       frame: {
@@ -297,6 +314,7 @@ const chartOptions = {
     enabled: true,
     width: '100%',
     y: -75, // Vertical position of legend
+    x: 650,
     title: {
       text: 'Click to hide/show',
       style: {
@@ -361,6 +379,8 @@ const chartOptions = {
       marker: {
         symbol: 'circle',
         radius: 5,
+        lineColor: 'rgba(255, 255, 255, .2)',
+        lineWidth: 1
       },
       color: 'rgb(0, 0, 255)'
     },
@@ -376,8 +396,10 @@ const chartOptions = {
         footerFormat: '</p>',
       },
       marker: {
-        symbol: 'circle',
+        symbol: 'square',
         radius: 5,
+        lineColor: 'rgba(255, 255, 255, .2)',
+        lineWidth: 1
       },
       color: 'rgb(36, 201, 85)'
     },
@@ -524,67 +546,44 @@ function create3DChart() {
   addDragFunctionality(chart); // Add drag functionality after chart creation
 }
 
-create3DChart();  // Initialize the chart first
-
-// // Event listeners for interactive chart controls
-// document.getElementById('zoomInBtn').addEventListener('click', function () {
-//   chart.update({
-//     chart: {
-//       options3d: {
-//         viewDistance: chart.options3d.viewDistance * 0.75
-//       }
-//     }
-//   });
-// });
-
-// document.getElementById('zoomOutBtn').addEventListener('click', function () {
-//   chart.update({
-//     chart: {
-//       options3d: {
-//         viewDistance: chart.options3d.viewDistance * 1.25
-//       }
-//     }
-//   });
-// });
-
 document.getElementById('resetBtn').addEventListener('click', function () {
   chart.update({
     chart: {
       options3d: {
         alpha: 0,
-        beta: -90
+        beta: 90
       }
     }
   });
 });
 
-// Debounce function to limit the rate of function execution
-function debounce(func, wait) {
-  let timeout;
-  return function(...args) {
-    const context = this;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(context, args), wait);
-  };
+// Generate dropdown options
+const weeksDropdown = document.getElementById('weeksDropdown');
+for (let i = 4; i <= 104; i += 4) {
+  const option = document.createElement('option');
+  option.value = i;
+  option.text = `${i} weeks`;
+  if (i === 24) {
+    option.selected = true; // Set the default selected option
+  }
+  weeksDropdown.add(option);
 }
 
-// Event listener for the slider with debouncing
-document.getElementById('slider').addEventListener('input', debounce(function () {
+// Event listener for the dropdown change event
+weeksDropdown.addEventListener('change', function () {
   chart.showLoading('Updating data...');
   weeksPerOrbit = parseInt(this.value);
-  document.getElementById('slider-value').textContent = weeksPerOrbit;
   defineEndTime();
   const fullUrl = buildFullUrl();
   fetchDataFromAPI(fullUrl).then(() => {
     chart.hideLoading();
   });
-}, 500)); // Adjust debounce time as needed
-
-// Initial setup to display the default weeks and fetch data
-document.getElementById('slider-value').textContent = weeksPerOrbit; // Set initial display text
-defineEndTime(); // Define initial end time
-const initialFullUrl = buildFullUrl(); // Build initial URL
-fetchDataFromAPI(initialFullUrl); // Fetch initial data
+});
 
 // Initialize the chart
 create3DChart();
+
+// Fetch initial data with default settings
+defineEndTime();
+const initialUrl = buildFullUrl();
+fetchDataFromAPI(initialUrl);
