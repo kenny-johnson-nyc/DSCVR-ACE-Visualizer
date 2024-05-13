@@ -176,8 +176,8 @@ const chartOptions = {
     // Margin effects grid and chart! 
     marginTop: 0,
     marginBottom: 30,
-    marginRight: 0,
-    marginLeft: 0,
+    marginRight: 15,
+    marginLeft: 15,
     allowMutatingData: false,
     animation: true,
     loading: {
@@ -207,7 +207,7 @@ const chartOptions = {
       enabled: true,
       // Setting alpha and beta to zero puts earth on left and satellites on right. alpha rotates on the vertical axis. beta rotates on the horizontal axis.
       alpha: 0, // Rotate vertically
-      beta: 90, // Rotate horizontally
+      beta: -90, // Rotate horizontally
       depth: 800, // Depth must match width in pixels of container!!!
       viewDistance: 5, // 
       frame: {
@@ -314,7 +314,6 @@ const chartOptions = {
     enabled: true,
     width: '100%',
     y: -75, // Vertical position of legend
-    x: 650,
     title: {
       text: 'Click to hide/show',
       style: {
@@ -551,7 +550,7 @@ document.getElementById('resetBtn').addEventListener('click', function () {
     chart: {
       options3d: {
         alpha: 0,
-        beta: 90
+        beta: -90
       }
     }
   });
