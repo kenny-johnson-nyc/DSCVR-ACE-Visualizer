@@ -55,15 +55,41 @@ function defineEndTime() {
   let offset = weeksPerOrbit * pointsPerWeek * minutesPerPoint * millisPerMinute;
   let start = end - offset;
   startTime = new Date(start);
+  updateDateDisplay(); 
 }
 
 // Define the namespace for XML parsing
 const namespace = "http://sscweb.gsfc.nasa.gov/schema";
 
-// Fetch and process data
+function buildFullUrl() {
+  const baseUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/';
+  const observatories = 'ace,dscovr';
+  const timeRange = `${convertTime(startTime)},${convertTime(endTime)}`;
+  const coordinateSystems = 'gse';
+  return `${baseUrl}${observatories}/${timeRange}/${coordinateSystems}/`;
+}
+
+function setApiLink(url) {
+  const apiLink = document.getElementById('api-link');
+  apiLink.textContent = url;
+  document.getElementById('api-link').href = url;
+}
+
+function updateDateDisplay() {
+  const displayStartDate = document.getElementById('displayStartDate');
+  const displayEndDate = document.getElementById('displayEndDate');
+  
+  displayStartDate.textContent = `Start Date: ${startTime.toLocaleDateString()} ${startTime.toLocaleTimeString()}`;
+  displayEndDate.textContent = `End Date: ${endTime.toLocaleDateString()} ${endTime.toLocaleTimeString()}`;
+}
+
+//If you are fetching data asynchronously and want to show the loading div during this time, you can modify your fetchDataFromAPI function:
 async function fetchDataFromAPI(url) {
+  const loadingDiv = document.getElementById('loading');
+  loadingDiv.textContent = `Fetching data from SSC Web API`; 
+  loadingDiv.style.display = 'flex'; // Show the loading div
+  setApiLink(url);
   try {
-    chart.showLoading('Loading data...');  // Show loading screen
     const response = await fetch(url);
     const data = await response.text();
     const parser = new DOMParser();
@@ -71,7 +97,8 @@ async function fetchDataFromAPI(url) {
     processXMLData(xmlDoc);
   } catch (error) {
     console.error("Error fetching data:", error);
-    chart.hideLoading();  // Ensure loading screen is hidden on error
+  } finally {
+    loadingDiv.style.display = 'none'; // Optionally hide the loading div after fetching
   }
 }
 
@@ -153,13 +180,7 @@ const fullUrl = buildFullUrl();
 console.log('fullUrl', fullUrl);
 fetchDataFromAPI(fullUrl);
 
-function buildFullUrl() {
-  const baseUrl = 'https://sscweb.gsfc.nasa.gov/WS/sscr/2/locations/';
-  const observatories = 'ace,dscovr';
-  const timeRange = `${convertTime(startTime)},${convertTime(endTime)}`;
-  const coordinateSystems = 'gse';
-  return `${baseUrl}${observatories}/${timeRange}/${coordinateSystems}/`;
-}
+
 
 // Highcharts 3D chart setup
 const chartOptions = {
@@ -270,7 +291,7 @@ const chartOptions = {
     floor: -300000,
     max: 300000,
     title: {
-      text: 'GSE Z-axis'
+      text: 'GSE Z-axis (miles)'
     },
     opposite: true,
     labels: {
@@ -285,7 +306,7 @@ const chartOptions = {
     floor: 0,
     gridLineWidth: 1,
     title: {
-      text: 'GSE X-axis'
+      text: 'GSE X-axis (miles)'
     },
     opposite: false,
     labels: {
@@ -300,7 +321,7 @@ const chartOptions = {
     floor: -300000,
     max: 300000,
     title: {
-      text: 'GSE Y-axis'
+      text: 'GSE Y-axis (miles)'
     },
     opposite: false,
     labels: {
@@ -373,7 +394,14 @@ const chartOptions = {
       tooltip: {
         headerFormat: '<span>{series.name}</span>',
         pointFormat: '</span> <br>X GSE :{point.x} <br>Y GSE: {point.y} <br> Z GSE: {point.z} <br> UTC: {point.time}',
-        footerFormat: '</p>'
+        footerFormat: '</p>',
+        backgroundColor: {
+          linearGradient: [0, 0, 0, 60],
+          stops: [
+              [0, '#FFFFFF'],
+              [1, '#E0E0E0']
+          ]
+      },
       },
       marker: {
         symbol: 'circle',

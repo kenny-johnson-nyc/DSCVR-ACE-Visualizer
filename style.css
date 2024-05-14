@@ -5,34 +5,46 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-a:link,
-a:visited {
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(15, 15, 15);
+  color: #fff;
+  font-weight: bold;
+}
 
-  color: whitesmoke;
+a {
+  color: rgb(103, 103, 103);
   text-decoration: none;
 }
 
 a:hover,
 a:active {
-  color: rgb(30, 77, 131);
+  color: rgb(195, 195, 195);
 }
 
-body {
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  color: rgb(0, 0, 0);
+  font-size: 1.5em;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-flow: column;
-  /* background-image: url("/imgs/hubble-bg.webp"); */
-  background-position: center;
-  background-clip: content-box;
-  background-size: contain;
-  background-color: rgb(15, 15, 15);
-  color: #fff;
+  z-index: 1000;
 }
 
 #container {
   height: auto;
   touch-action: none;
+  min-width: 800px;
+  min-height: 800px;
 }
 
 .wrapper {
@@ -42,26 +54,10 @@ body {
   border: 1px solid black;
 }
 
-.highcharts-container .highcharts-3d-chart,
-#container {
-  min-width: 800px;
-  min-height: 800px;
-}
-
-
-.logos {
+.chart-options-container {
   display: flex;
-  flex-flow: row;
   justify-content: center;
   align-items: center;
-  padding: 1em;
-  width: 100%;
-}
-
-.logos img {
-  width: 100%;
-  max-width: 75px;
-  height: auto;
 }
 
 header {
@@ -75,10 +71,8 @@ header {
 .info-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  margin: auto;
-  margin-top: 2rem;
+  margin: 2rem auto 0;
   min-width: 400px;
   min-height: 400px;
   color: white;
@@ -96,12 +90,7 @@ header {
   font-family: sans-serif;
   font-weight: 500;
   font-size: 18px;
-  position: relative;
 }
-
-/* Highcharts */
-
-
 
 .highcharts-figure,
 .highcharts-data-table table {
@@ -146,31 +135,25 @@ header {
   background: #f1f7ff;
 }
 
-.reset-button rect {
-  color: 'rgb(255,255,255)';
-  font-size: '15px';
-  font-weight: 'light';
-  letter-spacing: '1px';
-  height: '20px';
-  display: 'block'
+#resetBtn {
+  margin-top: 20px;
 }
 
+.reset-button rect,
 .reset-button text {
-  color: 'rgb(255,255,255)';
-  font-size: '15px';
-  font-weight: 'light';
-  letter-spacing: '1px';
-  height: '20px';
-  display: 'block'
+  color: rgb(255, 255, 255);
+  font-size: 15px;
+  font-weight: light;
+  letter-spacing: 1px;
+  height: 20px;
+  display: block;
 }
 
 .dropdown-container {
   margin-top: 20px;
-  text-align: center;
 }
 
 .dropdown-container label {
-  font-weight: bold;
   margin-right: 10px;
 }
 
@@ -186,15 +169,11 @@ header {
 }
 
 button {
-  padding: 0.5em !important;
+  padding: 0.5em;
 }
 
 .button-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 1em;
+  padding: 2em;
 }
 
 .zoom-button {
@@ -206,4 +185,16 @@ button {
 
 .title {
   text-align: center;
+}
+
+.date-display {
+  font-size: .8em;
+  font-weight: 300;
+}
+
+.chart-options-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

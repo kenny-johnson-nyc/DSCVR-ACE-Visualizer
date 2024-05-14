@@ -27,30 +27,36 @@
 
     <div class="title">
       <h2>DSCOVR/ACE Orbit Visualizer</h2>
-      <h5>Click and/or drag to rotate</h5>
+      <h5>Click and drag to rotate</h5>
     </div>
 
     <!-- CHART -->
     <figure class="highcharts-figure">
       <div class="wrapper">
-        <div id="container"></div>
+        <div id="container"> </div>
+        <div id="loading">Fetching data from SSCWeb</div>
       </div>
       <p class="highcharts-description">
       </p>
     </figure>
 
-    <div id="loading" style="display: none;">Loading...</div>
-    <div class="button-container">
-      <button id="resetBtn" class="zoom-button">RESET ROTATION</button>
-      <!-- <button id="zoomInBtn" class="zoom-button">ZOOM IN</button>
-      <button id="zoomOutBtn" class="zoom-button">ZOOM OUT</button> -->
+    <div class="chart-options-container">
+        <button id="resetBtn" class="zoom-button">RESET ROTATION</button>
+      <div class="dropdown-container">
+        <label for="weeksDropdown">Currently displaying:</label>
+        <select id="weeksDropdown">
+          <!-- Options will be dynamically generated in JavaScript -->
+        </select>
+        <div class="date-display">
+          <p id="displayStartDate"></p>
+          <p id="displayEndDate"></p>
+        </div>
+      </div>
+     
     </div>
-
-    <div class="dropdown-container">
-      <label for="weeksDropdown">Currently displaying:</label>
-      <select id="weeksDropdown">
-        <!-- Options will be dynamically generated in JavaScript -->
-      </select>
+  
+    <div class="api-link-container">
+      <p>API link: <a id="api-link"></a></p>
     </div>
 
     <script src="index.js"></script>
