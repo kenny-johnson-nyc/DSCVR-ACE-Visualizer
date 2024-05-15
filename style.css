@@ -41,11 +41,11 @@ a:active {
 }
 
 #container {
-  height: auto;
+  height: 80vw;   
+  width: 80vw; 
   touch-action: none;
-  min-width: 800px;
-  min-height: 800px;
 }
+
 
 .wrapper {
   display: flex;
@@ -73,8 +73,6 @@ header {
   flex-direction: column;
   align-items: center;
   margin: 2rem auto 0;
-  min-width: 400px;
-  min-height: 400px;
   color: white;
   padding: 2rem;
 }
@@ -141,7 +139,6 @@ header {
 
 .reset-button rect,
 .reset-button text {
-  color: rgb(255, 255, 255);
   font-size: 15px;
   font-weight: light;
   letter-spacing: 1px;
@@ -151,13 +148,26 @@ header {
 
 .dropdown-container {
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  width: auto; /* Adjust width as needed */
 }
 
-.dropdown-container label {
+.dropdown-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.dropdown-row label {
+  width: 200px; /* Set a fixed width for the labels */
   margin-right: 10px;
+  text-align: right;
 }
 
-.dropdown-container select {
+.dropdown-row select {
+  width: 150px; /* Set a fixed width for the dropdowns */
   padding: 5px;
   font-size: 14px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -190,6 +200,8 @@ button {
 .date-display {
   font-size: .8em;
   font-weight: 300;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 .chart-options-container {
@@ -197,4 +209,70 @@ button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+#api-link {
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+
+.legend-container {
+  display: flex;
+  flex-direction: column; /* Stack title and legend items vertically */
+  align-items: center; /* Center-align the content */
+  width: 100%; /* Full width of the container */
+  box-sizing: border-box; /* Include padding in width calculation */
+  border: 1px solid rgba(255, 255, 25, 0.1);
+  border-radius: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+}
+
+#click-to-hide-show {
+  color: rgba(194, 194, 194, 0.8);
+}
+
+#legend {
+  display: flex;
+  flex-direction: row; /* Default to horizontal */
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Full width to accommodate all items */
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 5px; /* Space between items */
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.legend-item:hover {
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.legend-item div {
+  min-width: 12px;
+  min-height: 12px;
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  margin-right: 5px;
+  border-radius: 50%; /* Circle shape */
+  flex-shrink: 0; /* Prevent resizing */
+}
+
+.legend-item-hidden {
+  opacity: 0.4; /* Lower opacity for hidden items */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+  #legend {
+    flex-direction: column; /* Stack items vertically on small screens */
+  }
 }

@@ -11,25 +11,30 @@ const l1 = 1600000; // L1 distance in miles
 const sezHalfrad = Math.tan(toRadians(0.5)) * l1; // SEZ.5 radius
 const sez2rad = Math.tan(toRadians(2)) * l1; // SEZ2 radius
 const sez4rad = Math.tan(toRadians(4)) * l1; // SEZ4 radius
-const sezHalfDegData = buildCircle(sezHalfrad, 0); // SEZ 0.5 degree radius
-const sez2DegData = buildCircle(sez2rad, 0);       // SEZ 2 degrees radius
-const sez4DegData = buildCircle(sez4rad, 0);       // SEZ 4 degrees radius
-let subsampleFactor = 840; // Default value
-
-
+let sezHalfDegData = buildCircle(sezHalfrad, 0); // SEZ 0.5 degree radius
+let sez2DegData = buildCircle(sez2rad, 0);       // SEZ 2 degrees radius
+let sez4DegData = buildCircle(sez4rad, 0);       // SEZ 4 degrees radius
+const speedOfLight = 3e8; // m/s 
+const frequencyMHz = 2215;
+let antennaDiameter = 6; // meters
+const wavelength = speedOfLight / (frequencyMHz * 1e6);
+let angleRadians = wavelength / antennaDiameter;
+let angleDegrees = angleRadians * 57.295779513; // angleDegrees is approximately 1.3 
 const minutesPerPoint = 12; // SSCweb data for ACE and DSCOVR is resolution 720 = 12 minutes per point
 const pointsPerWeek = 7 * 24 * (60 / minutesPerPoint); // 7 days * 24 hours * 60 minutes / 12 minutes per point
+const subsampleFactor = 840; // Default value
 let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
-
 let startTime, endTime = new Date();
 let aceData = [], dscovrData = [];
+let beamWidthData = [];
 
-function buildCircle(radius, x) {
+function buildCircle(radius, centerX, centerY, centerZ) {
   let circleData = [];
-  for (let i = 0; i <= 360; i += 10) {  // Increment by 10 degrees for smoother circles
+  for (let i = 0; i <= 360; i += 10) { // Increment by 10 degrees for smoother circles
     let radians = toRadians(i);
-    let y = radius * Math.cos(radians);
-    let z = radius * Math.sin(radians);
+    let x = centerX;
+    let y = centerY + radius * Math.cos(radians);
+    let z = centerZ + radius * Math.sin(radians);
     circleData.push([x, y, z]);
   }
   return circleData;
@@ -55,7 +60,7 @@ function defineEndTime() {
   let offset = weeksPerOrbit * pointsPerWeek * minutesPerPoint * millisPerMinute;
   let start = end - offset;
   startTime = new Date(start);
-  updateDateDisplay(); 
+  updateDateDisplay();
 }
 
 // Define the namespace for XML parsing
@@ -78,7 +83,7 @@ function setApiLink(url) {
 function updateDateDisplay() {
   const displayStartDate = document.getElementById('displayStartDate');
   const displayEndDate = document.getElementById('displayEndDate');
-  
+
   displayStartDate.textContent = `Start Date: ${startTime.toLocaleDateString()} ${startTime.toLocaleTimeString()}`;
   displayEndDate.textContent = `End Date: ${endTime.toLocaleDateString()} ${endTime.toLocaleTimeString()}`;
 }
@@ -86,7 +91,7 @@ function updateDateDisplay() {
 //If you are fetching data asynchronously and want to show the loading div during this time, you can modify your fetchDataFromAPI function:
 async function fetchDataFromAPI(url) {
   const loadingDiv = document.getElementById('loading');
-  loadingDiv.textContent = `Fetching data from SSC Web API`; 
+  loadingDiv.textContent = `Fetching data from SSC Web API`;
   loadingDiv.style.display = 'flex'; // Show the loading div
   setApiLink(url);
   try {
@@ -108,6 +113,8 @@ function processXMLData(xmlDoc) {
   aceData = extractData(dataElements, "ace");
   dscovrData = extractData(dataElements, "dscovr");
   chart.hideLoading();
+  updateBeamWidthData();
+  updateSEZCircles();
   updateCharts();
 }
 
@@ -152,27 +159,50 @@ function extractData(dataElements, id) {
   return data;
 }
 
+// Function to update beam width data
+function updateBeamWidthData(satellite = 'dscovr') {
+  let data = satellite === 'dscovr' ? dscovrData : aceData;
+  if (data.length > 0) {
+    const lastPosition = data[data.length - 1];
+    const distanceToSatellite = Math.sqrt(
+      lastPosition.x ** 2 +
+      lastPosition.y ** 2 +
+      lastPosition.z ** 2
+    );
+    const beamRadiusMiles = distanceToSatellite * Math.tan(angleRadians);
+    beamWidthData = buildCircle(beamRadiusMiles, lastPosition.x, lastPosition.y, lastPosition.z);
+  } else {
+    console.warn(`${satellite} data is empty. Cannot update beam width data.`);
+    beamWidthData = [];
+  }
+  updateCharts(); // Ensure the charts are updated with the new beam data
+}
+
+// Function to update SEZ circles
+function updateSEZCircles() {
+  const sezHalfrad = Math.tan(toRadians(0.5)) * l1;
+  const sez2rad = Math.tan(toRadians(2)) * l1;
+  const sez4rad = Math.tan(toRadians(4)) * l1;
+  sezHalfDegData = buildCircle(sezHalfrad, 0, 0, 0);
+  sez2DegData = buildCircle(sez2rad, 0, 0, 0);
+  sez4DegData = buildCircle(sez4rad, 0, 0, 0);
+}
+
+
 function updateCharts() {
   if (chart && chart.series.length > 1) {
     chart.series[0].setData(dscovrData, true);
     chart.series[1].setData(aceData, true);
     chart.series[2].setData(sez2DegData);
     chart.series[3].setData(sez4DegData);
-    chart.series[4].setData(sunGSE);
-    chart.series[5].setData(earthGSE);
-    chart.series[6].setData(sunEarthLine);
+    chart.series[4].setData(beamWidthData);
+    chart.series[5].setData(sunGSE);
+    chart.series[6].setData(earthGSE);
+    chart.series[7].setData(sunEarthLine);
   } else {
     console.error("Chart series not defined or chart not initialized.");
   }
 }
-// function prepareChartData(data) {
-//   return data.map((item, index) => ({
-//     x: item.x_gse,
-//     y: item.y_gse,
-//     z: item.z_gse,
-//     color: `rgba(0, 255, 0, ${index / data.length})` // Example color gradient
-//   }));
-// }
 
 // Initialization and execution
 defineEndTime();
@@ -180,7 +210,9 @@ const fullUrl = buildFullUrl();
 console.log('fullUrl', fullUrl);
 fetchDataFromAPI(fullUrl);
 
-
+const container = document.getElementById('container');
+let width = container.offsetWidth;
+let height = container.offsetHeight;
 
 // Highcharts 3D chart setup
 const chartOptions = {
@@ -189,7 +221,7 @@ const chartOptions = {
     renderTo: 'container',
     fitToPlot: 'true',
     reflow: 'false',
-     // Spacing effects titles and legend only
+    // Spacing effects titles and legend only
     spacingTop: 25,
     spacingBottom: 15,
     spacingRight: 10,
@@ -229,7 +261,7 @@ const chartOptions = {
       // Setting alpha and beta to zero puts earth on left and satellites on right. alpha rotates on the vertical axis. beta rotates on the horizontal axis.
       alpha: 0, // Rotate vertically
       beta: -90, // Rotate horizontally
-      depth: 800, // Depth must match width in pixels of container!!!
+      depth: width, // Depth must match width in pixels of container!!!
       viewDistance: 5, // 
       frame: {
         left: { visible: false },
@@ -332,7 +364,7 @@ const chartOptions = {
     }
   },
   legend: {
-    enabled: true,
+    enabled: false,
     width: '100%',
     y: -75, // Vertical position of legend
     title: {
@@ -398,10 +430,10 @@ const chartOptions = {
         backgroundColor: {
           linearGradient: [0, 0, 0, 60],
           stops: [
-              [0, '#FFFFFF'],
-              [1, '#E0E0E0']
+            [0, '#FFFFFF'],
+            [1, '#E0E0E0']
           ]
-      },
+        },
       },
       marker: {
         symbol: 'circle',
@@ -445,15 +477,27 @@ const chartOptions = {
       lineWidth: 1,
       visible: true,
       zIndex: 2,
-      color: 'rgba(255, 255, 51, 1)',
+      color: 'orange',
       marker: {
         enabled: false
+      }
+    },
+    {
+      name: 'Antenna Beam',
+      lineWidth: 2,
+      color: 'purple',
+      visible: true,
+      marker: {
+        fillColor: 'purple',
+        symbol: 'circle',
+        radius: 1,
       }
     },
     {
       name: "SUN",
       visible: false,
       lineWidth: 1,
+      color: 'yellow',
       zIndex: 1,
       marker: {
         fillColor: 'yellow',
@@ -488,47 +532,74 @@ const chartOptions = {
   ]
 };
 
-// Function to add dragging functionality
 function addDragFunctionality(chart) {
   let posX;
-  let sensitivity = 10; // Higher value makes the drag more sensitive
+  let sensitivity = 20; // Sensitivity value for less sensitivity
 
-  const throttledDrag = _.throttle(function(e) {
-      e = chart.pointer.normalize(e);
-      const deltaX = e.chartX - posX; 
-      const newBeta = chart.options.chart.options3d.beta + deltaX / sensitivity;
-      console.log("Delta X:", deltaX, "New Beta:", newBeta); // Debugging output
-      chart.update({
-          chart: {
-              options3d: {
-                  beta: newBeta
-              }
-          }
-      }, undefined, undefined, false);
-      posX = e.chartX; 
-  }, 50); // Update every 100 milliseconds to reduce load
+  const throttledDrag = _.throttle(function (e) {
+    e = chart.pointer.normalize(e);
+    let deltaX = e.chartX - posX;
+    // Round deltaX to the nearest multiple of 5
+    deltaX = Math.round(deltaX / 5) * 5;
+    const newBeta = chart.options.chart.options3d.beta + deltaX / sensitivity;
+    console.log("Delta X:", deltaX, "New Beta:", newBeta); // Debugging output
+    chart.update({
+      chart: {
+        options3d: {
+          beta: newBeta
+        }
+      }
+    }, undefined, undefined, false);
+    posX = e.chartX;
+  }, 100); // Throttle duration to 100 milliseconds
 
   function dragStart(eStart) {
-      eStart = chart.pointer.normalize(eStart);
-      posX = eStart.chartX; // Update posX here
+    eStart = chart.pointer.normalize(eStart);
+    posX = eStart.chartX; // Update posX here
 
-      function unbindAll() {
-          Highcharts.removeEvent(document, 'mousemove', throttledDrag);
-          Highcharts.removeEvent(document, 'touchmove', throttledDrag);
-          Highcharts.removeEvent(document, 'mouseup', unbindAll);
-          Highcharts.removeEvent(document, 'touchend', unbindAll);
-      }
+    function unbindAll() {
+      Highcharts.removeEvent(document, 'mousemove', throttledDrag);
+      Highcharts.removeEvent(document, 'touchmove', throttledDrag);
+      Highcharts.removeEvent(document, 'mouseup', unbindAll);
+      Highcharts.removeEvent(document, 'touchend', unbindAll);
+    }
 
-      Highcharts.addEvent(document, 'mousemove', throttledDrag);
-      Highcharts.addEvent(document, 'touchmove', throttledDrag);
-      Highcharts.addEvent(document, 'mouseup', unbindAll);
-      Highcharts.addEvent(document, 'touchend', unbindAll);
+    Highcharts.addEvent(document, 'mousemove', throttledDrag);
+    Highcharts.addEvent(document, 'touchmove', throttledDrag);
+    Highcharts.addEvent(document, 'mouseup', unbindAll);
+    Highcharts.addEvent(document, 'touchend', unbindAll);
   }
 
   Highcharts.addEvent(chart.container, 'mousedown', dragStart);
   Highcharts.addEvent(chart.container, 'touchstart', dragStart);
 }
 
+function createCustomLegend(chart) {
+  const legendContainer = document.getElementById('legend');
+  legendContainer.innerHTML = ''; // Clear existing legend content
+  legendContainer.style.cssText = 'display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; align-items: center;';
+
+  chart.series.forEach(series => {
+    const legendItem = document.createElement('div');
+    legendItem.style.cssText = 'display: flex; align-items: center; margin-right: 10px; font-size: 13px; font-weight: 400;';
+    legendItem.classList.add('legend-item');
+
+    const marker = document.createElement('div');
+    marker.style.cssText = `display: inline-block; width: 15px; height: 15px; border-radius: 50%; border: 1px solid rgba(255,255,255, 0.6); background-color: ${series.color};`;
+
+    legendItem.appendChild(marker);
+    legendItem.appendChild(document.createTextNode(series.name));
+
+    legendItem.classList.toggle('legend-item-hidden', !series.visible);
+
+    legendItem.onclick = () => {
+      series.setVisible(!series.visible);
+      legendItem.classList.toggle('legend-item-hidden', !series.visible);
+    };
+
+    legendContainer.appendChild(legendItem);
+  });
+}
 
 function create3DChart() {
   // Theme loads before data 
@@ -559,10 +630,13 @@ function create3DChart() {
         color: 'rgb(0, 0, 0)'
       },
       events: {
-        load: function() {
+        load: function () {
           var chart = this;
-        
+
         }
+      },
+      redraw: function () {
+        createCustomLegend(chart);
       }
     }
   };
@@ -607,6 +681,57 @@ weeksDropdown.addEventListener('change', function () {
   });
 });
 
+// Event listener for the antenna dropdown change event
+document.getElementById('antennaDropdown').addEventListener('change', function () {
+  antennaDiameter = parseFloat(this.value);
+  angleRadians = wavelength / antennaDiameter;
+  updateBeamWidthData();
+  updateCharts();
+});
+
+document.getElementById('satelliteDropdown').addEventListener('change', function () {
+  updateBeamWidthData(this.value);
+});
+
+// Handle window resize
+window.addEventListener('resize', function () {
+  const container = document.getElementById('container');
+  const newWidth = container.offsetWidth;
+  if (chart && chart.options && chart.options.chart.options3d) {
+    chart.update({
+      chart: {
+        options3d: {
+          depth: newWidth // Adjust depth based on new width
+        }
+      }
+    }, true); // Redraw chart
+  }
+});
+
+document.addEventListener('keydown', function(event) {
+  const key = event.key;
+  const rotationStep = 5; // Define the step size for each key press
+
+  if (chart && chart.options && chart.options.chart.options3d) {
+      let newBeta = chart.options.chart.options3d.beta;
+
+      if (key === 'ArrowLeft') {
+          newBeta -= rotationStep; // Decrease beta to rotate left
+      } else if (key === 'ArrowRight') {
+          newBeta += rotationStep; // Increase beta to rotate right
+      }
+
+      // Update the chart with the new beta value
+      chart.update({
+          chart: {
+              options3d: {
+                  beta: newBeta
+              }
+          }
+      }, false); // Redraw chart without animation for smoother rotation
+  }
+});
+
 // Initialize the chart
 create3DChart();
 
@@ -614,3 +739,4 @@ create3DChart();
 defineEndTime();
 const initialUrl = buildFullUrl();
 fetchDataFromAPI(initialUrl);
+createCustomLegend(chart);

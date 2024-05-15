@@ -39,25 +39,49 @@
       <p class="highcharts-description">
       </p>
     </figure>
+    <div class="legend-container">
+      <p id="click-to-hide-show">Click to hide/show</p>
+      <div id="legend" style="width: 100%;"></div>
+    </div>
 
     <div class="chart-options-container">
-        <button id="resetBtn" class="zoom-button">RESET ROTATION</button>
+      <button id="resetBtn" class="zoom-button">RESET ROTATION</button>
       <div class="dropdown-container">
-        <label for="weeksDropdown">Currently displaying:</label>
-        <select id="weeksDropdown">
-          <!-- Options will be dynamically generated in JavaScript -->
-        </select>
-        <div class="date-display">
-          <p id="displayStartDate"></p>
-          <p id="displayEndDate"></p>
+        <div class="dropdown-row">
+          <label for="weeksDropdown">Currently displaying:</label>
+          <select id="weeksDropdown">
+            <!-- Options will be dynamically generated in JavaScript -->
+          </select>
+        </div>
+        <div class="dropdown-row">
+          <label for="satelliteDropdown">Select Antenna Target:</label>
+          <select id="satelliteDropdown">
+            <option value="dscovr">DSCOVR</option>
+            <option value="ace">ACE</option>
+          </select>
+        </div>
+        <div class="dropdown-row">
+          <label for="antennaDropdown">Select Antenna Diameter:</label>
+          <select id="antennaDropdown">
+            <option value="6">6 meters</option>
+            <option value="12">12 meters</option>
+            <option value="18">18 meters</option>
+          </select>
         </div>
       </div>
-     
+      <div class="date-display">
+        <p id="displayStartDate"></p>
+        <p id="displayEndDate"></p>
+        <p>API link: <a id="api-link"></a></p>
+      </div>
+
+
+
+
+
     </div>
-  
-    <div class="api-link-container">
-      <p>API link: <a id="api-link"></a></p>
-    </div>
+
+
 
     <script src="index.js"></script>
   </main>
