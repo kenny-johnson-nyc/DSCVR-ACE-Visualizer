@@ -43,6 +43,8 @@ a:active {
 #container {
   height: 80vw;   
   width: 80vw; 
+  max-width: 900px;
+  max-height: 900px;
   touch-action: none;
 }
 

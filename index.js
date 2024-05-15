@@ -1,32 +1,47 @@
-let chart;
 // Constants for calculations
 const millisPerMinute = 60 * 1000;
 const distanceToSun = 93000000; // miles
 const radiusSun = 432690; // sun radius in miles
 const distanceToL1 = 1000000; // distance to L1 from Earth
-const sunGSE = [[91806000, 0, 0]]; // GSE coordinates of the sun
-const earthGSE = [[0, 0, 0]]; // GSE coordinates of Earth
-const sunEarthLine = [[0, 0, 0], [91806000, 0, 0]]; // line from sun to earth with earth at origin
 const l1 = 1600000; // L1 distance in miles
-const sezHalfrad = Math.tan(toRadians(0.5)) * l1; // SEZ.5 radius
-const sez2rad = Math.tan(toRadians(2)) * l1; // SEZ2 radius
-const sez4rad = Math.tan(toRadians(4)) * l1; // SEZ4 radius
-let sezHalfDegData = buildCircle(sezHalfrad, 0); // SEZ 0.5 degree radius
-let sez2DegData = buildCircle(sez2rad, 0);       // SEZ 2 degrees radius
-let sez4DegData = buildCircle(sez4rad, 0);       // SEZ 4 degrees radius
 const speedOfLight = 3e8; // m/s 
-const frequencyMHz = 2215;
-let antennaDiameter = 6; // meters
-const wavelength = speedOfLight / (frequencyMHz * 1e6);
-let angleRadians = wavelength / antennaDiameter;
-let angleDegrees = angleRadians * 57.295779513; // angleDegrees is approximately 1.3 
+const dscovrFrequencyMHz = 2215;
+const frequencyMHzACE = 2278.35;
 const minutesPerPoint = 12; // SSCweb data for ACE and DSCOVR is resolution 720 = 12 minutes per point
 const pointsPerWeek = 7 * 24 * (60 / minutesPerPoint); // 7 days * 24 hours * 60 minutes / 12 minutes per point
 const subsampleFactor = 840; // Default value
-let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
+
+// GSE coordinates
+const sunGSE = [[91806000, 0, 0]]; // GSE coordinates of the sun
+const earthGSE = [[0, 0, 0]]; // GSE coordinates of Earth
+const sunEarthLine = [[0, 0, 0], [91806000, 0, 0]]; // line from sun to earth with earth at origin
+
+// SEZ calculations
+const sezHalfrad = Math.tan(toRadians(0.5)) * l1; // SEZ 0.5 radius
+const sez2rad = Math.tan(toRadians(2)) * l1; // SEZ 2 radius
+const sez4rad = Math.tan(toRadians(4)) * l1; // SEZ 4 radius
+
+// Wavelength and antenna calculations
+const wavelengthDSCOVR = speedOfLight / (dscovrFrequencyMHz * 1e6);
+const wavelengthACE = speedOfLight / (frequencyMHzACE * 1e6);
+let antennaDiameter = 6; // meters
+let angleRadiansACE = wavelengthACE / antennaDiameter;
+let angleRadians = wavelengthDSCOVR / antennaDiameter;
+let angleDegrees = angleRadians * 57.295779513; // angleDegrees is approximately 1.3 
+
+// Time and data management
 let startTime, endTime = new Date();
+let weeksPerOrbit = 26;  // # of samples, e.g., 26 weeks = months = 1 orbit
 let aceData = [], dscovrData = [];
 let beamWidthData = [];
+
+// SEZ circle data
+let sezHalfDegData = buildCircle(sezHalfrad, 0); // SEZ 0.5 degree radius
+let sez2DegData = buildCircle(sez2rad, 0);       // SEZ 2 degrees radius
+let sez4DegData = buildCircle(sez4rad, 0);       // SEZ 4 degrees radius
+
+// Chart placeholder
+let chart;
 
 function buildCircle(radius, centerX, centerY, centerZ) {
   let circleData = [];
@@ -160,8 +175,8 @@ function extractData(dataElements, id) {
 }
 
 // Function to update beam width data
-function updateBeamWidthData(satellite = 'dscovr') {
-  let data = satellite === 'dscovr' ? dscovrData : aceData;
+function calculateBeamWidthData(satellite, angleRadians) {
+  const data = satellite === 'dscovr' ? dscovrData : aceData;
   if (data.length > 0) {
     const lastPosition = data[data.length - 1];
     const distanceToSatellite = Math.sqrt(
@@ -170,12 +185,18 @@ function updateBeamWidthData(satellite = 'dscovr') {
       lastPosition.z ** 2
     );
     const beamRadiusMiles = distanceToSatellite * Math.tan(angleRadians);
-    beamWidthData = buildCircle(beamRadiusMiles, lastPosition.x, lastPosition.y, lastPosition.z);
+    return buildCircle(beamRadiusMiles, lastPosition.x, lastPosition.y, lastPosition.z);
   } else {
     console.warn(`${satellite} data is empty. Cannot update beam width data.`);
-    beamWidthData = [];
+    return [];
   }
-  updateCharts(); // Ensure the charts are updated with the new beam data
+}
+
+function updateBeamWidthData() {
+  const dscovrBeamWidthData = calculateBeamWidthData('dscovr', angleRadians);
+  const aceBeamWidthData = calculateBeamWidthData('ace', angleRadiansACE);
+  chart.series.find(series => series.name === 'DSCOVR Antenna Beam').setData(dscovrBeamWidthData);
+  chart.series.find(series => series.name === 'ACE Antenna Beam').setData(aceBeamWidthData);
 }
 
 // Function to update SEZ circles
@@ -188,17 +209,21 @@ function updateSEZCircles() {
   sez4DegData = buildCircle(sez4rad, 0, 0, 0);
 }
 
+function updateSunEarthLine() {
+  const sunEarthLine = buildSunEarthLine();
+  chart.series[8].setData(sunEarthLine);
+}
+
 
 function updateCharts() {
   if (chart && chart.series.length > 1) {
+    updateBeamWidthData();
     chart.series[0].setData(dscovrData, true);
     chart.series[1].setData(aceData, true);
     chart.series[2].setData(sez2DegData);
     chart.series[3].setData(sez4DegData);
-    chart.series[4].setData(beamWidthData);
-    chart.series[5].setData(sunGSE);
-    chart.series[6].setData(earthGSE);
-    chart.series[7].setData(sunEarthLine);
+    chart.series[4].setData(dscovrBeamWidthData);
+    chart.series[5].setData(aceBeamWidthData);
   } else {
     console.error("Chart series not defined or chart not initialized.");
   }
@@ -419,7 +444,7 @@ const chartOptions = {
   series: [
     {
       name: "DSCOVR",
-      lineWidth: 0.2,
+      lineWidth: 0.3,
       lineColor: 'rgba(255, 255, 255, 1)',
       lineZIndex: 1,
       zIndex: 3,
@@ -441,7 +466,7 @@ const chartOptions = {
         lineColor: 'rgba(255, 255, 255, .2)',
         lineWidth: 1
       },
-      color: 'rgb(0, 0, 255)'
+      color: 'rgba(31, 20, 158, 1)'
     },
     {
       name: "ACE",
@@ -460,7 +485,7 @@ const chartOptions = {
         lineColor: 'rgba(255, 255, 255, .2)',
         lineWidth: 1
       },
-      color: 'rgb(36, 201, 85)'
+      color: 'rgba(20, 158, 28, 1)'
     },
     {
       name: "SEZ 2.0 deg",
@@ -483,22 +508,35 @@ const chartOptions = {
       }
     },
     {
-      name: 'Antenna Beam',
+      name: 'DSCOVR Antenna Beam',
+      id: 'dscovr-beam',
       lineWidth: 2,
-      color: 'purple',
       visible: true,
+      zIndex: 2,
+      color: 'rgb(0, 0, 255)',
       marker: {
-        fillColor: 'purple',
-        symbol: 'circle',
-        radius: 1,
+        enabled: false
+      }
+    },
+    {
+      name: "ACE Antenna Beam",
+      id: 'ace-beam',
+      linkedTo: 'dscovr-beam',
+      lineWidth: 2,
+      visible: true,
+      zIndex: 2,
+      color: 'rgba(18, 196, 65, 1)',
+      marker: {
+        enabled: false
       }
     },
     {
       name: "SUN",
+      data: sunGSE,
       visible: false,
       lineWidth: 1,
       color: 'yellow',
-      zIndex: 1,
+      zIndex: 10,
       marker: {
         fillColor: 'yellow',
         symbol: 'url(imgs/sun.png)',
@@ -508,6 +546,7 @@ const chartOptions = {
     },
     {
       name: "EARTH",
+      data: earthGSE,
       lineWidth: 1,
       zIndex: 2,
       visible: false,
@@ -521,6 +560,7 @@ const chartOptions = {
     },
     {
       name: "Sun-Earth line",
+      data: sunEarthLine,
       lineWidth: 1,
       visible: false,
       marker: {
@@ -593,11 +633,36 @@ function createCustomLegend(chart) {
     legendItem.classList.toggle('legend-item-hidden', !series.visible);
 
     legendItem.onclick = () => {
-      series.setVisible(!series.visible);
-      legendItem.classList.toggle('legend-item-hidden', !series.visible);
+      // Check if the clicked series is one of the antenna beams
+      if (series.name === "DSCOVR Antenna Beam" || series.name === "ACE Antenna Beam") {
+        // Find both series
+        const dscovrBeam = chart.series.find(s => s.name === "DSCOVR Antenna Beam");
+        const aceBeam = chart.series.find(s => s.name === "ACE Antenna Beam");
+        // Toggle visibility
+        const newVisibility = !dscovrBeam.visible; // Use the visibility of DSCOVR as the reference
+        dscovrBeam.setVisible(newVisibility);
+        aceBeam.setVisible(newVisibility);
+
+        // Update legend items for both
+        updateLegendItemVisibility(dscovrBeam, legendContainer);
+        updateLegendItemVisibility(aceBeam, legendContainer);
+      } else {
+        // Handle other series normally
+        series.setVisible(!series.visible);
+        legendItem.classList.toggle('legend-item-hidden', !series.visible);
+      }
     };
 
     legendContainer.appendChild(legendItem);
+  });
+}
+
+function updateLegendItemVisibility(series, legendContainer) {
+  const legendItems = legendContainer.getElementsByClassName('legend-item');
+  Array.from(legendItems).forEach(item => {
+    if (item.textContent.trim() === series.name) {
+      item.classList.toggle('legend-item-hidden', !series.visible);
+    }
   });
 }
 
@@ -633,6 +698,19 @@ function create3DChart() {
         load: function () {
           var chart = this;
 
+        },
+        legendItemClick: function (e) {
+          var visibility = !this.visible;
+          // Toggle visibility for both DSCOVR and ACE
+          var chart = this.chart;
+          ['dscovr', 'ace'].forEach(function (id) {
+            var series = chart.get(id);
+            if (series) {
+              series.setVisible(visibility, false); // false to prevent redraw each time
+            }
+          });
+          chart.redraw(); // Redraw chart once after updating visibility
+          return false; // Prevent the default toggle behavior
         }
       },
       redraw: function () {
@@ -684,13 +762,10 @@ weeksDropdown.addEventListener('change', function () {
 // Event listener for the antenna dropdown change event
 document.getElementById('antennaDropdown').addEventListener('change', function () {
   antennaDiameter = parseFloat(this.value);
-  angleRadians = wavelength / antennaDiameter;
-  updateBeamWidthData();
-  updateCharts();
-});
-
-document.getElementById('satelliteDropdown').addEventListener('change', function () {
-  updateBeamWidthData(this.value);
+  angleRadians = wavelengthDSCOVR / antennaDiameter; // Update angle for DSCOVR
+  angleRadiansACE = wavelengthACE / antennaDiameter; // Update angle for ACE
+  updateBeamWidthData(); // Update beam width data for both satellites
+  updateCharts(); // Refresh the charts to reflect the changes
 });
 
 // Handle window resize
@@ -705,30 +780,6 @@ window.addEventListener('resize', function () {
         }
       }
     }, true); // Redraw chart
-  }
-});
-
-document.addEventListener('keydown', function(event) {
-  const key = event.key;
-  const rotationStep = 5; // Define the step size for each key press
-
-  if (chart && chart.options && chart.options.chart.options3d) {
-      let newBeta = chart.options.chart.options3d.beta;
-
-      if (key === 'ArrowLeft') {
-          newBeta -= rotationStep; // Decrease beta to rotate left
-      } else if (key === 'ArrowRight') {
-          newBeta += rotationStep; // Increase beta to rotate right
-      }
-
-      // Update the chart with the new beta value
-      chart.update({
-          chart: {
-              options3d: {
-                  beta: newBeta
-              }
-          }
-      }, false); // Redraw chart without animation for smoother rotation
   }
 });
 
