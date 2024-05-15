@@ -389,57 +389,7 @@ const chartOptions = {
     }
   },
   legend: {
-    enabled: false,
-    width: '100%',
-    y: -75, // Vertical position of legend
-    title: {
-      text: 'Click to hide/show',
-      style: {
-        color: 'rgba(255,255,255, 0.8)',
-        fontSize: '10px',
-        fontWeight: 'light',
-        letterSpacing: '1px'
-      }
-    },
-    align: 'center',
-    verticalAlign: 'bottom',
-    layout: 'vertical',
-    labelFormatter: function () {
-      return this.name;
-    },
-    itemStyle: {
-      color: 'rgba(255,255,255, 0.8)'
-    },
-    itemHoverStyle: {
-      color: 'rgba(255,255,255, 1)'
-    },
-    itemHiddenStyle: {
-      color: 'rgba(255,255,255, 0.3)'
-    }
-  },
-  responsive: {
-    rules: [{
-      condition: {
-        maxWidth: 500
-      },
-      chartOptions: {
-        legend: {
-          layout: 'horizontal',
-          align: 'center',
-          verticalAlign: 'bottom'
-        }
-      }
-    }]
-  },
-  accessibility: {
-    enabled: true,
-    describeSingleSeries: true,
-    keyboardNavigation: {
-      enabled: true
-    },
-    point: {
-      valueDescriptionFormat: '{index}. {xDescription}, {yDescription}, {zDescription}.'
-    }
+    enabled: false
   },
   series: [
     {

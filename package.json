@@ -4,5 +4,6 @@
   },
   "devDependencies": {
     "axios-logger": "^2.8.0"
-  }
+  },
+  "type": "module"
 }
