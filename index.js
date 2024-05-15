@@ -118,7 +118,7 @@ async function fetchDataFromAPI(url) {
   } catch (error) {
     console.error("Error fetching data:", error);
   } finally {
-    loadingDiv.style.display = 'none'; // Optionally hide the loading div after fetching
+    loadingDiv.style.display = 'none'; 
   }
 }
 
@@ -567,11 +567,13 @@ function addDragFunctionality(chart) {
 function createCustomLegend(chart) {
   const legendContainer = document.getElementById('legend');
   legendContainer.innerHTML = ''; // Clear existing legend content
-  legendContainer.style.cssText = 'display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; align-items: center;';
+  // Adjust CSS to allow flex-wrap
+  legendContainer.style.cssText = 'display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;';
 
   chart.series.forEach(series => {
     const legendItem = document.createElement('div');
-    legendItem.style.cssText = 'display: flex; align-items: center; margin-right: 10px; font-size: 13px; font-weight: 400;';
+    // Adjust CSS for each legend item, possibly reducing margin for better fit
+    legendItem.style.cssText = 'display: flex; align-items: center; margin: 5px 10px; font-size: 13px; font-weight: 400;';
     legendItem.classList.add('legend-item');
 
     const marker = document.createElement('div');
@@ -583,21 +585,16 @@ function createCustomLegend(chart) {
     legendItem.classList.toggle('legend-item-hidden', !series.visible);
 
     legendItem.onclick = () => {
-      // Check if the clicked series is one of the antenna beams
+      // Toggle visibility logic remains the same
       if (series.name === "DSCOVR Antenna Beam" || series.name === "ACE Antenna Beam") {
-        // Find both series
         const dscovrBeam = chart.series.find(s => s.name === "DSCOVR Antenna Beam");
         const aceBeam = chart.series.find(s => s.name === "ACE Antenna Beam");
-        // Toggle visibility
-        const newVisibility = !dscovrBeam.visible; // Use the visibility of DSCOVR as the reference
+        const newVisibility = !dscovrBeam.visible;
         dscovrBeam.setVisible(newVisibility);
         aceBeam.setVisible(newVisibility);
-
-        // Update legend items for both
         updateLegendItemVisibility(dscovrBeam, legendContainer);
         updateLegendItemVisibility(aceBeam, legendContainer);
       } else {
-        // Handle other series normally
         series.setVisible(!series.visible);
         legendItem.classList.toggle('legend-item-hidden', !series.visible);
       }
