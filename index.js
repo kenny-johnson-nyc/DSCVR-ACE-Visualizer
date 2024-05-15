@@ -106,7 +106,7 @@ function updateDateDisplay() {
 //If you are fetching data asynchronously and want to show the loading div during this time, you can modify your fetchDataFromAPI function:
 async function fetchDataFromAPI(url) {
   const loadingDiv = document.getElementById('loading');
-  loadingDiv.textContent = `Fetching data from SSC Web API`;
+  loadingDiv.textContent = `Fetching data from SSCWeb`;
   loadingDiv.style.display = 'flex'; // Show the loading div
   setApiLink(url);
   try {

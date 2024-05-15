@@ -41,13 +41,12 @@ a:active {
 }
 
 #container {
-  height: 80vw;   
-  width: 80vw; 
+  height: min(70vw, 70vh);   
+  width: min(70vw, 70vh); 
   max-width: 800px;
   max-height: 800px;
   touch-action: none;
 }
-
 
 .wrapper {
   display: flex;
