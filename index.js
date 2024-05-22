@@ -204,9 +204,11 @@ function updateSEZCircles() {
   const sezHalfrad = Math.tan(toRadians(0.5)) * l1;
   const sez2rad = Math.tan(toRadians(2)) * l1;
   const sez4rad = Math.tan(toRadians(4)) * l1;
-  sezHalfDegData = buildCircle(sezHalfrad, 0, 0, 0);
-  sez2DegData = buildCircle(sez2rad, 0, 0, 0);
-  sez4DegData = buildCircle(sez4rad, 0, 0, 0);
+  // Assuming L1 is along the x-axis from Earth towards the Sun
+  const l1X = l1; // Update this if L1 has different coordinates
+  sezHalfDegData = buildCircle(sezHalfrad, l1X, 0, 0);
+  sez2DegData = buildCircle(sez2rad, l1X, 0, 0);
+  sez4DegData = buildCircle(sez4rad, l1X, 0, 0);
 }
 
 function updateSunEarthLine() {
@@ -401,14 +403,7 @@ const chartOptions = {
       tooltip: {
         headerFormat: '<span>{series.name}</span>',
         pointFormat: '</span> <br>X GSE :{point.x} <br>Y GSE: {point.y} <br> Z GSE: {point.z} <br> UTC: {point.time}',
-        footerFormat: '</p>',
-        backgroundColor: {
-          linearGradient: [0, 0, 0, 60],
-          stops: [
-            [0, '#FFFFFF'],
-            [1, '#E0E0E0']
-          ]
-        },
+        footerFormat: '</p>'
       },
       marker: {
         symbol: 'circle',
@@ -443,6 +438,7 @@ const chartOptions = {
       visible: true,
       zIndex: 2,
       color: 'rgba(255, 0, 0, 1)',
+      enableMouseTracking: false,
       marker: {
         enabled: false
       }
@@ -453,6 +449,7 @@ const chartOptions = {
       visible: true,
       zIndex: 2,
       color: 'orange',
+      enableMouseTracking: false,
       marker: {
         enabled: false
       }
@@ -464,6 +461,7 @@ const chartOptions = {
       visible: true,
       zIndex: 2,
       color: 'rgb(0, 0, 255)',
+      enableMouseTracking: false,
       marker: {
         enabled: false
       }
@@ -476,6 +474,7 @@ const chartOptions = {
       visible: true,
       zIndex: 2,
       color: 'rgba(18, 196, 65, 1)',
+      enableMouseTracking: false,
       marker: {
         enabled: false
       }
@@ -486,6 +485,7 @@ const chartOptions = {
       visible: false,
       lineWidth: 1,
       color: 'yellow',
+      enableMouseTracking: false,
       zIndex: 10,
       marker: {
         fillColor: 'yellow',
@@ -500,6 +500,7 @@ const chartOptions = {
       lineWidth: 1,
       zIndex: 2,
       visible: false,
+      enableMouseTracking: false,
       marker: {
         fillColor: 'blue',
         symbol: 'url(imgs/earth.png)',
@@ -513,6 +514,7 @@ const chartOptions = {
       data: sunEarthLine,
       lineWidth: 1,
       visible: false,
+      enableMouseTracking: false,
       marker: {
         fillColor: 'orange',
         symbol: 'circle',
