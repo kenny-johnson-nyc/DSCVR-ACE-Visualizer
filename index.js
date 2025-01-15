@@ -165,10 +165,10 @@ function extractData(dataElements, id) {
     const color = id === "dscovr" ? `rgba(0, 0, 255, ${opacity})` : `rgba(36, 201, 85, ${opacity})`; // Set color based on satellite ID
     data.push({
       x: parseFloat(xs[i].textContent),
-      y: parseFloat(ys[i] ? ys[i].textContent : 0),
-      z: parseFloat(zs[i] ? zs[i].textContent : 0),
+      y: parseFloat(zs[i] ? zs[i].textContent : 0),  // GSE Z goes to Y axis
+      z: parseFloat(ys[i] ? ys[i].textContent : 0),  // GSE Y goes to Z axis
       time: times[i] ? times[i].textContent : null,
-      color: color // Set color property
+      color: color
     });
   }
   return data;
