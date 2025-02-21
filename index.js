@@ -171,6 +171,22 @@ function extractData(dataElements, id) {
       color: color
     });
   }
+
+  // Always add the most recent data point if it wasn't included in the subsampling
+  const lastIndex = times.length - 1;
+  if (lastIndex % subsampleFactor !== 0) {
+    const timeValue = new Date(times[lastIndex].textContent).getTime();
+    const opacity = 1; // Most recent point gets full opacity
+    const color = id === "dscovr" ? `rgba(0, 0, 255, ${opacity})` : `rgba(36, 201, 85, ${opacity})`;
+    data.push({
+      x: parseFloat(xs[lastIndex].textContent),
+      y: parseFloat(zs[lastIndex] ? zs[lastIndex].textContent : 0),
+      z: parseFloat(ys[lastIndex] ? ys[lastIndex].textContent : 0),
+      time: times[lastIndex] ? times[lastIndex].textContent : null,
+      color: color
+    });
+  }
+
   return data;
 }
 
@@ -353,6 +369,10 @@ const chartOptions = {
       text: 'GSE Z-axis (miles)'
     },
     opposite: true,
+    tickWidth: 2,    // Add tick marks
+    tickLength: 5,   // Length of tick marks
+    tickInterval: 100000,  // Show ticks every 100k miles
+
     labels: {
       skew3d: true,
       style: {
@@ -363,7 +383,6 @@ const chartOptions = {
   xAxis: {
     zoomEnabled: true,
     floor: 0,
-    gridLineWidth: 1,
     title: {
       text: 'GSE X-axis (miles)'
     },
@@ -379,6 +398,7 @@ const chartOptions = {
     min: -300000,
     floor: -300000,
     max: 300000,
+    reversed: true,
     title: {
       text: 'GSE Y-axis (miles)'
     },
@@ -402,7 +422,7 @@ const chartOptions = {
       zIndex: 3,
       tooltip: {
         headerFormat: '<span>{series.name}</span>',
-        pointFormat: '</span> <br>X GSE :{point.x} <br>Y GSE: {point.y} <br> Z GSE: {point.z} <br> UTC: {point.time}',
+        pointFormat: '</span> <br>X GSE :{point.x} <br>Y GSE: {point.z} <br> Z GSE: {point.y} <br> UTC: {point.time}',
         footerFormat: '</p>'
       },
       marker: {
@@ -421,7 +441,7 @@ const chartOptions = {
       zIndex: 3,
       tooltip: {
         headerFormat: '<span>{series.name}</span>',
-        pointFormat: '</span> <br>X GSE: {point.x} <br>Y GSE: {point.y} <br>Z GSE: {point.z} <br> UTC: {point.time}',
+        pointFormat: '</span> <br>X GSE: {point.x} <br>Y GSE: {point.z} <br>Z GSE: {point.y} <br> UTC: {point.time}',
         footerFormat: '</p>',
       },
       marker: {
